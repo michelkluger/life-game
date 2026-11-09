@@ -1,0 +1,13 @@
+{
+  "name": "life-game",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun index.html",
+    "build": "bun build index.html --outdir dist --minify",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "phaser": "^4.2.1"
+  }
+}
