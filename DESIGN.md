@@ -52,16 +52,32 @@ Exploring is nice, but every stage must mix in puzzles and action. Money is neve
 
 Run: `bun run dev` then open http://localhost:3000. Tests: `bun test`. Hosted on GitHub Pages from `main` (repo michelkluger/life-game).
 
-In: flat, Zurich, Marseille, scout-camp memory; money and rent; bike (Shift); swimming in the lake; interview encounter; animated train ride with a platform-sprint action minigame; arrow-memory puzzle (wardrobe, tent knots); birthday-cake quest; building signs; one chiptune per place (M mutes); four languages (picked at start, L switches); autosave.
+Present day: flat, Zurich, Marseille; money and rent; bike (Shift); swimming; interview encounter; animated train ride with a sprint minigame; wardrobe puzzle; birthday-cake quest; building signs.
 
-Building blocks for new stages: `c.simon(n)` puzzle, `c.dodge(seconds)` action, `c.interview()`, `c.backdrop()`.
+Memories in the box, opened in chronological order, each called up by something in the present:
+
+| Memory | Opens after | Play | Reward |
+|---|---|---|---|
+| Scout camp, 2007 | failing the interview | find rope, knot puzzle | BE PREPARED (wins the interview) |
+| Svalbard, 2015 | swimming in the lake | polar-night fog, find the bear guard, pilot the robot through ice | swim at full speed |
+| Vienna, 2016 | getting the job | three tries for a coffee, boot-sequence puzzle | slower crowds in sprints |
+| Munich, 2018 | the birthday | satellite puzzle, sprint to the fire truck | puzzle arrows stay longer |
+| Antarctica, 2019 | paying a month's rent | whiteout flag line, cold-battery quiz | ends the box |
+
+The build ends once the box is empty, the job is won and the cake delivered.
+
+Also: activity tracker (10 tiles = 1 km) with a totals panel and a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
+
+Building blocks for new stages: `c.simon(n)` puzzle, `c.dodge(seconds, kind)` action, `c.interview()`, `c.backdrop()`, map `fog`.
 
 Known gaps:
 - Art is drawn in code, not CC0 packs.
 - Keyboard only, no touch controls.
 - Assumed two nieces; family unnamed.
 - FR/PT/DE text is AI-translated and not yet proofread by Michel.
+- Memory order follows the years (Svalbard before the Vienna job), not the original chapter numbering.
+- No Wiener Neustadt, UK, or São Paulo university/childhood stage yet.
 
 ## Open
 
-- Brazil, paragliding, running, climbing, dating, friends, remaining memories, all endings.
+- Brazil, paragliding, running, climbing, dating, friends, all endings.

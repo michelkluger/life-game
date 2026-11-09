@@ -1,9 +1,18 @@
 import { test, expect } from 'bun:test';
-import { MAPS, afterScript, type Ctx } from './content';
+import { MAPS, afterScript, onSwim, type Ctx } from './content';
+import { freq, trackNames, trackNotes } from './music';
 import { TXT } from './strings';
 import { newState, newFight, fightTurn, passDays, pay, RENT, type Fight, type MoveId } from './logic';
 
-const TERRAIN = '#T~,.123=';
+const TERRAIN = '#T~,.123=^';
+
+test('every place has a tune and every note is playable', () => {
+  for (const map of [...Object.keys(MAPS), 'interview', 'train']) expect(trackNames(), map).toContain(map);
+  for (const name of trackNames()) for (const n of trackNotes(name)) {
+    expect(n, name).toMatch(/^[A-G]#?\d$/);
+    expect(freq(n), `${name} ${n}`).toBeGreaterThan(40);
+  }
+});
 const free = (map: string, x: number, y: number) => {
   const ch = MAPS[map].rows[y]?.[x];
   return ch === '.' || ch === ',';
@@ -58,7 +67,7 @@ test('the whole first build can be played to the end', async () => {
   const c: Ctx = {
     s: newState(),
     say: async () => {},
-    choose: async () => 0,
+    choose: async prompt => (prompt === TXT.anMastQ ? 1 : 0), // first option everywhere, except the one real quiz
     go(map, x, y) { expect(free(map, x, y), `go ${map} ${x},${y}`).toBe(true); Object.assign(c.s, { map, x, y }); },
     days: async n => { passDays(c.s, n); },
     refresh() {},
@@ -99,6 +108,37 @@ test('the whole first build can be played to the end', async () => {
   await act('marseille', 'S');
   await act('marseille', 'G');
   expect(c.s.map).toBe('zurich');
+  expect(c.s.flags.end).toBeUndefined(); // the box still holds four memories
+
+  // Each memory needs its present-day trigger, in chronological order.
+  await act('zurich', 'F');
+  await act('flat', 'X');
+  expect(c.s.map).toBe('flat'); // Svalbard waits until you have been in the lake
+  await onSwim(c);
+  await act('flat', 'X');
+  await act('svalbard', 'H');
+  expect(c.s.map).toBe('svalbard'); // no leaving town without the bear guard
+  await act('svalbard', 'G');
+  await act('svalbard', 'H');
+  expect(c.s.flags.svalbard).toBe(true);
+
+  await act('flat', 'X');
+  await act('vienna', 'K');
+  expect(c.s.map).toBe('vienna'); // no debugging before coffee
+  for (let i = 0; i < 3; i++) await act('vienna', 'W');
+  await act('vienna', 'K');
+  expect(c.s.flags.vienna).toBe(true);
+
+  await act('flat', 'X');
+  await act('munich', 'C');
+  expect(c.s.flags.munich).toBe(true);
+
+  await c.days(10); // Antarctica waits for a paid rent
+  await act('flat', 'X');
+  await act('antarctica', 'M');
+  expect(c.s.map).toBe('flat');
   expect(c.s.flags.end).toBe(true);
   expect(c.s.money).toBeGreaterThan(0);
+  await act('flat', 'X'); // empty box: stays put
+  expect(c.s.map).toBe('flat');
 });

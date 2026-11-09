@@ -3,6 +3,7 @@ import { TXT } from './strings';
 
 export type State = {
   money: number; day: number; rentDue: number; lang: number;
+  dist: { walk: number; bike: number; swim: number }; // tiles travelled; 10 tiles = 1 km
   flags: Record<string, boolean>;
   map: string; x: number; y: number;
 };
@@ -10,7 +11,7 @@ export type State = {
 export const RENT = 1850, SALARY = 6500;
 
 export const newState = (lang = 0): State =>
-  ({ money: 2400, day: 1, rentDue: 10, lang, flags: {}, map: 'flat', x: 5, y: 2 });
+  ({ money: 2400, day: 1, rentDue: 10, lang, dist: { walk: 0, bike: 0, swim: 0 }, flags: {}, map: 'flat', x: 5, y: 2 });
 
 // Rent may push money below zero (overdraft); pay() then refuses all spending.
 export function passDays(s: State, n = 1): number {

@@ -11,7 +11,7 @@ export type Ctx = {
   days(n?: number): Promise<void>;
   interview(): Promise<boolean>;
   simon(n: number): Promise<boolean>;      // puzzle: memorise and repeat n arrows
-  dodge(seconds: number): Promise<number>; // action: run a platform, returns collisions
+  dodge(seconds: number, kind?: 'station' | 'sea' | 'street'): Promise<number>; // action: three-lane dodger, returns collisions
   backdrop(on: boolean): void;             // train-ride scene behind the dialogue
   refresh(): void;
 };
@@ -19,8 +19,8 @@ export type Script = (c: Ctx) => Promise<void>;
 // `on` is the wall tile drawn under the entity (doors); `label` is a sign above it.
 export type Ent = { tex: string; act?: Script; hide?: (s: State) => boolean; small?: boolean; on?: string; label?: Line };
 // Map chars: '#' brick, '1' stone, '2' glass, '3' cream wall, '=' rails, 'T' tree, '~' water, ',' path, '.' floor.
-// Any other char is a key in `ents`.
-export type MapDef = { name: Line; floor: string; outdoor?: boolean; swim?: boolean; rows: string[]; ents: Record<string, Ent> };
+// '^' is ice rock. Any other char is a key in `ents`. `fog` limits how far you can see (polar night, whiteout).
+export type MapDef = { name: Line; floor: string; outdoor?: boolean; swim?: boolean; fog?: 'dark' | 'white'; rows: string[]; ents: Record<string, Ent> };
 
 const yes = async (c: Ctx, q: Line) => (await c.choose(q, [t.yes, t.no])) === 0;
 const TICKET = 89, CAKE = 28; // also written into the text in strings.ts
@@ -34,7 +34,7 @@ export const onSwim: Script = async c => {
 
 export const afterScript: Script = async c => {
   const f = c.s.flags;
-  if (!f.employed || !f.birthday || f.end) return;
+  if (!f.employed || !f.birthday || !f.antarctica || f.end) return;
   f.end = true;
   await c.say(t.end1, t.end2);
 };
@@ -48,6 +48,17 @@ async function trainRide(c: Ctx, lines: Line[], sprint: Line) {
   c.backdrop(false);
   await c.days(missed ? 2 : 1);
 }
+
+// The box in the flat: memories open in chronological order, each once something in the present calls it up.
+// `done` is the flag the memory sets when finished; until `ready`, the box only gives the hint.
+const MEMORIES: { done: string; ready: (s: State) => boolean; hint: Line; open: Line[]; at: [string, number, number] }[] = [
+  { done: 'prepared', ready: s => !!s.flags.failedInterview, hint: t.boxClosed, open: [t.boxOpen1, t.boxOpen2], at: ['camp', 2, 4] },
+  { done: 'svalbard', ready: s => !!s.flags.swam, hint: t.boxSvalHint, open: [t.boxSvalOpen], at: ['svalbard', 2, 4] },
+  { done: 'vienna', ready: s => !!s.flags.employed, hint: t.boxVieHint, open: [t.boxVieOpen], at: ['vienna', 2, 4] },
+  { done: 'munich', ready: s => !!s.flags.birthday, hint: t.boxMunHint, open: [t.boxMunOpen], at: ['munich', 2, 3] },
+  { done: 'antarctica', ready: s => s.rentDue > 10, hint: t.boxAntHint, open: [t.boxAntOpen], at: ['antarctica', 2, 3] },
+];
+const wakeUp = (c: Ctx) => c.go('flat', 8, 2);
 
 export const MAPS: Record<string, MapDef> = {
   flat: {
@@ -71,11 +82,11 @@ export const MAPS: Record<string, MapDef> = {
         if (!c.s.flags.employed) await c.say(t.pc2);
       } },
       X: { tex: 'box', act: async c => {
-        const f = c.s.flags;
-        if (f.prepared) return c.say(t.boxLater);
-        if (!f.failedInterview) return c.say(t.boxClosed);
-        await c.say(t.boxOpen1, t.boxOpen2);
-        c.go('camp', 2, 4);
+        const m = MEMORIES.find(m => !c.s.flags[m.done]);
+        if (!m) return c.say(t.boxEmpty);
+        if (!m.ready(c.s)) return c.say(m.hint);
+        await c.say(...m.open);
+        c.go(...m.at);
       } },
       D: { tex: 'door', on: 'wall', act: async c => c.go('zurich', 3, 7) },
     },
@@ -200,7 +211,124 @@ export const MAPS: Record<string, MapDef> = {
         if (!await c.simon(4)) return c.say(t.tentFail);
         f.prepared = true;
         await c.say(t.tent1, t.tent2, t.tent3, t.tent4);
-        c.go('flat', 8, 2);
+        wakeUp(c);
+      } },
+    },
+  },
+
+  // Polar night: find the bear guard, then pilot the robot up through the ice. Reward: swim at full speed.
+  svalbard: {
+    name: t.mSvalbard, floor: 'snow', outdoor: true, fog: 'dark',
+    rows: [
+      '^^^^^^^^^^^^^^^^^^',
+      '^.111.........^..^',
+      '^.111...........B^',
+      '^..P...G.........^',
+      '^................^',
+      '^...^............^',
+      '^............H...^',
+      '^^^^^^^^^^^^^^^^^^',
+    ],
+    ents: {
+      P: { tex: 'prof', act: c => c.say(t.svProf1, t.svProf2) },
+      G: { tex: 'guard', act: async c => { c.s.flags.guard = true; await c.say(t.svGuard); } },
+      B: { tex: 'bear', act: c => c.say(t.svBear) },
+      H: { tex: 'hole', act: async c => {
+        if (!c.s.flags.guard) return c.say(t.svNoGuard);
+        await c.say(t.svHole);
+        if (await c.dodge(12, 'sea') >= 3) return c.say(t.svFail);
+        c.s.flags.svalbard = true;
+        await c.say(t.sv1, t.sv2, t.sv3);
+        wakeUp(c);
+      } },
+    },
+  },
+
+  // First job: get a coffee out of a Viennese waiter, then fix the boot sequence. Reward: slower crowds.
+  vienna: {
+    name: t.mVienna, floor: 'path', outdoor: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTT',
+      'T.2222......3333.T',
+      'T.2K22......3W33.T',
+      'T....B..c........T',
+      'T................T',
+      'T================T',
+      'TTTTTTTTTTTTTTTTTT',
+    ],
+    ents: {
+      B: { tex: 'boss', act: c => c.say(t.viBoss1, t.viBoss2) },
+      c: { tex: 'colleague', act: c => c.say(t.viCol) },
+      W: { tex: 'door', on: 'cream', label: same('Kaffeehaus'), act: async c => {
+        const f = c.s.flags;
+        if (f.coffee) return c.say(t.viWaiterDone);
+        if (!f.waiter1) { f.waiter1 = true; return c.say(t.viWaiter1); }
+        if (!f.waiter2) { f.waiter2 = true; return c.say(t.viWaiter2); }
+        f.coffee = true;
+        await c.say(t.viWaiter3);
+      } },
+      K: { tex: 'door', on: 'glass', label: same('TickTock Tech'), act: async c => {
+        if (!c.s.flags.coffee) return c.say(t.viNoCoffee);
+        await c.say(t.viTermHow);
+        if (!await c.simon(6)) return c.say(t.viFail);
+        c.s.flags.vienna = true;
+        await c.say(t.vi1, t.vi2, t.vi3);
+        wakeUp(c);
+      } },
+    },
+  },
+
+  // Night shift: recover the satellite (puzzle), then the pager goes off (sprint). Reward: longer puzzle hints.
+  munich: {
+    name: t.mMunich, floor: 'grass', outdoor: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTT',
+      'T.1111...........T',
+      'T.1C11.....b.....T',
+      'T..,,,,,,,,,,,,..T',
+      'T....o...........T',
+      'TTTTTTTTTTTTTTTTTT',
+    ],
+    ents: {
+      o: { tex: 'colleague', act: c => c.say(t.muCol) },
+      b: { tex: 'bavarian', act: c => c.say(t.muBav) },
+      C: { tex: 'door', on: 'stone', label: same('Sat Control'), act: async c => {
+        await c.say(t.muOps1, t.muOps2);
+        if (!await c.simon(6)) return c.say(t.muFail);
+        await c.say(t.mu1, t.mu2);
+        await c.say(await c.dodge(12, 'street') >= 3 ? t.muLate : t.muOnTime);
+        c.s.flags.munich = true;
+        await c.say(t.mu3, t.mu4, t.mu5);
+        wakeUp(c);
+      } },
+    },
+  },
+
+  // Whiteout: follow the flags to the mast, then know what cold does to batteries. Reward: the end of the box.
+  antarctica: {
+    name: t.mAntarctica, floor: 'snow', outdoor: true, fog: 'white',
+    rows: [
+      '^^^^^^^^^^^^^^^^^^^^',
+      '^.##...............^',
+      '^.##.L.f...........^',
+      '^..................^',
+      '^.........f........^',
+      '^....p.............^',
+      '^............f.....^',
+      '^..................^',
+      '^..............f.M.^',
+      '^^^^^^^^^^^^^^^^^^^^',
+    ],
+    ents: {
+      L: { tex: 'chief', act: c => c.say(t.anBoss1, t.anBoss2) },
+      p: { tex: 'penguin', act: c => c.say(t.anPenguin) },
+      f: { tex: 'flag', act: c => c.say(t.anFlag) },
+      M: { tex: 'mast', act: async c => {
+        const pick = await c.choose(t.anMastQ, [t.anOptA, t.anOptB, t.anOptC]);
+        if (pick !== 1) return c.say(pick === 0 ? t.anWrongA : t.anWrongC);
+        c.s.flags.antarctica = true;
+        await c.say(t.an1, t.an2, t.an3);
+        wakeUp(c);
       } },
     },
   },

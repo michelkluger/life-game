@@ -6,8 +6,8 @@ import { TXT, LANGS, type Line } from './strings';
 import * as music from './music';
 
 const T = 48, W = 720, H = 480, SAVE = 'life-game-save';
-const TILE: Record<string, string> = { '#': 'wall', '~': 'water', ',': 'path', '1': 'stone', '2': 'glass', '3': 'cream', '=': 'track' };
-const SOLID = '#T123=';
+const TILE: Record<string, string> = { '#': 'wall', '~': 'water', ',': 'path', '1': 'stone', '2': 'glass', '3': 'cream', '=': 'track', '^': 'rock' };
+const SOLID = '#T123=^';
 
 // Art is authored on a 16x16 grid and drawn at 3x into 48px textures; DETAIL adds fine 48px touches.
 type Rect = [color: string, x: number, y: number, w: number, h: number];
@@ -51,6 +51,23 @@ const ART: Record<string, Rect[]> = {
   swimmer: person('#e8b88a', '#c9a23a'),
   interviewer: person('#22252e', '#777'),
   tourist: person('#e2574c', '#d9a441'),
+  snow: [['#eef3f8', 0, 0, 16, 16], ['#d5dee8', 3, 5, 2, 1], ['#d5dee8', 10, 11, 3, 1]],
+  rock: [['#eef3f8', 0, 0, 16, 16], ['#8fa3b8', 2, 6, 12, 10], ['#b9c8d8', 4, 3, 8, 5], ['#fff', 6, 2, 4, 2]],
+  hole: [['#b9c8d8', 2, 4, 12, 9], ['#2a5f93', 3, 5, 10, 7], ['#16406b', 5, 7, 6, 3]],
+  bear: [['#f7f1dc', 2, 6, 12, 7], ['#f7f1dc', 10, 3, 5, 5], ['#222', 13, 5, 1, 1], ['#222', 14, 7, 1, 1], ['#f7f1dc', 3, 13, 2, 2], ['#f7f1dc', 10, 13, 2, 2]],
+  penguin: [['#222', 5, 2, 6, 12], ['#fff', 6, 6, 4, 7], ['#fff', 6, 3, 1, 1], ['#fff', 9, 3, 1, 1], ['#f2a01e', 7, 5, 2, 1], ['#f2a01e', 5, 14, 2, 1], ['#f2a01e', 9, 14, 2, 1]],
+  flag: [['#555', 7, 3, 1, 13], ['#e2372c', 8, 3, 6, 4]],
+  mast: [['#777', 7, 0, 2, 16], ['#777', 3, 4, 10, 1], ['#e2372c', 3, 2, 2, 2], ['#333', 11, 2, 3, 3]],
+  rov: [['#f2c94c', 2, 5, 12, 7], ['#333', 11, 7, 3, 3], ['#7fd0ff', 12, 8, 1, 1], ['#333', 0, 7, 2, 3], ['#888', 4, 12, 8, 1]],
+  jelly: [['#e79ad6', 4, 3, 8, 5], ['#e79ad6', 5, 8, 1, 5], ['#e79ad6', 8, 8, 1, 6], ['#e79ad6', 10, 8, 1, 4]],
+  floe: [['#dfeefa', 1, 4, 14, 9], ['#fff', 3, 5, 8, 3], ['#b9d6ee', 2, 12, 12, 1]],
+  scooter: [['#222', 2, 12, 3, 3], ['#222', 11, 12, 3, 3], ['#3fbf7f', 3, 11, 10, 1], ['#3fbf7f', 11, 3, 1, 9], ['#222', 9, 3, 4, 1]],
+  prof: person('#4a6fa5', '#bbb'),
+  guard: person('#d9822b', '#333'),
+  boss: person('#555b6e', '#6b4a2b'),
+  colleague: person('#7a9a5a', '#222'),
+  bavarian: person('#2e6b3a', '#a57a3a'),
+  chief: person('#e2572c', '#444'),
   leader: person('#b5a36a', '#222', '#b98a5e'),
   kid: person('#b5a36a', '#3a2a1a', '#c99a6e'),
 };
@@ -88,6 +105,18 @@ function drawTrain(x: Ctx2) {
   x.fillStyle = '#1a1a1a'; for (const cx of [30, 60, 180, 210]) { x.beginPath(); x.arc(cx, 62, 7, 0, 7); x.fill(); }
 }
 
+// Looks for the three-lane dodge minigame.
+const SKINS = {
+  station: { bg: 0x5b6068, line: 0xf2c94c, me: 'me', things: ['case', 'tourist'], hud: TXT.dodgeHud },
+  sea: { bg: 0x16406b, line: 0x2a5f93, me: 'rov', things: ['floe', 'jelly'], hud: TXT.dodgeHudSea },
+  street: { bg: 0x3d4046, line: 0xdddddd, me: 'me', things: ['scooter', 'bavarian', 'tourist'], hud: TXT.dodgeHudStreet },
+};
+
+// Activity tracker: 10 tiles = 1 km; PACE is nominal seconds per tile, so times and speeds look human.
+type Mode = 'walk' | 'bike' | 'swim';
+const PACE: Record<Mode, number> = { walk: 72, bike: 16, swim: 144 };
+const SANS = { fontFamily: 'Arial, Helvetica, sans-serif' }, GREY = '#6b6f76', ORANGE = 0xf26b1d;
+
 type Obj = Phaser.GameObjects.GameObject & { x: number; y: number };
 const FONT = { fontFamily: 'monospace', color: '#fff' };
 
@@ -103,6 +132,10 @@ class World extends Phaser.Scene implements Ctx {
   box!: Phaser.GameObjects.Rectangle;
   txt!: Phaser.GameObjects.Text;
   hudTxt!: Phaser.GameObjects.Text;
+  fog!: Phaser.GameObjects.Image;
+  statLbl!: Phaser.GameObjects.Text; statVal!: Phaser.GameObjects.Text;
+  cardObjs: Phaser.GameObjects.GameObject[] = [];
+  seg = { mode: 'walk' as Mode, pts: [] as number[][] }; // the activity in progress and its route
   bigTxt!: Phaser.GameObjects.Text; // large glyphs inside the dialogue box (puzzle arrows)
   fightUi: any[] = [];
   scenery: Obj[] = []; hills: Obj[] = [];
@@ -124,6 +157,13 @@ class World extends Phaser.Scene implements Ctx {
     }
     const train = this.textures.createCanvas('train', 240, 72)!;
     drawTrain(train.context); train.refresh();
+    // Fog: a clear circle around the player fading to solid colour (polar night, whiteout).
+    for (const [key, rgb] of [['fog_dark', '6,9,22'], ['fog_white', '244,247,250']]) {
+      const fog = this.textures.createCanvas(key, W, H)!, g = fog.context.createRadialGradient(W / 2, H / 2, 70, W / 2, H / 2, 210);
+      g.addColorStop(0, `rgba(${rgb},0)`); g.addColorStop(1, `rgba(${rgb},0.97)`);
+      fog.context.fillStyle = g; fog.context.fillRect(0, 0, W, H); fog.refresh();
+    }
+    this.fog = this.ui(this.add.image(W / 2, H / 2, 'fog_dark'), 20).setVisible(false);
 
     this.keys = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.on('keydown', (e: KeyboardEvent) => {
@@ -147,6 +187,12 @@ class World extends Phaser.Scene implements Ctx {
     this.box = this.ui(this.add.rectangle(W / 2, H - 76, W - 20, 136, 0x101820, 0.95).setStrokeStyle(3, 0xffffff), 100).setVisible(false);
     this.txt = this.ui(this.add.text(26, H - 134, '', { ...FONT, fontSize: '17px', lineSpacing: 5, wordWrap: { width: W - 52 } }), 101);
     this.bigTxt = this.ui(this.add.text(W / 2, H - 62, '', { ...FONT, fontSize: '44px', color: '#f2c94c' }).setOrigin(0.5), 101);
+    // Totals panel, top right: white card with an orange edge.
+    const panel = this.ui(this.add.graphics(), 101);
+    panel.fillStyle(ORANGE).fillRoundedRect(W - 160, 6, 152, 64, 8);
+    panel.fillStyle(0xffffff).fillRoundedRect(W - 155, 6, 147, 64, { tl: 0, bl: 0, tr: 8, br: 8 });
+    this.statLbl = this.ui(this.add.text(W - 145, 12, '', { ...SANS, fontSize: '12px', color: GREY, lineSpacing: 5 }), 102);
+    this.statVal = this.ui(this.add.text(W - 18, 12, '', { ...SANS, fontSize: '12px', fontStyle: 'bold', color: '#1c1e21', align: 'right', lineSpacing: 5 }).setOrigin(1, 0), 102);
     this.hudTxt = this.ui(this.add.text(8, 6, '', { ...FONT, fontSize: '15px', backgroundColor: '#101820', padding: { x: 6, y: 3 } }), 101);
 
     let saved: State | null = null;
@@ -154,7 +200,7 @@ class World extends Phaser.Scene implements Ctx {
     const hadSave = !!saved && !!MAPS[saved.map];
     // Until the player picks, speak the browser's language if it is one of ours.
     const guess = Math.max(0, ['en', 'fr', 'pt', 'de'].indexOf(navigator.language.slice(0, 2)));
-    this.s = hadSave ? { ...saved!, lang: saved!.lang ?? guess } : newState(guess);
+    this.s = hadSave ? { ...newState(guess), ...saved! } : newState(guess); // newState fills fields older saves lack
     this.go(this.s.map, this.s.x, this.s.y);
     this.run(async c => {
       if (hadSave && await c.choose(TXT.welcomeBack, [TXT.cont, TXT.newGame]) === 0) return;
@@ -188,6 +234,8 @@ class World extends Phaser.Scene implements Ctx {
         { ...FONT, fontSize: '13px', fontStyle: 'bold', backgroundColor: '#101820', padding: { x: 5, y: 2 } }).setOrigin(0.5, 1));
       this.ents.set(`${x},${y}`, ent);
     }));
+    this.fog.setVisible(!!m.fog);
+    if (m.fog) this.fog.setTexture('fog_' + m.fog);
     if (!this.moving) this.me.setPosition(this.s.x * T, this.s.y * T).setTexture(m.rows[this.s.y][this.s.x] === '~' ? 'me_swim' : 'me');
     this.hud();
   }
@@ -195,6 +243,56 @@ class World extends Phaser.Scene implements Ctx {
   hud() {
     const { day, money, rentDue, map } = this.s;
     this.hudTxt.setText(this.tr(TXT.hud, this.tr(MAPS[map].name), day, money, rentDue - day));
+    const d = this.s.dist;
+    this.statLbl.setText([TXT.actWalk, TXT.actRide, TXT.actSwim].map(l => this.tr(l)).join('\n'));
+    this.statVal.setText([d.walk, d.bike, d.swim].map(n => (n / 10).toFixed(1) + ' km').join('\n'));
+  }
+
+  // Count the step from (fx,fy) to (x,y). When the kind of movement changes, the finished stretch is saved as an activity.
+  track(mode: Mode, x: number, y: number, fx: number, fy: number) {
+    if (mode !== this.seg.mode) {
+      if (this.seg.pts.length > 5) this.card(this.seg.mode, this.seg.pts);
+      this.seg = { mode, pts: [[fx, fy]] };
+    }
+    this.seg.pts.push([x, y]);
+    this.s.dist[mode]++;
+    this.hud();
+  }
+
+  // Activity card in the style of a fitness feed: who, what, three stats, the route, kudos.
+  card(mode: Mode, pts: number[][]) {
+    this.cardObjs.forEach(o => o.destroy());
+    const mine: Phaser.GameObjects.GameObject[] = this.cardObjs = [];
+    const add = <G extends Phaser.GameObjects.GameObject>(o: G) => { mine.push(o); return this.ui(o, 102); };
+    const X = W - 322, Y = 80, n = pts.length - 1, secs = n * PACE[mode];
+    const g = add(this.add.graphics());
+    g.fillStyle(0x000000, 0.25).fillRoundedRect(X + 3, Y + 4, 314, 152, 10);
+    g.fillStyle(0xffffff).fillRoundedRect(X, Y, 314, 152, 10);
+    g.fillStyle(0x1b2a4a).fillCircle(X + 28, Y + 27, 15);            // avatar: the Bk shirt
+    g.lineStyle(1.5, 0xf2b01e).strokeRect(X + 21, Y + 22, 14, 10);
+    g.fillStyle(0xeef0f2).fillRoundedRect(X + 198, Y + 48, 102, 72, 6); // route map
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const k = Math.min(84 / Math.max(1, Math.max(...xs) - Math.min(...xs)), 54 / Math.max(1, Math.max(...ys) - Math.min(...ys)), 14);
+    const at = (p: number[]) => [X + 249 + (p[0] - cx) * k, Y + 84 + (p[1] - cy) * k];
+    g.lineStyle(3, ORANGE).beginPath();
+    pts.forEach((p, i) => { const [px, py] = at(p); i ? g.lineTo(px, py) : g.moveTo(px, py); });
+    g.strokePath();
+    g.fillStyle(0x2bb673).fillCircle(...(at(pts[0]) as [number, number]), 4);
+    g.fillStyle(0x1c1e21).fillCircle(...(at(pts[n]) as [number, number]), 4);
+    const text = (x: number, y: number, s: string, size: number, color = '#1c1e21', bold = false) =>
+      add(this.add.text(X + x, Y + y, s, { ...SANS, fontSize: size + 'px', color, fontStyle: bold ? 'bold' : 'normal' }));
+    text(52, 11, 'Michel', 13, undefined, true);
+    text(52, 28, this.tr(MAPS[this.s.map].name), 11, GREY);
+    text(14, 52, this.tr(mode === 'walk' ? TXT.actTitleWalk : mode === 'bike' ? TXT.actTitleRide : TXT.actTitleSwim), 16, undefined, true);
+    const stats: [typeof TXT.actDist, string][] = [
+      [TXT.actDist, (n / 10).toFixed(1) + ' km'],
+      [TXT.actTime, `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`],
+      [TXT.actSpeed, (n * 360 / secs).toFixed(1) + ' km/h'],
+    ];
+    stats.forEach(([label, value], i) => { text(14 + i * 62, 80, this.tr(label), 10, GREY); text(14 + i * 62, 94, value, 14, undefined, true); });
+    text(14, 126, '👍  ' + this.tr(TXT.actKudos, n % 4), 12, GREY);
+    this.time.delayedCall(5000, () => mine.forEach(o => o.destroy()));
   }
 
   async run(fn: Script) {
@@ -225,8 +323,9 @@ class World extends Phaser.Scene implements Ctx {
     const bike = !water && !!m.outdoor && k.shift.isDown;
     this.me.setTexture(water ? 'me_swim' : bike ? 'me_bike' : 'me');
     this.s.x = x; this.s.y = y; this.moving = true;
+    this.track(water ? 'swim' : bike ? 'bike' : 'walk', x, y, x - dx, y - dy);
     this.tweens.add({
-      targets: this.me, x: x * T, y: y * T, duration: water ? 320 : bike ? 80 : 170,
+      targets: this.me, x: x * T, y: y * T, duration: water && !this.s.flags.svalbard ? 320 : bike ? 80 : 170, // Svalbard perk: no slowdown in water
       onComplete: () => { this.moving = false; if (water && !this.s.flags.swam) this.run(onSwim); },
     });
   }
@@ -257,6 +356,7 @@ class World extends Phaser.Scene implements Ctx {
 
   go(map: string, x: number, y: number) {
     this.tweens.killTweensOf(this.me); this.moving = false; // never leave a half-finished step behind
+    this.seg = { mode: 'walk', pts: [[x, y]] };              // a route never spans two places
     Object.assign(this.s, { map, x, y }); this.build(); music.play(map);
   }
   refresh() { this.build(); }
@@ -294,7 +394,7 @@ class World extends Phaser.Scene implements Ctx {
     const seq = Array.from({ length: n }, () => Math.floor(Math.random() * 4));
     for (const a of seq) {
       this.show(() => this.tr(TXT.watch), GLYPH[a]);
-      await this.wait(650);
+      await this.wait(this.s.flags.munich ? 1000 : 650); // Munich perk: arrows linger
       this.show(() => this.tr(TXT.watch));
       await this.wait(180);
     }
@@ -306,15 +406,16 @@ class World extends Phaser.Scene implements Ctx {
   }
 
   // Action: three lanes, things come at you, Up/Down to dodge. Always leaves a free lane.
-  dodge(seconds: number) {
+  dodge(seconds: number, kind: keyof typeof SKINS = 'station') {
+    const skin = SKINS[kind], speed = this.s.flags.vienna ? 0.3 : 0.38; // Vienna perk: everything comes slower
     return new Promise<number>(done => {
       const LANE = [150, 240, 330], made: Obj[] = [];
       const add = <G extends Obj>(o: G, depth = 61) => { made.push(o); return this.ui(o, depth); };
       this.redraw = null; this.box.setVisible(false); this.txt.setText(''); this.bigTxt.setText('');
-      add(this.add.rectangle(W / 2, H / 2, W + 80, H + 80, 0x5b6068), 60); // oversized so camera shake never shows the map
-      for (const y of [195, 285]) add(this.add.rectangle(W / 2, y, W, 3, 0xf2c94c), 60);
+      add(this.add.rectangle(W / 2, H / 2, W + 80, H + 80, skin.bg), 60); // oversized so camera shake never shows the map
+      for (const y of [195, 285]) add(this.add.rectangle(W / 2, y, W, 3, skin.line), 60);
       const label = add(this.add.text(W / 2, 60, '', { ...FONT, fontSize: '18px' }).setOrigin(0.5));
-      const p = add(this.add.image(120, LANE[1], 'me').setScale(1.5), 62);
+      const p = add(this.add.image(120, LANE[1], skin.me).setScale(1.5), 62);
       const things: { o: Phaser.GameObjects.Image; lane: number; hit: boolean }[] = [];
       let lane = 1, hits = 0, t = 0, next = 600;
       this.onKey = c => {
@@ -327,13 +428,13 @@ class World extends Phaser.Scene implements Ctx {
         if (t > next) {
           next = t + 420 + Math.random() * 380;
           const l = Math.floor(Math.random() * 3);
-          things.push({ o: add(this.add.image(W + 40, LANE[l], Math.random() < 0.5 ? 'case' : 'tourist').setScale(1.5)), lane: l, hit: false });
+          things.push({ o: add(this.add.image(W + 40, LANE[l], skin.things[Math.floor(Math.random() * skin.things.length)]).setScale(1.5)), lane: l, hit: false });
         }
         for (const th of things) {
-          th.o.x -= dt * 0.38;
+          th.o.x -= dt * speed;
           if (!th.hit && th.lane === lane && Math.abs(th.o.x - p.x) < 44) { th.hit = true; hits++; this.cameras.main.shake(140, 0.012); }
         }
-        label.setText(this.tr(TXT.dodgeHud, Math.max(0, Math.ceil(seconds - t / 1000)), Math.min(hits, 3)));
+        label.setText(this.tr(skin.hud, Math.max(0, Math.ceil(seconds - t / 1000)), Math.min(hits, 3)));
         if (t < seconds * 1000) return;
         this.events.off('update', tick);
         this.onKey = null;
