@@ -4,9 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Life Game</title>
-<style>body{margin:0;background:#000;height:100vh;overflow:hidden}</style>
+<style>
+  body { margin: 0; background: #000; height: 100vh; overflow: hidden; display: flex; font-family: Arial, Helvetica, sans-serif; }
+  #game { flex: 1; min-width: 0; height: 100%; }
+
+  /* Activity tracker: a side column next to the game, not on top of it. */
+  #tracker { width: 200px; padding: 10px 10px 10px 0; box-sizing: border-box; color: #1c1e21; }
+  #totals, #card { background: #fff; border-radius: 8px; }
+  #totals { border-left: 5px solid #f26b1d; padding: 8px 10px; font-size: 12px; }
+  #totals div { display: flex; justify-content: space-between; padding: 2px 0; }
+  #totals span, #card small { color: #6b6f76; }
+  #card { margin-top: 8px; padding: 8px 10px; font-size: 11px; }
+  #card header { display: flex; align-items: center; gap: 7px; }
+  #card header i { width: 22px; height: 22px; border-radius: 50%; background: #1b2a4a; box-shadow: inset 0 0 0 6px #1b2a4a, inset 0 0 0 7px #f2b01e; }
+  #card header b, #card header small { display: block; }
+  #card h3 { margin: 6px 0 4px; font-size: 13px; }
+  #card .stats { display: flex; justify-content: space-between; }
+  #card .stats small, #card .stats b { display: block; }
+  #card .stats small { font-size: 9px; }
+  #card svg { display: block; width: 100%; margin: 6px 0 4px; background: #eef0f2; border-radius: 5px; }
+  #card polyline { fill: none; stroke: #f26b1d; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  #card footer { color: #6b6f76; }
+
+  /* Narrow or portrait windows: the column goes under the game. */
+  @media (max-aspect-ratio: 4/3) {
+    body { flex-direction: column; }
+    #game { height: auto; }
+    #tracker { width: auto; padding: 0 10px 10px; display: flex; gap: 8px; align-items: flex-start; }
+    #totals, #card { flex: 1; margin-top: 0; }
+  }
+</style>
 </head>
 <body>
+<div id="game"></div>
+<aside id="tracker" aria-live="polite">
+  <div id="totals"></div>
+  <div id="card" hidden></div>
+</aside>
 <script type="module" src="./src/main.ts"></script>
 </body>
 </html>

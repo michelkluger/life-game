@@ -115,7 +115,7 @@ const SKINS = {
 // Activity tracker: 10 tiles = 1 km; PACE is nominal seconds per tile, so times and speeds look human.
 type Mode = 'walk' | 'bike' | 'swim';
 const PACE: Record<Mode, number> = { walk: 72, bike: 16, swim: 144 };
-const SANS = { fontFamily: 'Arial, Helvetica, sans-serif' }, GREY = '#6b6f76', ORANGE = 0xf26b1d;
+const TOTALS = document.getElementById('totals')!, CARD = document.getElementById('card')!; // side column, outside the game picture
 
 type Obj = Phaser.GameObjects.GameObject & { x: number; y: number };
 const FONT = { fontFamily: 'monospace', color: '#fff' };
@@ -133,8 +133,7 @@ class World extends Phaser.Scene implements Ctx {
   txt!: Phaser.GameObjects.Text;
   hudTxt!: Phaser.GameObjects.Text;
   fog!: Phaser.GameObjects.Image;
-  statLbl!: Phaser.GameObjects.Text; statVal!: Phaser.GameObjects.Text;
-  cardObjs: Phaser.GameObjects.GameObject[] = [];
+  cardTimer: ReturnType<typeof setTimeout> | undefined;
   seg = { mode: 'walk' as Mode, pts: [] as number[][] }; // the activity in progress and its route
   bigTxt!: Phaser.GameObjects.Text; // large glyphs inside the dialogue box (puzzle arrows)
   fightUi: any[] = [];
@@ -187,12 +186,6 @@ class World extends Phaser.Scene implements Ctx {
     this.box = this.ui(this.add.rectangle(W / 2, H - 76, W - 20, 136, 0x101820, 0.95).setStrokeStyle(3, 0xffffff), 100).setVisible(false);
     this.txt = this.ui(this.add.text(26, H - 134, '', { ...FONT, fontSize: '17px', lineSpacing: 5, wordWrap: { width: W - 52 } }), 101);
     this.bigTxt = this.ui(this.add.text(W / 2, H - 62, '', { ...FONT, fontSize: '44px', color: '#f2c94c' }).setOrigin(0.5), 101);
-    // Totals panel, top right: white card with an orange edge.
-    const panel = this.ui(this.add.graphics(), 101);
-    panel.fillStyle(ORANGE).fillRoundedRect(W - 160, 6, 152, 64, 8);
-    panel.fillStyle(0xffffff).fillRoundedRect(W - 155, 6, 147, 64, { tl: 0, bl: 0, tr: 8, br: 8 });
-    this.statLbl = this.ui(this.add.text(W - 145, 12, '', { ...SANS, fontSize: '12px', color: GREY, lineSpacing: 5 }), 102);
-    this.statVal = this.ui(this.add.text(W - 18, 12, '', { ...SANS, fontSize: '12px', fontStyle: 'bold', color: '#1c1e21', align: 'right', lineSpacing: 5 }).setOrigin(1, 0), 102);
     this.hudTxt = this.ui(this.add.text(8, 6, '', { ...FONT, fontSize: '15px', backgroundColor: '#101820', padding: { x: 6, y: 3 } }), 101);
 
     let saved: State | null = null;
@@ -244,8 +237,8 @@ class World extends Phaser.Scene implements Ctx {
     const { day, money, rentDue, map } = this.s;
     this.hudTxt.setText(this.tr(TXT.hud, this.tr(MAPS[map].name), day, money, rentDue - day));
     const d = this.s.dist;
-    this.statLbl.setText([TXT.actWalk, TXT.actRide, TXT.actSwim].map(l => this.tr(l)).join('\n'));
-    this.statVal.setText([d.walk, d.bike, d.swim].map(n => (n / 10).toFixed(1) + ' km').join('\n'));
+    const rows: [Line, number][] = [[TXT.actWalk, d.walk], [TXT.actRide, d.bike], [TXT.actSwim, d.swim]];
+    TOTALS.innerHTML = rows.map(([l, n]) => `<div><span>${this.tr(l)}</span><b>${(n / 10).toFixed(1)} km</b></div>`).join('');
   }
 
   // Count the step from (fx,fy) to (x,y). When the kind of movement changes, the finished stretch is saved as an activity.
@@ -259,40 +252,26 @@ class World extends Phaser.Scene implements Ctx {
     this.hud();
   }
 
-  // Activity card in the style of a fitness feed: who, what, three stats, the route, kudos.
+  // Activity card in the side column, styled like a fitness feed: who, what, three stats, the route, kudos.
   card(mode: Mode, pts: number[][]) {
-    this.cardObjs.forEach(o => o.destroy());
-    const mine: Phaser.GameObjects.GameObject[] = this.cardObjs = [];
-    const add = <G extends Phaser.GameObjects.GameObject>(o: G) => { mine.push(o); return this.ui(o, 102); };
-    const X = W - 322, Y = 80, n = pts.length - 1, secs = n * PACE[mode];
-    const g = add(this.add.graphics());
-    g.fillStyle(0x000000, 0.25).fillRoundedRect(X + 3, Y + 4, 314, 152, 10);
-    g.fillStyle(0xffffff).fillRoundedRect(X, Y, 314, 152, 10);
-    g.fillStyle(0x1b2a4a).fillCircle(X + 28, Y + 27, 15);            // avatar: the Bk shirt
-    g.lineStyle(1.5, 0xf2b01e).strokeRect(X + 21, Y + 22, 14, 10);
-    g.fillStyle(0xeef0f2).fillRoundedRect(X + 198, Y + 48, 102, 72, 6); // route map
+    const n = pts.length - 1, secs = n * PACE[mode];
     const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
     const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
-    const k = Math.min(84 / Math.max(1, Math.max(...xs) - Math.min(...xs)), 54 / Math.max(1, Math.max(...ys) - Math.min(...ys)), 14);
-    const at = (p: number[]) => [X + 249 + (p[0] - cx) * k, Y + 84 + (p[1] - cy) * k];
-    g.lineStyle(3, ORANGE).beginPath();
-    pts.forEach((p, i) => { const [px, py] = at(p); i ? g.lineTo(px, py) : g.moveTo(px, py); });
-    g.strokePath();
-    g.fillStyle(0x2bb673).fillCircle(...(at(pts[0]) as [number, number]), 4);
-    g.fillStyle(0x1c1e21).fillCircle(...(at(pts[n]) as [number, number]), 4);
-    const text = (x: number, y: number, s: string, size: number, color = '#1c1e21', bold = false) =>
-      add(this.add.text(X + x, Y + y, s, { ...SANS, fontSize: size + 'px', color, fontStyle: bold ? 'bold' : 'normal' }));
-    text(52, 11, 'Michel', 13, undefined, true);
-    text(52, 28, this.tr(MAPS[this.s.map].name), 11, GREY);
-    text(14, 52, this.tr(mode === 'walk' ? TXT.actTitleWalk : mode === 'bike' ? TXT.actTitleRide : TXT.actTitleSwim), 16, undefined, true);
-    const stats: [typeof TXT.actDist, string][] = [
-      [TXT.actDist, (n / 10).toFixed(1) + ' km'],
-      [TXT.actTime, `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`],
-      [TXT.actSpeed, (n * 360 / secs).toFixed(1) + ' km/h'],
-    ];
-    stats.forEach(([label, value], i) => { text(14 + i * 62, 80, this.tr(label), 10, GREY); text(14 + i * 62, 94, value, 14, undefined, true); });
-    text(14, 126, '👍  ' + this.tr(TXT.actKudos, n % 4), 12, GREY);
-    this.time.delayedCall(5000, () => mine.forEach(o => o.destroy()));
+    const k = Math.min(150 / Math.max(1, Math.max(...xs) - Math.min(...xs)), 34 / Math.max(1, Math.max(...ys) - Math.min(...ys)), 12);
+    const at = (p: number[]) => `${(90 + (p[0] - cx) * k).toFixed(1)},${(25 + (p[1] - cy) * k).toFixed(1)}`;
+    const [sx, sy] = at(pts[0]).split(','), [ex, ey] = at(pts[n]).split(',');
+    const title = this.tr(mode === 'walk' ? TXT.actTitleWalk : mode === 'bike' ? TXT.actTitleRide : TXT.actTitleSwim);
+    const stat = (label: Line, value: string) => `<div><small>${this.tr(label)}</small><b>${value}</b></div>`;
+    // Only our own strings and numbers go in here, never player input.
+    CARD.innerHTML = `
+      <header><i></i><div><b>Michel</b><small>${this.tr(MAPS[this.s.map].name)}</small></div></header>
+      <h3>${title}</h3>
+      <div class="stats">${stat(TXT.actDist, (n / 10).toFixed(1) + ' km')}${stat(TXT.actTime, `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`)}${stat(TXT.actSpeed, (n * 360 / secs).toFixed(1) + ' km/h')}</div>
+      <svg viewBox="0 0 180 50"><polyline points="${pts.map(at).join(' ')}"/><circle cx="${sx}" cy="${sy}" r="3.5" fill="#2bb673"/><circle cx="${ex}" cy="${ey}" r="3.5" fill="#1c1e21"/></svg>
+      <footer>👍 ${this.tr(TXT.actKudos, n % 4)}</footer>`;
+    CARD.hidden = false;
+    clearTimeout(this.cardTimer);
+    this.cardTimer = setTimeout(() => { CARD.hidden = true; }, 6000);
   }
 
   async run(fn: Script) {
@@ -463,7 +442,7 @@ class World extends Phaser.Scene implements Ctx {
 }
 
 const game = new Phaser.Game({
-  type: Phaser.AUTO, width: W, height: H, backgroundColor: '#101820',
+  type: Phaser.AUTO, parent: 'game', width: W, height: H, backgroundColor: '#101820',
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   scene: World,
 });
