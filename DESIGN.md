@@ -77,6 +77,26 @@ Opened in chronological order, each called up by something in the present:
 
 The build ends once the box is empty, the job is won, the cake delivered and the Sunday lunch survived.
 
+### Futures
+
+Once the box is empty, the job won, the cake delivered and the lunch survived, the laptop at home offers "Decide what comes next". The answer is computed (`ending()` in `logic.ts`), never picked from a menu, and you can keep playing and decide again.
+
+| Future | How you get it |
+|---|---|
+| The Lab | commit to the doctorate with the professor (needs three memories), plus Svalbard, Antarctica, Munich, Vienna |
+| The Company | put CHF 2,000 into the pão de queijo business (after delivering the pão de queijo), plus wardrobe, bank, Wiener Neustadt |
+| Two Streets Away (Marseille) | say yes to the flat near your sister (after the birthday), plus ball, ice, pétanque, trips |
+| Home (Brazil) | tell your mother you are coming back (after the pão de queijo), plus lunch, mangoes, sweet, party, trips |
+| The City That Grew On You (Zurich) | a second date, plus climbing, pilot licence, medal, swimming. Also the default if you did nothing. |
+| Secret: The Box | look into the empty box five times |
+| Secret: South | Svalbard and Antarctica done, and 3 km swum |
+| Secret: Never Landed | three paragliding flights |
+| Secret: Up | doctorate commitment, Munich, race medal and pilot licence |
+
+Scoring for the five ordinary futures: a commitment counts 3, each smaller thing 1 (at most 4); ties go to the most recent commitment. Secret futures win outright, in the order listed.
+
+Dating: the laptop's dating app produces a match who waits by the lake; three questions, one good answer each, two good answers for a second date. Climbing: the always-late friend invites you, then the Boulderhalle has a route-reading game.
+
 ### Minigames
 
 User direction 2026-11-10: they are a big part of the fun, so vary them; each kind appears once, twice at most with a different theme.
@@ -97,17 +117,20 @@ User direction 2026-11-10: they are a big part of the fun, so vary them; each ki
 | Sprint | `c.mash(metres)` | river race |
 | Catching | `c.gather(n)` | mango tree |
 | Tag | `c.tag(n, seconds)` | kids at the birthday party |
+| Route reading | `c.climb(n)` | bouldering |
+| Conversation choices | plain `c.choose` | the date |
 | Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
 
 All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Duels are data in `logic.ts`: the ordinary moves can never win, the special move (earned elsewhere) can, and a test proves both. Other building blocks: `c.backdrop()`, map `fog`, `spawn`.
 
-Also: activity tracker (10 tiles = 1 km) in a side column with a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
+Also: touch controls (on-screen pad on phones and tablets), sound effects for dialogue, success and mistakes, a two-frame walk; activity tracker (10 tiles = 1 km) in a side column with a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
 
 Tests cover: map shape, every character reachable from the spawn point, a tune for every place, every line in four languages, duel balance, and a scripted playthrough of the whole game.
 
 Known gaps:
 - Art is drawn in code, not CC0 packs.
-- Keyboard only, no touch controls.
+- Touch controls are checked in an emulated phone only, not on a real device.
+- The date and the Zurich friends are invented composites.
 - Assumed two nieces; family unnamed. From Michel (2026-11-10): parents and grandma are in Brazil; his father works in the Jewish cemeteries; a big group of friends there, with lots of kids, gathers for birthday parties. The aunt, uncle, cousin and every personality are still invented.
 - FR/PT/DE text is AI-translated and not yet proofread by Michel.
 - Memory order follows the years, not the original chapter numbering.
@@ -116,4 +139,4 @@ Known gaps:
 
 ## Open
 
-- Dating, more friends, climbing, São Paulo university years, the UK, all endings.
+- A weekly rhythm (work days, energy), real pixel art, São Paulo university years, the UK, a friends' dinner, a nicer ending screen.

@@ -8,6 +8,7 @@ import * as music from './music';
 const T = 48, W = 720, H = 480, SAVE = 'life-game-save';
 const TILE: Record<string, string> = { '#': 'wall', '~': 'water', ',': 'path', '1': 'stone', '2': 'glass', '3': 'cream', '=': 'track', '^': 'rock' };
 const SOLID = '#T123=^';
+const pad = { x: 0, y: 0, shift: false }; // touch controls: direction held and bike toggle
 
 // Art is authored on a 16x16 grid and drawn at 3x into 48px textures; DETAIL adds fine 48px touches.
 type Rect = [color: string, x: number, y: number, w: number, h: number];
@@ -41,6 +42,7 @@ const ART: Record<string, Rect[]> = {
   rope: [['#c9a66b', 4, 6, 8, 7], ['#8f6a40', 6, 8, 4, 3]],
   case: [['#444', 6, 2, 4, 1], ['#444', 6, 2, 1, 3], ['#444', 9, 2, 1, 3], ['#b0522d', 2, 5, 12, 10], ['#7a3418', 2, 9, 12, 1], ['#f2c94c', 7, 8, 2, 3]],
   me: person(NAVY, '#3a2a1a'),
+  me_walk: [...person(NAVY, '#3a2a1a').slice(0, 7), ['#2b2b3a', 5, 12, 2, 3], ['#2b2b3a', 9, 13, 2, 3]], // mid-stride
   me_swim: [['#3a2a1a', 5, 5, 6, 3], ['#e8b88a', 5, 7, 6, 4], ['#222', 6, 9, 1, 1], ['#222', 9, 9, 1, 1], ['#e8b88a', 1, 10, 3, 1], ['#e8b88a', 12, 10, 3, 1], ['#cfe6ff', 2, 12, 12, 1], ['#cfe6ff', 4, 14, 8, 1]],
   me_bike: [['#3a2a1a', 4, 0, 6, 2], ['#e8b88a', 4, 2, 6, 4], ['#222', 8, 3, 1, 1], [NAVY, 4, 6, 6, 3], ['#e8b88a', 9, 7, 3, 1]],
   sister: person('#c0396b', '#3a2a1a'),
@@ -143,6 +145,8 @@ const DETAIL: Record<string, (x: Ctx2) => void> = {
     x.fillStyle = '#f2b01e'; x.fillRect(15, 20, 8, 5); // the logo, from the side
   },
 };
+
+DETAIL.me_walk = DETAIL.me;
 
 function drawTrain(x: Ctx2) {
   x.fillStyle = '#555'; x.fillRect(0, 6, 240, 5);
@@ -335,18 +339,18 @@ class World extends Phaser.Scene implements Ctx {
 
   update(_: number, dt: number) {
     for (const h of this.hills) { h.x -= dt * 0.12; if (h.x < -220) h.x += 1150; }
-    const k = this.keys, any = k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown;
+    const k = this.keys, h = this.held(), any = !!(h.x || h.y);
     if (this.needRelease) { this.needRelease = any; return; }
     if (this.busy || this.moving || !any) return;
-    const dx = k.left.isDown ? -1 : k.right.isDown ? 1 : 0, dy = dx ? 0 : k.up.isDown ? -1 : 1;
+    const dx = h.x, dy = dx ? 0 : h.y;
     const x = this.s.x + dx, y = this.s.y + dy, m = MAPS[this.s.map], ch = m.rows[y]?.[x];
     if (dx) this.me.setFlipX(dx < 0);
     const water = ch === '~';
     if (!ch || SOLID.includes(ch) || (water && !m.swim)) return;
     const ent = this.ents.get(`${x},${y}`);
     if (ent) { if (ent.act) this.run(ent.act); return; }
-    const bike = !water && !!m.outdoor && k.shift.isDown;
-    this.me.setTexture(water ? 'me_swim' : bike ? 'me_bike' : 'me');
+    const bike = !water && !!m.outdoor && (k.shift.isDown || pad.shift);
+    this.me.setTexture(water ? 'me_swim' : bike ? 'me_bike' : (x + y) % 2 ? 'me_walk' : 'me');
     this.s.x = x; this.s.y = y; this.moving = true;
     this.track(water ? 'swim' : bike ? 'bike' : 'walk', x, y, x - dx, y - dy);
     this.tweens.add({
@@ -366,7 +370,7 @@ class World extends Phaser.Scene implements Ctx {
   }
 
   async say(...lines: Line[]) {
-    for (const l of lines) { this.show(() => this.tr(l) + ' ▼'); await this.key(['Space', 'Enter']); }
+    for (const l of lines) { this.show(() => this.tr(l) + ' ▼'); await this.key(['Space', 'Enter']); music.sfx('tick'); }
   }
 
   async choose(prompt: Line, opts: Line[], start = 0, ...args: (string | number)[]) {
@@ -435,13 +439,15 @@ class World extends Phaser.Scene implements Ctx {
         this.events.off('update', loop);
         this.onKey = null;
         made.forEach(o => o.destroy());
+        if (typeof result === 'boolean') music.sfx(result ? 'ok' : 'bad');
         done(result);
       };
       this.events.on('update', loop);
     });
   }
+  ouch() { this.cameras.main.shake(130, 0.012); music.sfx('bad'); } // every mistake looks and sounds the same
   get lives() { return this.s.flags.munich ? 4 : 3; } // Munich perk: one more mistake allowed
-  held() { const k = this.keys; return { x: +k.right.isDown - +k.left.isDown, y: +k.down.isDown - +k.up.isDown }; }
+  held() { const k = this.keys; return { x: (+k.right.isDown - +k.left.isDown) || pad.x, y: (+k.down.isDown - +k.up.isDown) || pad.y }; }
   left(seconds: number, t: number) { return Math.max(0, Math.ceil(seconds - t / 1000)); }
 
   // Memory puzzle: n arrows flash one by one, then the player repeats them. (Scout knots.)
@@ -483,7 +489,7 @@ class World extends Phaser.Scene implements Ctx {
         }
         for (const th of things) {
           th.o.x -= dt * speed;
-          if (!th.hit && th.lane === lane && Math.abs(th.o.x - p.x) < 44) { th.hit = true; hits++; this.cameras.main.shake(140, 0.012); }
+          if (!th.hit && th.lane === lane && Math.abs(th.o.x - p.x) < 44) { th.hit = true; hits++; this.ouch(); }
         }
         label.setText(this.tr(TXT.dodgeHud, this.left(seconds, t), Math.min(hits, 3)));
         return t >= seconds * 1000 ? hits : undefined;
@@ -538,7 +544,7 @@ class World extends Phaser.Scene implements Ctx {
       this.onKey = c => {
         if (c !== 'Space') return;
         if (pos >= zx && pos <= zx + zw) { hits++; if (hits < rounds) place(); }
-        else { misses++; this.cameras.main.shake(120, 0.01); }
+        else { misses++; this.ouch(); }
       };
       return (_, t) => {
         const cycle = 1800 - hits * 200, ph = (t % cycle) / cycle; // faster each round
@@ -582,7 +588,7 @@ class World extends Phaser.Scene implements Ctx {
       });
       const thing = add(this.add.image(0, 0, tex).setScale(1.7), 62).setVisible(false);
       let hits = 0, misses = 0, spot = -1, due = 700, born = 0, now = 0;
-      const miss = () => { misses++; spot = -1; thing.setVisible(false); due = now + 400; this.cameras.main.shake(120, 0.01); };
+      const miss = () => { misses++; spot = -1; thing.setVisible(false); due = now + 400; this.ouch(); };
       this.onKey = c => {
         const i = KEYS.indexOf(c);
         if (i < 0 || spot < 0) return;
@@ -619,7 +625,7 @@ class World extends Phaser.Scene implements Ctx {
         rov.setAlpha(stun > 0 ? 0.4 : 1);
         jellies.forEach((j, i) => {
           j.y = 250 + 150 * Math.sin(t / (700 + i * 160) + i * 2);
-          if (stun <= 0 && Phaser.Math.Distance.Between(j.x, j.y, rov.x, rov.y) < 40) { stun = 900; this.cameras.main.shake(140, 0.012); }
+          if (stun <= 0 && Phaser.Math.Distance.Between(j.x, j.y, rov.x, rov.y) < 40) { stun = 900; this.ouch(); }
         });
         if (Phaser.Math.Distance.Between(sample.x, sample.y, rov.x, rov.y) < 42) { got++; drop(); }
         label.setText(this.tr(TXT.collectHud, got, n, this.left(seconds, t)));
@@ -684,7 +690,7 @@ class World extends Phaser.Scene implements Ctx {
       add(this.add.rectangle(W / 2, 240, 580, 120, 0xf4efe6).setStrokeStyle(3, 0x1c1e21));
       const slip = add(this.add.text(W / 2, 240, '', { ...FONT, fontSize: '19px', color: '#1c1e21', align: 'center', wordWrap: { width: 540 } }).setOrigin(0.5), 62);
       let i = 0, misses = 0, born = 0, now = 0;
-      const next = (wrong: boolean) => { if (wrong) { misses++; this.cameras.main.shake(120, 0.01); } i++; born = now; };
+      const next = (wrong: boolean) => { if (wrong) { misses++; this.ouch(); } i++; born = now; };
       this.onKey = c => { if (i < count && (c === 'ArrowLeft' || c === 'ArrowRight')) next((c === 'ArrowRight') !== deck[i].bad); };
       return (_, t) => {
         now = t;
@@ -704,7 +710,7 @@ class World extends Phaser.Scene implements Ctx {
       const blocks: { o: Phaser.GameObjects.Rectangle; hit: boolean }[] = [];
       let vy = 0, hits = 0, next = 800;
       return (dt, t) => {
-        vy = Phaser.Math.Clamp(vy + (this.keys.up.isDown ? -620 : 420) * dt / 1000, -260, 260);
+        vy = Phaser.Math.Clamp(vy + (this.held().y < 0 ? -620 : 420) * dt / 1000, -260, 260);
         wing.y = Phaser.Math.Clamp(wing.y + vy * dt / 1000, 90, H - 30);
         if (t > next && t < seconds * 1000 - 2500) { // one obstacle at a time, so there is always a way past
           next = t + 950 + Math.random() * 500;
@@ -713,7 +719,7 @@ class World extends Phaser.Scene implements Ctx {
         }
         for (const b of blocks) {
           b.o.x -= dt * 0.25;
-          if (!b.hit && Math.abs(b.o.x - wing.x) < 55 && Math.abs(b.o.y - wing.y) < b.o.height / 2 + 16) { b.hit = true; hits++; this.cameras.main.shake(140, 0.012); }
+          if (!b.hit && Math.abs(b.o.x - wing.x) < 55 && Math.abs(b.o.y - wing.y) < b.o.height / 2 + 16) { b.hit = true; hits++; this.ouch(); }
         }
         label.setText(this.tr(TXT.glideHud, this.left(seconds, t), Math.min(hits, 3)));
         return hits >= 3 ? false : t >= seconds * 1000 ? true : undefined;
@@ -763,7 +769,7 @@ class World extends Phaser.Scene implements Ctx {
           const caught = f.o.y > 365 && f.o.y < 425 && Math.abs(f.o.x - me.x) < 42;
           if (!caught && f.o.y < 470) continue;
           f.done = true; f.o.setVisible(false);
-          if (caught && f.bad) { misses++; this.cameras.main.shake(140, 0.012); } else if (caught) got++;
+          if (caught && f.bad) { misses++; this.ouch(); } else if (caught) got++;
         }
         label.setText(this.tr(TXT.catchHud, got, n, misses, this.lives));
         return got >= n ? true : misses >= this.lives ? false : undefined;
@@ -821,7 +827,7 @@ class World extends Phaser.Scene implements Ctx {
       this.onKey = c => {
         const k = KEYS.indexOf(c);
         if (k < 0 || at >= n) return;
-        if (k !== route[at]) { slips++; this.cameras.main.shake(120, 0.01); return; }
+        if (k !== route[at]) { slips++; this.ouch(); return; }
         me.setPosition(X[route[at]] + 26, y(at));
         at++;
       };
@@ -854,4 +860,21 @@ const game = new Phaser.Game({
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   scene: World,
 });
-(window as any).game = game; // handle for poking at state from the browser console
+(window as any).game = game;
+
+// Touch controls: the buttons feed the same paths as the keyboard.
+const DIR: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+for (const b of document.querySelectorAll<HTMLElement>('#pad [data-key]')) {
+  const code = b.dataset.key!;
+  const release = () => { if (DIR[code]) pad.x = pad.y = 0; };
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    music.unlock();
+    const world = game.scene.scenes[0] as World;
+    if (code === 'Shift') { pad.shift = !pad.shift; b.classList.toggle('on', pad.shift); }
+    else if (code === 'KeyL') world.setLang((world.s.lang + 1) % LANGS.length);
+    else if (code === 'KeyM') music.toggleMute();
+    else { if (DIR[code]) [pad.x, pad.y] = DIR[code]; world.onKey?.(code); }
+  });
+  for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(ev, release);
+} // handle for poking at state from the browser console

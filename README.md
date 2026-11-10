@@ -14,6 +14,8 @@ A top-down adventure about one real life: Zurich rent, trains to family in Marse
 | L | Switch language |
 | M | Mute music |
 
+On a phone or tablet, on-screen buttons appear: a direction pad, A to confirm, a bike toggle, L and mute.
+
 ## Run locally
 
 Needs [Bun](https://bun.sh).

@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Life Game</title>
 <style>
-  body { margin: 0; background: #000; height: 100vh; overflow: hidden; display: flex; font-family: Arial, Helvetica, sans-serif; }
+  body { margin: 0; background: #000; height: 100vh; height: 100dvh; overflow: hidden; display: flex; font-family: Arial, Helvetica, sans-serif; }
   #game { flex: 1; min-width: 0; height: 100%; }
 
   /* Activity tracker: a side column next to the game, not on top of it. */
@@ -33,6 +33,23 @@
     #tracker { width: auto; padding: 0 10px 10px; display: flex; gap: 8px; align-items: flex-start; }
     #totals, #card { flex: 1; margin-top: 0; }
   }
+
+  /* Touch controls: only on devices whose main pointer is a finger. */
+  #pad { display: none; }
+  @media (pointer: coarse) { #pad { display: block; } }
+  #pad button {
+    width: 56px; height: 56px; border: 0; border-radius: 50%; font-size: 20px; color: #fff;
+    background: rgba(255, 255, 255, 0.2); touch-action: none; user-select: none; -webkit-user-select: none;
+  }
+  #pad button:active, #pad button.on { background: rgba(242, 107, 29, 0.75); }
+  #pad .dirs, #pad .acts { position: fixed; bottom: max(14px, env(safe-area-inset-bottom)); z-index: 5; }
+  #pad .dirs { left: 14px; display: grid; grid-template: repeat(3, 56px) / repeat(3, 56px); }
+  #pad [data-key="ArrowUp"] { grid-area: 1 / 2; }
+  #pad [data-key="ArrowLeft"] { grid-area: 2 / 1; }
+  #pad [data-key="ArrowRight"] { grid-area: 2 / 3; }
+  #pad [data-key="ArrowDown"] { grid-area: 3 / 2; }
+  #pad .acts { right: 14px; display: grid; grid-template-columns: repeat(2, 56px); gap: 8px; }
+  #pad [data-key="Space"] { background: rgba(242, 107, 29, 0.55); font-weight: bold; }
 </style>
 </head>
 <body>
@@ -41,6 +58,20 @@
   <div id="totals"></div>
   <div id="card" hidden></div>
 </aside>
+<div id="pad">
+  <div class="dirs">
+    <button data-key="ArrowUp" aria-label="Up">▲</button>
+    <button data-key="ArrowLeft" aria-label="Left">◀</button>
+    <button data-key="ArrowRight" aria-label="Right">▶</button>
+    <button data-key="ArrowDown" aria-label="Down">▼</button>
+  </div>
+  <div class="acts">
+    <button data-key="KeyL" aria-label="Change language">L</button>
+    <button data-key="KeyM" aria-label="Mute music">♪</button>
+    <button data-key="Shift" aria-label="Ride the bike (toggle)">🚲</button>
+    <button data-key="Space" aria-label="Continue or confirm">A</button>
+  </div>
+</div>
 <script type="module" src="./src/main.ts"></script>
 </body>
 </html>

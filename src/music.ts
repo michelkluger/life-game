@@ -91,3 +91,11 @@ export function unlock() {
   start();
 }
 export function toggleMute() { muted = !muted; start(); }
+
+// Sound effects: a soft tick for dialogue, two rising notes for success, a low thud for a mistake.
+export function sfx(kind: 'tick' | 'ok' | 'bad') {
+  if (!ac || muted) return;
+  if (kind === 'tick') note(880, 0.06, 'sine', 0.03);
+  if (kind === 'bad') note(110, 0.25, 'triangle', 0.12);
+  if (kind === 'ok') { note(660, 0.18, 'triangle', 0.07); setTimeout(() => ac && !muted && note(990, 0.3, 'triangle', 0.07), 110); }
+}
