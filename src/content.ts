@@ -1,6 +1,6 @@
 // Story content: maps, characters, what happens when you bump into them. Text lives in strings.ts.
 // No engine imports, so a test can play the whole thing through.
-import { type State, pay } from './logic';
+import { type State, type DuelId, pay } from './logic';
 import { TXT as t, type Line, same } from './strings';
 
 export type Ctx = {
@@ -9,28 +9,40 @@ export type Ctx = {
   choose(prompt: Line, opts: Line[]): Promise<number>;
   go(map: string, x: number, y: number): void;
   days(n?: number): Promise<void>;
-  interview(): Promise<boolean>;
-  // Minigames: each returns whether you made it (dodge returns the number of collisions).
+  duel(kind: DuelId): Promise<boolean>;    // turn-based conversation (interview, family lunch)
+  backdrop(on: boolean): void;             // train-ride scene behind the dialogue
+  refresh(): void;
+  // Minigames: each returns whether you made it, unless noted.
   simon(n: number): Promise<boolean>;                 // memorise and repeat n arrows
-  dodge(seconds: number): Promise<number>;            // three-lane dodger
+  dodge(seconds: number): Promise<number>;            // three-lane dodger; returns collisions
   pairs(seconds: number): Promise<boolean>;           // match six pairs of cards
   timing(rounds: number): Promise<boolean>;           // Space while the marker is in the green
   aim(seconds: number): Promise<boolean>;             // keep the crosshair on a moving target
   whack(count: number, tex: 'flame' | 'board'): Promise<boolean>; // press the arrow where something pops up
   collect(n: number, seconds: number): Promise<boolean>; // free movement, gather n things
   balance(seconds: number): Promise<boolean>;         // keep something upright against gusts
-  backdrop(on: boolean): void;             // train-ride scene behind the dialogue
-  refresh(): void;
+  leds(seconds: number): Promise<boolean>;            // lights-out grid
+  sort(count: number): Promise<boolean>;              // left = fine, right = suspicious
+  glide(seconds: number): Promise<boolean>;           // hold Up to climb, avoid peaks and clouds
+  mash(metres: number): Promise<number>;              // alternate Left/Right to run; returns your place (1-4)
+  gather(n: number): Promise<boolean>;                // catch the ripe ones falling, avoid the green ones
 };
 export type Script = (c: Ctx) => Promise<void>;
-// `on` is the wall tile drawn under the entity (doors); `label` is a sign above it.
+// `on` is the tile drawn under the entity (doors in walls, things in water); `label` is a sign above it.
 export type Ent = { tex: string; act?: Script; hide?: (s: State) => boolean; small?: boolean; on?: string; label?: Line };
-// Map chars: '#' brick, '1' stone, '2' glass, '3' cream wall, '=' rails, 'T' tree, '~' water, ',' path, '.' floor.
-// '^' is ice rock. Any other char is a key in `ents`. `fog` limits how far you can see (polar night, whiteout).
-export type MapDef = { name: Line; floor: string; outdoor?: boolean; swim?: boolean; fog?: 'dark' | 'white'; rows: string[]; ents: Record<string, Ent> };
+// Map chars: '#' brick, '1' stone, '2' glass, '3' cream wall, '=' rails, 'T' tree, '^' rock, '~' water, ',' path, '.' floor.
+// Any other char is a key in `ents`. `fog` limits how far you can see. `spawn` is where you arrive.
+export type MapDef = {
+  name: Line; floor: string; spawn: [number, number]; outdoor?: boolean; swim?: boolean; fog?: 'dark' | 'white';
+  rows: string[]; ents: Record<string, Ent>;
+};
 
 const yes = async (c: Ctx, q: Line) => (await c.choose(q, [t.yes, t.no])) === 0;
-const TICKET = 89, CAKE = 28; // also written into the text in strings.ts
+const fill = (l: Line, ...a: (string | number)[]): Line => l.map(s => s.replace(/\{(\d)\}/g, (_, i) => String(a[+i])));
+const CAKE = 28, FLIGHT = 1200, CHOCOLATE = 35, COURSE = 300, RACE = 40; // also written into the text in strings.ts
+const ticket = (s: State) => (s.flags.halbtax ? 45 : 89);                 // the bank memory earns you the half-fare card
+const arrive = (c: Ctx, map: string) => c.go(map, ...MAPS[map].spawn);
+const wakeUp = (c: Ctx) => c.go('flat', 8, 2);
 
 export const intro: Script = c => c.say(t.intro1, t.intro2, t.intro3);
 
@@ -39,14 +51,26 @@ export const onSwim: Script = async c => {
   await c.say(t.swim1, t.swim2);
 };
 
+// The box in the flat: memories open in chronological order, each once something in the present calls it up.
+// `done` is the flag the memory sets when finished; until `ready`, the box only gives the hint.
+const MEMORIES: { map: string; done: string; ready: (s: State) => boolean; hint: Line; open: Line[] }[] = [
+  { map: 'camp', done: 'prepared', ready: s => !!s.flags.failedInterview, hint: t.boxClosed, open: [t.boxOpen1, t.boxOpen2] },
+  { map: 'svalbard', done: 'svalbard', ready: s => !!s.flags.swam, hint: t.boxSvalHint, open: [t.boxSvalOpen] },
+  { map: 'vienna', done: 'vienna', ready: s => !!s.flags.employed, hint: t.boxVieHint, open: [t.boxVieOpen] },
+  { map: 'wiener', done: 'wiener', ready: s => s.dist.bike >= 30, hint: t.boxWnHint, open: [t.boxWnOpen] },
+  { map: 'munich', done: 'munich', ready: s => !!s.flags.birthday, hint: t.boxMunHint, open: [t.boxMunOpen] },
+  { map: 'antarctica', done: 'antarctica', ready: s => s.rentDue > 10, hint: t.boxAntHint, open: [t.boxAntOpen] },
+  { map: 'bank', done: 'bank', ready: s => s.money >= 5000, hint: t.boxBkHint, open: [t.boxBkOpen] },
+];
+
 export const afterScript: Script = async c => {
   const f = c.s.flags;
-  if (!f.employed || !f.birthday || !f.antarctica || f.end) return;
+  if (f.end || !f.employed || !f.birthday || !f.lunch || MEMORIES.some(m => !f[m.done])) return;
   f.end = true;
   await c.say(t.end1, t.end2);
 };
 
-// Animated ride, then a sprint for the connection. Missing it costs an extra day.
+// Animated ride, then a game to make the connection. Missing it costs an extra day.
 async function trainRide(c: Ctx, lines: Line[], how: Line, game: () => Promise<boolean>) {
   c.backdrop(true);
   await c.say(...lines, how);
@@ -56,20 +80,9 @@ async function trainRide(c: Ctx, lines: Line[], how: Line, game: () => Promise<b
   await c.days(missed ? 2 : 1);
 }
 
-// The box in the flat: memories open in chronological order, each once something in the present calls it up.
-// `done` is the flag the memory sets when finished; until `ready`, the box only gives the hint.
-const MEMORIES: { done: string; ready: (s: State) => boolean; hint: Line; open: Line[]; at: [string, number, number] }[] = [
-  { done: 'prepared', ready: s => !!s.flags.failedInterview, hint: t.boxClosed, open: [t.boxOpen1, t.boxOpen2], at: ['camp', 2, 4] },
-  { done: 'svalbard', ready: s => !!s.flags.swam, hint: t.boxSvalHint, open: [t.boxSvalOpen], at: ['svalbard', 2, 4] },
-  { done: 'vienna', ready: s => !!s.flags.employed, hint: t.boxVieHint, open: [t.boxVieOpen], at: ['vienna', 2, 4] },
-  { done: 'munich', ready: s => !!s.flags.birthday, hint: t.boxMunHint, open: [t.boxMunOpen], at: ['munich', 2, 3] },
-  { done: 'antarctica', ready: s => s.rentDue > 10, hint: t.boxAntHint, open: [t.boxAntOpen], at: ['antarctica', 2, 3] },
-];
-const wakeUp = (c: Ctx) => c.go('flat', 8, 2);
-
 export const MAPS: Record<string, MapDef> = {
   flat: {
-    name: t.mFlat, floor: 'wood',
+    name: t.mFlat, floor: 'wood', spawn: [5, 2],
     rows: [
       '##########',
       '#B......X#',
@@ -93,29 +106,52 @@ export const MAPS: Record<string, MapDef> = {
         if (!m) return c.say(t.boxEmpty);
         if (!m.ready(c.s)) return c.say(m.hint);
         await c.say(...m.open);
-        c.go(...m.at);
+        arrive(c, m.map);
       } },
-      D: { tex: 'door', on: 'wall', act: async c => c.go('zurich', 3, 7) },
+      D: { tex: 'door', on: 'wall', act: async c => arrive(c, 'zurich') },
     },
   },
 
+  // The present. West: the lake. South-west: the mountain. North-east: the job, the station, the airport.
   zurich: {
-    name: t.mZurich, floor: 'grass', outdoor: true, swim: true,
+    name: t.mZurich, floor: 'grass', spawn: [3, 9], outdoor: true, swim: true,
     rows: [
-      'TTTTTTTTTTTTTTTTTTTTTTTT',
-      'T~~~~~~.........2222222T',
-      'T~~~~~~.,,,,,,,.222O222T',
-      'T~~~~~~.,.....,,,,,,,,.T',
-      'T......K,.....,........T',
-      'T.####..,..N..,..11111.T',
-      'T.#F##..,.....,..11H11.T',
-      'T..,,,,,,,,,,,,,,,,,...T',
-      'T...............=======T',
-      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'T~~~~~~~~..........2222222.........T',
+      'T~~~~~~~~.,,,,,,,,.222O222..1111111T',
+      'T~~~~~~~~.,......,,,,,,,,,..111A111T',
+      'T~~~~~~~~.,..m...,.......,,,,,,,,,.T',
+      'T~~~~~~~~R,......,..t..............T',
+      'T........K,......,........11111....T',
+      'T.####....,..N...,..b.....11H11....T',
+      'T.#F##.r..,......,,,,,,,,,,,,,,....T',
+      'T..,,,,,,,,,,,,,,,.........========T',
+      'T..,........d....,.................T',
+      'T..,..l..........,......e..........T',
+      'T^^,^^^^^........,.................T',
+      'T^.,.....^.......,,,,,,,,,,,,,,,,,.T',
+      'T^.P.....^.........................T',
+      'T^.......^.........................T',
+      'T^^^^^^^^^.........................T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
     ents: {
       F: { tex: 'door', on: 'wall', label: t.lblHome, act: async c => c.go('flat', 4, 4) },
       K: { tex: 'swimmer', act: c => c.say(t.swimmer1, t.swimmer2) },
+      t: { tex: 'tourist', act: c => c.say(t.zTourist1, t.zTourist2) },
+      b: { tex: 'banker', act: c => c.say(t.zBanker) },
+      d: { tex: 'dog', act: c => c.say(t.zDog) },
+      l: { tex: 'friend', act: c => c.say(t.zLate) },
+      m: { tex: 'musician', act: c => c.say(t.zMusician) },
+      r: { tex: 'recycler', act: c => c.say(t.zRecycle) },
+      // Side quest across two countries: he wants pão de queijo, your mother supplies it.
+      e: { tex: 'expat', act: async c => {
+        const f = c.s.flags;
+        if (f.paoqGiven) return c.say(t.zExpatDone);
+        if (!f.paoq) return c.say(t.zExpat1);
+        f.paoqGiven = true;
+        await c.say(t.zExpat2);
+      } },
       N: { tex: 'neighbour', act: async c => {
         const f = c.s.flags;
         if (f.wardrobe) return c.say(t.nbDone);
@@ -132,7 +168,7 @@ export const MAPS: Record<string, MapDef> = {
         const f = c.s.flags;
         if (f.employed) return c.say(t.offEmployed);
         if (!await yes(c, t.offQ)) return;
-        if (await c.interview()) {
+        if (await c.duel('interview')) {
           f.employed = true; c.s.money += 3000;
           await c.say(t.offWin1, t.offWin2);
         } else {
@@ -142,35 +178,78 @@ export const MAPS: Record<string, MapDef> = {
         await c.days(1);
       } },
       H: { tex: 'door', on: 'stone', label: same('Zürich HB'), act: async c => {
-        if (c.s.money < TICKET) return c.say(t.hbBroke);
-        if (!await yes(c, t.hbQ)) return;
-        pay(c.s, TICKET);
+        const price = ticket(c.s);
+        if (c.s.money < price) return c.say(fill(t.hbBroke, price));
+        if (!await yes(c, fill(t.hbQ, price))) return;
+        pay(c.s, price);
         await trainRide(c, [t.hb1, t.hb2], t.dodgeIntro, async () => await c.dodge(12) < 3);
-        c.go('marseille', 4, 3);
+        arrive(c, 'marseille');
+      } },
+      A: { tex: 'door', on: 'stone', label: same('Flughafen'), act: async c => {
+        const f = c.s.flags;
+        if (c.s.money < FLIGHT) return c.say(t.apBroke);
+        if (!await yes(c, t.apQ)) return;
+        pay(c.s, FLIGHT);
+        if (!f.chocolate && await yes(c, t.apChocQ) && pay(c.s, CHOCOLATE)) f.chocolate = true;
+        await c.say(t.apFly1, t.apFly2);
+        await c.days(2);
+        arrive(c, 'brazil');
+      } },
+      // Paragliding school on the mountain: the course is paid once, retries are free.
+      P: { tex: 'instructor', act: async c => {
+        const f = c.s.flags;
+        if (f.pilot) {
+          await c.say(t.pgAgain);
+          return c.say(await c.glide(20) ? t.pgAgainWin : t.pgFail);
+        }
+        await c.say(t.pgInstr);
+        if (!f.coursePaid) {
+          if (!await yes(c, t.pgQ)) return;
+          if (!pay(c.s, COURSE)) return c.say(t.pgBroke);
+          f.coursePaid = true;
+        }
+        await c.say(t.pgHow);
+        if (!await c.glide(20)) return c.say(t.pgFail);
+        f.pilot = true;
+        await c.say(t.pgWin1, t.pgWin2);
+      } },
+      R: { tex: 'organiser', act: async c => {
+        await c.say(t.runOrg);
+        if (!await yes(c, t.runQ)) return;
+        if (!pay(c.s, RACE)) return c.say(t.runBroke);
+        await c.say(t.runHow);
+        const place = await c.mash(100);
+        if (place === 1) c.s.flags.medal = true;
+        await c.say(place === 1 ? t.runWin : fill(t.runLose, place));
       } },
     },
   },
 
+  // Family. North: station and pâtisserie. Middle: the terrace. South: the old port, and the sea you can swim in.
   marseille: {
-    name: t.mMarseille, floor: 'sand', outdoor: true, swim: true,
+    name: t.mMarseille, floor: 'sand', spawn: [4, 3], outdoor: true, swim: true,
     rows: [
-      'TTTTTTTTTTTTTTTTTTTT',
-      'T.1111......3333...T',
-      'T.11G1......3P33...T',
-      'T..,,,,,,,,,,,.....T',
-      'T...,..............T',
-      'T...,.....S.J......T',
-      'T...,,,,,..a.b.....T',
-      'T..................T',
-      'T~~~~~~~~~~~~~~~~~~T',
-      'TTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'T.1111......3333.............T',
+      'T.11G1......3P33.....p.q.....T',
+      'T..,,,,,,,,,,,,,,,,,,,,,.....T',
+      'T...,..................,.....T',
+      'T...,.....S.J..........,.....T',
+      'T...,,,,,..a.b.........,.....T',
+      'T......................,..f..T',
+      'T.....,,,,,,,,,,,,,,,,,,.....T',
+      'T~~~~~~~~~~~~~~~~~~~~~~~~~~~~T',
+      'T~~~~~~B~~~~~~~~v~~~~~~v~~~~~T',
+      'T~~~~~~~~~~~~~~~~~~~~~~~~~~~~T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
     ents: {
       G: { tex: 'door', on: 'stone', label: same('Gare St-Charles'), act: async c => {
-        if (!await yes(c, t.gareQ)) return;
-        if (!pay(c.s, TICKET)) await c.say(t.gareBroke);
+        const price = ticket(c.s);
+        if (!await yes(c, fill(t.gareQ, price))) return;
+        if (!pay(c.s, price)) await c.say(t.gareBroke);
         await trainRide(c, [t.gare1], t.dodgeBack, () => c.whack(8, 'board'));
-        c.go('zurich', 19, 7);
+        c.go('zurich', 28, 8);
       } },
       P: { tex: 'door', on: 'cream', label: same('Pâtisserie'), act: async c => {
         const f = c.s.flags;
@@ -187,14 +266,104 @@ export const MAPS: Record<string, MapDef> = {
         f.birthday = true;
         await c.say(t.sisWin1, t.sisWin2, t.sisWin3);
       } },
-      J: { tex: 'partner', act: c => c.say(t.partner) },
-      a: { tex: 'niece1', small: true, act: c => c.say(c.s.flags.birthday ? t.n1b : t.n1a) },
+      // Fetch quest: ice for the pastis, from the fishmonger at the port.
+      J: { tex: 'partner', act: async c => {
+        const f = c.s.flags;
+        if (f.iceDone) return c.say(t.partner);
+        if (!f.ice) { f.iceAsked = true; return c.say(t.maIce1); }
+        f.iceDone = true;
+        await c.say(t.maIce2);
+      } },
+      f: { tex: 'fishmonger', act: async c => {
+        const f = c.s.flags;
+        if (!f.iceAsked || f.ice) return c.say(t.maFish);
+        f.ice = true;
+        await c.say(t.maFishIce);
+      } },
+      p: { tex: 'oldman', act: async c => {
+        const f = c.s.flags;
+        if (f.petanque) return c.say(t.peDone);
+        await c.say(t.pe1, t.peHow);
+        if (!await c.timing(3)) return c.say(t.peFail);
+        f.petanque = true;
+        await c.say(t.peWin);
+      } },
+      q: { tex: 'oldman2', act: c => c.say(t.peOther) },
+      // The nieces' ball is in the harbour: swim out for it.
+      a: { tex: 'niece1', small: true, act: async c => {
+        const f = c.s.flags;
+        if (!f.ballAsked) { f.ballAsked = true; return c.say(t.maBall1); }
+        if (f.ball && !f.ballDone) { f.ballDone = true; return c.say(t.maBall2); }
+        await c.say(f.birthday ? t.n1b : t.n1a);
+      } },
       b: { tex: 'niece2', small: true, act: c => c.say(c.s.flags.birthday ? t.n2b : t.n2a) },
+      B: { tex: 'ball', on: 'water', hide: s => !!s.flags.ball, act: async c => {
+        if (!c.s.flags.ballAsked) return c.say(t.maBallSee);
+        c.s.flags.ball = true; c.refresh();
+        await c.say(t.maBallGet);
+      } },
+      v: { tex: 'boat', on: 'water', act: c => c.say(t.maBoat) },
     },
   },
 
+  // Home. Parents, the Sunday lunch, the mango tree. Reached only by an expensive flight.
+  brazil: {
+    name: t.mBrazil, floor: 'grass', spawn: [3, 3], outdoor: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'T.111.........######.....T',
+      'T.1X1.........######..Y..T',
+      'T..,..........##..##.D...T',
+      'T..,,,,,,,,,,,,,,........T',
+      'T.........M...,..........T',
+      'T.....g.......,...U......T',
+      'T..........A..,..........T',
+      'T.....C.......,..........T',
+      'T........................T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    ents: {
+      X: { tex: 'door', on: 'stone', label: t.lblAirport, act: async c => {
+        if (!await yes(c, t.brAirQ)) return;
+        await c.say(t.brAir1);
+        await c.days(2);
+        c.go('zurich', 31, 4);
+      } },
+      M: { tex: 'mom', act: async c => {
+        const f = c.s.flags;
+        if (!f.lunch) return c.say(t.brMom1);
+        if (f.paoq) return c.say(t.brMomDone);
+        f.paoq = true;
+        await c.say(t.brMom2);
+      } },
+      D: { tex: 'dad', act: async c => {
+        const f = c.s.flags;
+        if (f.mangoes) return c.say(t.brDadDone);
+        await c.say(t.brDad1);
+        if (!await c.gather(8)) return c.say(t.brDadFail);
+        f.mangoes = true;
+        await c.say(t.brDadWin);
+      } },
+      // The Sunday lunch interrogation: you get through it either way, but Swiss chocolate wins it.
+      A: { tex: 'aunt', act: async c => {
+        const f = c.s.flags;
+        if (f.lunch) return c.say(t.brAuntDone);
+        await c.say(t.brAunt1);
+        const won = await c.duel('lunch');
+        f.lunch = true;
+        await c.say(...(won ? [t.brAuntWin1, t.brAuntWin2] : [t.brAuntLose]));
+      } },
+      U: { tex: 'uncle', act: c => c.say(t.brUncle) },
+      C: { tex: 'cousin', act: c => c.say(t.brCousin) },
+      g: { tex: 'caramelo', act: c => c.say(t.brDog) },
+      Y: { tex: 'mangotree' },
+    },
+  },
+
+  // ---- Memories ----
+
   camp: {
-    name: t.mCamp, floor: 'grass', outdoor: true,
+    name: t.mCamp, floor: 'grass', spawn: [2, 4], outdoor: true,
     rows: [
       'TTTTTTTTTTTTTTTT',
       'T......T.......T',
@@ -225,7 +394,7 @@ export const MAPS: Record<string, MapDef> = {
 
   // Polar night: find the bear guard, then fly the robot around collecting samples. Reward: swim at full speed.
   svalbard: {
-    name: t.mSvalbard, floor: 'snow', outdoor: true, fog: 'dark',
+    name: t.mSvalbard, floor: 'snow', spawn: [2, 4], outdoor: true, fog: 'dark',
     rows: [
       '^^^^^^^^^^^^^^^^^^',
       '^.111.........^..^',
@@ -253,7 +422,7 @@ export const MAPS: Record<string, MapDef> = {
 
   // First job: get a coffee out of a Viennese waiter, then hit the timing window three times. Reward: slower crowds.
   vienna: {
-    name: t.mVienna, floor: 'path', outdoor: true,
+    name: t.mVienna, floor: 'path', spawn: [2, 4], outdoor: true,
     rows: [
       'TTTTTTTTTTTTTTTTTT',
       'T.2222......3333.T',
@@ -285,9 +454,50 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
+  // Headlight factory: a bureaucratic loop for the key, then a lights-out puzzle. Reward: a faster bike.
+  wiener: {
+    name: t.mWiener, floor: 'path', spawn: [2, 4], outdoor: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTT',
+      'T.222222......1111...T',
+      'T.22K222......11h1...T',
+      'T....B...............T',
+      'T..,,,,,,,,,,,,,,,,..T',
+      'T........c.....p.....T',
+      'T====================T',
+      'TTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    ents: {
+      B: { tex: 'boss', act: c => c.say(t.wnBoss) },
+      c: { tex: 'colleague', act: c => c.say(t.wnCol) },
+      p: { tex: 'porter', act: async c => {
+        const f = c.s.flags;
+        if (f.wnKey) return c.say(t.wnPorterDone);
+        if (!f.wnHr1) { f.wnA38 = true; return c.say(t.wnPorter1); }
+        f.wnA39 = true;
+        await c.say(t.wnPorter2);
+      } },
+      h: { tex: 'door', on: 'stone', label: same('HR'), act: async c => {
+        const f = c.s.flags;
+        if (f.wnKey || !f.wnA38) return c.say(t.wnHrDone);
+        if (!f.wnA39) { f.wnHr1 = true; return c.say(t.wnHr1); }
+        f.wnKey = true;
+        await c.say(t.wnHr2);
+      } },
+      K: { tex: 'door', on: 'glass', label: same('Lumen Werke'), act: async c => {
+        if (!c.s.flags.wnKey) return c.say(t.wnNoKey);
+        await c.say(t.wnHow);
+        if (!await c.leds(60)) return c.say(t.wnFail);
+        c.s.flags.wiener = true;
+        await c.say(t.wn1, t.wn2, t.wn3);
+        wakeUp(c);
+      } },
+    },
+  },
+
   // Night shift: point the dish at the satellite, then the pager goes off and you put out a fire. Reward: one extra mistake.
   munich: {
-    name: t.mMunich, floor: 'grass', outdoor: true,
+    name: t.mMunich, floor: 'grass', spawn: [2, 3], outdoor: true,
     rows: [
       'TTTTTTTTTTTTTTTTTT',
       'T.1111...........T',
@@ -311,9 +521,9 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // Whiteout: follow the flags to the mast, hold it in the wind, then know what cold does to batteries. Reward: the end of the box.
+  // Whiteout: follow the flags to the mast, hold it in the wind, then know what cold does to batteries.
   antarctica: {
-    name: t.mAntarctica, floor: 'snow', outdoor: true, fog: 'white',
+    name: t.mAntarctica, floor: 'snow', spawn: [2, 3], outdoor: true, fog: 'white',
     rows: [
       '^^^^^^^^^^^^^^^^^^^^',
       '^.##...............^',
@@ -337,6 +547,57 @@ export const MAPS: Record<string, MapDef> = {
         if (pick !== 1) return c.say(pick === 0 ? t.anWrongA : t.anWrongC);
         c.s.flags.antarctica = true;
         await c.say(t.an1, t.an2, t.an3);
+        wakeUp(c);
+      } },
+    },
+  },
+
+  // Arriving in Zurich in 2020: laptop from IT, a flat (via the district office), then compliance screening.
+  // Reward: the half-fare card.
+  bank: {
+    name: t.mBank, floor: 'path', spawn: [2, 4], outdoor: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'T.2222222.....1111.....T',
+      'T.222C222.....1W11.....T',
+      'T.I....................T',
+      'T..,,,,,,,,,,,,,,,,,,..T',
+      'T..................###.T',
+      'T.............qqqqG###.T',
+      'T......................T',
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    ents: {
+      I: { tex: 'itguy', act: async c => {
+        if (c.s.flags.laptop) return c.say(t.bkItDone);
+        c.s.flags.laptop = true;
+        await c.say(t.bkIt1);
+      } },
+      q: { tex: 'tourist', act: c => c.say(t.bkQueue) },
+      G: { tex: 'agent', act: async c => {
+        const f = c.s.flags;
+        if (f.flat) return c.say(t.bkAgentDone);
+        if (!f.extract) { f.bkAsked = true; return c.say(t.bkAgent1); }
+        f.flat = true;
+        await c.say(t.bkAgent2);
+      } },
+      W: { tex: 'door', on: 'stone', label: same('Kreisbüro'), act: async c => {
+        const f = c.s.flags;
+        if (f.extract) return c.say(t.bkOfficeDone);
+        if (!f.bkAsked) return c.say(t.bkOfficeIdle);
+        if (!f.queue1) { f.queue1 = true; return c.say(t.bkOffice1); }
+        if (!f.queue2) { f.queue2 = true; return c.say(t.bkOffice2); }
+        f.extract = true;
+        await c.say(t.bkOffice3);
+      } },
+      C: { tex: 'door', on: 'glass', label: same('Three Keys Bank'), act: async c => {
+        const f = c.s.flags;
+        if (!f.laptop) return c.say(t.bkNoLaptop);
+        if (!f.flat) return c.say(t.bkNoFlat);
+        await c.say(t.bkHow);
+        if (!await c.sort(8)) return c.say(t.bkFail);
+        f.bank = f.halbtax = true;
+        await c.say(t.bk1, t.bk2, t.bk3);
         wakeUp(c);
       } },
     },

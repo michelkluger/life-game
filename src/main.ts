@@ -1,8 +1,8 @@
 // Rendering and input. Rules live in logic.ts, story in content.ts, text in strings.ts.
 import * as Phaser from 'phaser';
-import { type State, newState, passDays, newFight, fightTurn, MOVES, MAX_CONF, type MoveId } from './logic';
+import { type State, type DuelId, newState, passDays, newFight, fightTurn, duel, MAX_CONF } from './logic';
 import { MAPS, intro, afterScript, onSwim, type Ctx, type Ent, type Script } from './content';
-import { TXT, LANGS, type Line } from './strings';
+import { TXT, LANGS, SORT_ITEMS, type Line } from './strings';
 import * as music from './music';
 
 const T = 48, W = 720, H = 480, SAVE = 'life-game-save';
@@ -64,6 +64,32 @@ const ART: Record<string, Rect[]> = {
   flame: [['#e2372c', 4, 6, 8, 9], ['#e2372c', 6, 2, 3, 5], ['#f28b2c', 5, 8, 6, 7], ['#f2c94c', 6, 10, 4, 5], ['#fff3b0', 7, 12, 2, 3]],
   sat: [['#3f6fd0', 0, 6, 5, 4], ['#3f6fd0', 11, 6, 5, 4], ['#9fd3f0', 1, 7, 3, 2], ['#9fd3f0', 12, 7, 3, 2], ['#c9ced6', 5, 5, 6, 6], ['#f2c94c', 7, 3, 2, 2], ['#8a8f98', 7, 11, 2, 2]],
   board: [['#1c1e21', 1, 3, 14, 10], ['#f2c94c', 2, 4, 12, 3], ['#1c1e21', 4, 5, 2, 1], ['#1c1e21', 8, 5, 4, 1], ['#59606b', 2, 8, 12, 1], ['#59606b', 2, 10, 8, 1]],
+  dog: [['#2b2320', 3, 7, 9, 5], ['#2b2320', 11, 4, 4, 5], ['#fff', 12, 7, 3, 2], ['#b5652b', 11, 5, 1, 1], ['#fff', 5, 10, 4, 2], ['#2b2320', 3, 12, 2, 3], ['#2b2320', 9, 12, 2, 3], ['#2b2320', 2, 6, 1, 3]],
+  caramelo: [['#c98a3c', 3, 7, 9, 5], ['#c98a3c', 11, 4, 4, 5], ['#222', 13, 6, 1, 1], ['#c98a3c', 3, 12, 2, 3], ['#c98a3c', 9, 12, 2, 3], ['#c98a3c', 1, 4, 2, 4]],
+  ball: [['#e2372c', 5, 5, 6, 6], ['#fff', 7, 5, 2, 6], ['#cfe6ff', 3, 12, 10, 1]],
+  boat: [['#fff', 7, 1, 1, 9], ['#f4f4f4', 8, 2, 5, 6], ['#8a5a44', 2, 10, 12, 3], ['#6e4635', 3, 13, 10, 1]],
+  mangotree: [['#6b4a2b', 7, 9, 2, 7], ['#2f6b35', 2, 1, 12, 9], ['#f2a01e', 4, 4, 2, 2], ['#f2a01e', 9, 6, 2, 2], ['#f2a01e', 7, 2, 2, 2]],
+  mango: [['#f2a01e', 4, 4, 8, 9], ['#e2572c', 6, 4, 5, 4], ['#3d8444', 7, 2, 2, 2]],
+  greenmango: [['#4f9a45', 4, 4, 8, 9], ['#7fc46a', 6, 5, 3, 3], ['#3d8444', 7, 2, 2, 2]],
+  glider: [['#e2372c', 1, 1, 14, 3], ['#f2c94c', 5, 1, 6, 3], ['#555', 3, 4, 1, 5], ['#555', 12, 4, 1, 5], ['#e8b88a', 6, 6, 4, 3], [NAVY, 6, 9, 4, 4], ['#2b2b3a', 6, 13, 4, 2]],
+  banker: person('#1c2333', '#2b2320'),
+  friend: person('#8e44ad', '#a5682a'),
+  musician: person('#b0392b', '#eee'),
+  recycler: person('#5d6d7e', '#999'),
+  expat: person('#f2c94c', '#2b2320', '#c68e5e'),
+  instructor: person('#e67e22', '#d9c38a'),
+  organiser: person('#27ae60', '#6b4a2b'),
+  fishmonger: person('#2e86c1', '#444'),
+  oldman: person('#ecf0f1', '#ddd'),
+  oldman2: person('#a9cce3', '#bbb'),
+  mom: person('#d98880', '#5a3a1a', '#c99a6e'),
+  dad: person('#7fb3d5', '#888', '#c99a6e'),
+  aunt: person('#bb8fce', '#3a2a1a', '#c99a6e'),
+  uncle: person('#f0b27a', '#333', '#b98a5e'),
+  cousin: person('#76d7c4', '#2b2320', '#c99a6e'),
+  porter: person('#566573', '#aaa'),
+  itguy: person('#34495e', '#c0392b'),
+  agent: person('#17202a', '#d9c38a'),
   prof: person('#4a6fa5', '#bbb'),
   guard: person('#d9822b', '#333'),
   boss: person('#555b6e', '#6b4a2b'),
@@ -132,6 +158,7 @@ class World extends Phaser.Scene implements Ctx {
   seg = { mode: 'walk' as Mode, pts: [] as number[][] }; // the activity in progress and its route
   bigTxt!: Phaser.GameObjects.Text; // large glyphs inside the dialogue box (puzzle arrows)
   fightUi: any[] = [];
+  fightTitle: Line = TXT.fightTitle;
   scenery: Obj[] = []; hills: Obj[] = [];
 
   // Pin an object to the screen (not the world) at a given depth.
@@ -159,6 +186,9 @@ class World extends Phaser.Scene implements Ctx {
     }
     this.fog = this.ui(this.add.image(W / 2, H / 2, 'fog_dark'), 20).setVisible(false);
 
+    // Phaser puts its own plugins on the scene (load, lights, time...), which silently shadow a method of the same name.
+    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'build', 'play'])
+      if (typeof (this as any)[k] !== 'function') throw new Error(`World.${k} is shadowed by a Phaser plugin: rename it`);
     this.keys = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.on('keydown', (e: KeyboardEvent) => {
       music.unlock();
@@ -202,7 +232,7 @@ class World extends Phaser.Scene implements Ctx {
   setLang(lang: number) {
     this.s.lang = lang;
     this.build(); // signs and HUD
-    this.fightUi[1].setText(this.tr(TXT.fightTitle));
+    this.fightUi[1].setText(this.tr(this.fightTitle));
     this.redraw?.();
   }
 
@@ -299,7 +329,7 @@ class World extends Phaser.Scene implements Ctx {
     this.s.x = x; this.s.y = y; this.moving = true;
     this.track(water ? 'swim' : bike ? 'bike' : 'walk', x, y, x - dx, y - dy);
     this.tweens.add({
-      targets: this.me, x: x * T, y: y * T, duration: water && !this.s.flags.svalbard ? 320 : bike ? 80 : 170, // Svalbard perk: no slowdown in water
+      targets: this.me, x: x * T, y: y * T, duration: water && !this.s.flags.svalbard ? 320 : bike ? (this.s.flags.wiener ? 55 : 80) : 170, // Svalbard perk: no slowdown in water
       onComplete: () => { this.moving = false; if (water && !this.s.flags.swam) this.run(onSwim); },
     });
   }
@@ -343,17 +373,20 @@ class World extends Phaser.Scene implements Ctx {
     if (this.s.money < 0) await this.say(TXT.overdrawn);
   }
 
-  async interview() {
-    const f = newFight();
-    const ids = (Object.keys(MOVES) as MoveId[]).filter(id => id !== 'prepared' || this.s.flags.prepared);
-    this.fightUi[1].setText(this.tr(TXT.fightTitle));
+  // Turn-based conversation: wear the other side down before your nerve runs out.
+  async duel(kind: DuelId) {
+    const d = duel(kind), f = newFight();
+    const ids = Object.keys(d.moves).filter(id => !d.moves[id].needs || this.s.flags[d.moves[id].needs!]);
+    this.fightTitle = d.title;
+    this.fightUi[1].setText(this.tr(d.title));
+    this.fightUi[3].setTexture(d.foe);
     this.fightUi.forEach(o => o.setVisible(true));
     music.play('interview');
     let result: 'win' | 'lose' | null = null;
     while (!result) {
-      const id = ids[await this.choose(TXT.fightPrompt, ids.map(i => MOVES[i].name), 0, f.conf, MAX_CONF, f.skep)];
-      const r = fightTurn(f, id);
-      await this.say(MOVES[id].line);
+      const id = ids[await this.choose(d.prompt, ids.map(i => d.moves[i].name), 0, f.conf, MAX_CONF, f.skep)];
+      const r = fightTurn(f, d, id);
+      await this.say(d.moves[id].line);
       if (r.q) await this.say(r.q.line);
       result = r.result;
     }
@@ -589,6 +622,130 @@ class World extends Phaser.Scene implements Ctx {
         mast.rotation = tilt;
         label.setText(this.tr(TXT.balanceHud, this.left(seconds, t)));
         return Math.abs(tilt) > 1.1 ? false : t >= seconds * 1000 ? true : undefined;
+      };
+    });
+  }
+
+  // Lights out: Space flips an LED and its neighbours; light all nine. (The matrix headlight.)
+  leds(seconds: number) {
+    return this.play<boolean>(0x14161c, (add, label) => {
+      const on: boolean[] = Array(9).fill(true);
+      const flip = (i: number) => {
+        for (const [dx, dy] of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const x = i % 3 + dx, y = Math.floor(i / 3) + dy;
+          if (x >= 0 && x < 3 && y >= 0 && y < 3) on[y * 3 + x] = !on[y * 3 + x];
+        }
+      };
+      do { for (let k = 0; k < 4; k++) flip(Math.floor(Math.random() * 9)); } while (on.every(Boolean)); // scrambled from solved, so always solvable
+      const cells = on.map((_, i) => add(this.add.rectangle(250 + (i % 3) * 110, 160 + Math.floor(i / 3) * 110, 96, 96, 0).setStrokeStyle(3, 0x59606b)));
+      const cursor = add(this.add.rectangle(0, 0, 106, 106).setStrokeStyle(4, 0xffffff), 63);
+      let at = 4;
+      this.onKey = c => {
+        const d = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -3, ArrowDown: 3 } as Record<string, number>)[c];
+        if (d && at + d >= 0 && at + d < 9 && (Math.abs(d) === 3 || Math.floor((at + d) / 3) === Math.floor(at / 3))) at += d;
+        if (c === 'Space') flip(at);
+      };
+      return (_, t) => {
+        cells.forEach((cell, i) => cell.setFillStyle(on[i] ? 0xfff3b0 : 0x2a2d35));
+        cursor.setPosition(cells[at].x, cells[at].y);
+        label.setText(this.tr(TXT.lightsHud, this.left(seconds, t)));
+        return on.every(Boolean) ? true : t >= seconds * 1000 ? false : undefined;
+      };
+    });
+  }
+
+  // Sorting: one slip at a time, Left = fine, Right = suspicious, and dithering counts as a mistake. (Bank compliance.)
+  sort(count: number) {
+    return this.play<boolean>(0x1f2a24, (add, label) => {
+      const deck = [...SORT_ITEMS].sort(() => Math.random() - 0.5).slice(0, count);
+      add(this.add.text(60, 390, this.tr(TXT.sortOk), { ...FONT, fontSize: '18px', color: '#3fbf7f' }));
+      add(this.add.text(W - 60, 390, this.tr(TXT.sortBad), { ...FONT, fontSize: '18px', color: '#ff8a80' }).setOrigin(1, 0));
+      add(this.add.rectangle(W / 2, 240, 580, 120, 0xf4efe6).setStrokeStyle(3, 0x1c1e21));
+      const slip = add(this.add.text(W / 2, 240, '', { ...FONT, fontSize: '19px', color: '#1c1e21', align: 'center', wordWrap: { width: 540 } }).setOrigin(0.5), 62);
+      let i = 0, misses = 0, born = 0, now = 0;
+      const next = (wrong: boolean) => { if (wrong) { misses++; this.cameras.main.shake(120, 0.01); } i++; born = now; };
+      this.onKey = c => { if (i < count && (c === 'ArrowLeft' || c === 'ArrowRight')) next((c === 'ArrowRight') !== deck[i].bad); };
+      return (_, t) => {
+        now = t;
+        if (i < count && t - born > 4500) next(true);
+        if (i < count) slip.setText(this.tr(deck[i].text));
+        label.setText(this.tr(TXT.sortHud, i, count, misses, this.lives));
+        return misses >= this.lives ? false : i >= count ? true : undefined;
+      };
+    });
+  }
+
+  // Gliding: hold Up to climb, let go to sink; peaks rise from below, clouds hang from above. (Paragliding.)
+  glide(seconds: number) {
+    return this.play<boolean>(0x9fd3f0, (add, label) => {
+      label.setColor('#1c1e21');
+      const wing = add(this.add.image(170, 220, 'glider').setScale(1.4), 63);
+      const blocks: { o: Phaser.GameObjects.Rectangle; hit: boolean }[] = [];
+      let vy = 0, hits = 0, next = 800;
+      return (dt, t) => {
+        vy = Phaser.Math.Clamp(vy + (this.keys.up.isDown ? -620 : 420) * dt / 1000, -260, 260);
+        wing.y = Phaser.Math.Clamp(wing.y + vy * dt / 1000, 90, H - 30);
+        if (t > next && t < seconds * 1000 - 2500) { // one obstacle at a time, so there is always a way past
+          next = t + 950 + Math.random() * 500;
+          const cloud = Math.random() < 0.35, h = 90 + Math.random() * 140;
+          blocks.push({ o: add(this.add.rectangle(W + 50, cloud ? 70 + h / 2 : H - h / 2, 70, h, cloud ? 0xffffff : 0x6b7a66)), hit: false });
+        }
+        for (const b of blocks) {
+          b.o.x -= dt * 0.25;
+          if (!b.hit && Math.abs(b.o.x - wing.x) < 55 && Math.abs(b.o.y - wing.y) < b.o.height / 2 + 16) { b.hit = true; hits++; this.cameras.main.shake(140, 0.012); }
+        }
+        label.setText(this.tr(TXT.glideHud, this.left(seconds, t), Math.min(hits, 3)));
+        return hits >= 3 ? false : t >= seconds * 1000 ? true : undefined;
+      };
+    });
+  }
+
+  // Sprint: alternate Left and Right to run; returns your place out of four. (The river race.)
+  mash(metres: number) {
+    return this.play<number>(0x3d6b4a, (add, label) => {
+      const LANE = [160, 230, 300, 370], START = 60, END = W - 80;
+      add(this.add.rectangle(END + 26, 265, 6, 290, 0xffffff));
+      const who = ['me', 'tourist', 'banker', 'friend'].map((tex, i) => add(this.add.image(START, LANE[i], tex).setScale(1.3), 62));
+      const pos = [0, 0, 0, 0], pace = [0, 5.2, 6.1, 5.7]; // rivals' metres per second
+      let speed = 0, last = '';
+      this.onKey = c => { if ((c === 'ArrowLeft' || c === 'ArrowRight') && c !== last) { last = c; speed += 1.1; } };
+      return (dt, t) => {
+        speed *= 0.4 ** (dt / 1000); // legs tire: about five alternations a second holds a winning pace
+        pos[0] += speed * dt / 1000;
+        for (let i = 1; i < 4; i++) pos[i] += pace[i] * (0.85 + 0.3 * Math.sin(t / 700 + i * 2)) * dt / 1000;
+        who.forEach((o, i) => { o.x = START + (END - START) * Math.min(1, pos[i] / metres); });
+        const ahead = pos.slice(1).filter(p => p > pos[0]).length;
+        label.setText(this.tr(TXT.mashHud, Math.max(0, Math.ceil(metres - pos[0])), 1 + ahead));
+        return pos[0] >= metres ? 1 + ahead : t > 45000 ? 4 : undefined;
+      };
+    });
+  }
+
+  // Catching: move Left/Right under what falls; ripe ones count, green ones hurt. (The mango tree.)
+  gather(n: number) {
+    return this.play<boolean>(0x8fd0a0, (add, label) => {
+      label.setColor('#1c1e21');
+      add(this.add.rectangle(W / 2, 455, W + 80, 70, 0x5a9e4b));
+      const me = add(this.add.image(W / 2, 395, 'me').setScale(1.5), 63);
+      const fruit: { o: Phaser.GameObjects.Image; bad: boolean; done: boolean }[] = [];
+      let got = 0, misses = 0, next = 500;
+      return (dt, t) => {
+        me.x = Phaser.Math.Clamp(me.x + this.held().x * dt * 0.42, 40, W - 40);
+        if (t > next) {
+          next = t + 450 + Math.random() * 350;
+          const bad = Math.random() < 0.3;
+          fruit.push({ o: add(this.add.image(60 + Math.random() * (W - 120), 80, bad ? 'greenmango' : 'mango').setScale(1.1)), bad, done: false });
+        }
+        for (const f of fruit) {
+          if (f.done) continue;
+          f.o.y += dt * 0.24;
+          const caught = f.o.y > 365 && f.o.y < 425 && Math.abs(f.o.x - me.x) < 42;
+          if (!caught && f.o.y < 470) continue;
+          f.done = true; f.o.setVisible(false);
+          if (caught && f.bad) { misses++; this.cameras.main.shake(140, 0.012); } else if (caught) got++;
+        }
+        label.setText(this.tr(TXT.catchHud, got, n, misses, this.lives));
+        return got >= n ? true : misses >= this.lives ? false : undefined;
       };
     });
   }

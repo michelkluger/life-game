@@ -33,15 +33,17 @@ export const TXT = {
     `Setas para andar. Esbarre em pessoas e coisas para interagir. Espaço continua. Segure Shift na rua para pedalar. M silencia a música. L troca o idioma.`,
     `Pfeiltasten zum Laufen. Lauf in Leute und Dinge hinein, um zu interagieren. Leertaste für weiter. Draussen Shift halten fürs Velo. M schaltet die Musik aus. L wechselt die Sprache.`],
   end1: [
-    `The box is empty, the job is yours, the cake got eaten. For one evening, nothing is overdue.`,
-    `Le carton est vide, le poste est à toi, le gâteau est mangé. Pour un soir, rien n'est en retard.`,
-    `A caixa está vazia, o emprego é seu, o bolo foi comido. Por uma noite, nada está atrasado.`,
-    `Die Kiste ist leer, der Job gehört dir, die Torte ist gegessen. Einen Abend lang ist nichts überfällig.`],
+    `The box is empty, the job is yours, the cake got eaten and your aunt has been faced. For one evening, nothing is overdue.`,
+    `Le carton est vide, le poste est à toi, le gâteau est mangé et tu as affronté ta tante. Pour un soir, rien n'est en retard.`,
+    `A caixa está vazia, o emprego é seu, o bolo foi comido e a tia foi enfrentada. Por uma noite, nada está atrasado.`,
+    `Die Kiste ist leer, der Job gehört dir, die Torte ist gegessen und die Tante überstanden. Einen Abend lang ist nichts überfällig.`,
+  ],
   end2: [
-    `That is the end of this build. Still to come: Brazil, paragliding, running, dating, and the futures you can choose.`,
-    `C'est la fin de cette version. À venir : le Brésil, le parapente, la course, les rencards et les futurs à choisir.`,
-    `Fim desta versão. Ainda por vir: Brasil, parapente, corrida, encontros e os futuros que você pode escolher.`,
-    `Das ist das Ende dieser Version. Es folgen: Brasilien, Gleitschirm, Laufen, Dates und die Zukünfte, die du wählen kannst.`],
+    `That is the end of this build. Still to come: dating, more friends, the university years, and the futures you can choose.`,
+    `C'est la fin de cette version. À venir : les rencards, d'autres amis, les années d'université et les futurs à choisir.`,
+    `Fim desta versão. Ainda por vir: encontros, mais amigos, os anos de faculdade e os futuros que você pode escolher.`,
+    `Das ist das Ende dieser Version. Es folgen: Dates, mehr Freunde, die Uni-Jahre und die Zukünfte, die du wählen kannst.`,
+  ],
 
   bedQ: [`Sleep until tomorrow?`, `Dormir jusqu'à demain ?`, `Dormir até amanhã?`, `Bis morgen schlafen?`],
   bedSleep: [`You sleep. Zurich remains expensive.`, `Tu dors. Zurich reste chère.`, `Você dorme. Zurique continua cara.`, `Du schläfst. Zürich bleibt teuer.`],
@@ -147,15 +149,17 @@ export const TXT = {
     `Du gehst heim und spielst jede Antwort nochmal durch. Irgendwo in der Wohnung steht eine Kiste aus der Zeit, als du wusstest, was du tust.`],
 
   hbBroke: [
-    `Zurich HB. A ticket to Marseille is CHF 89. You do not have CHF 89. The railway does not do pity.`,
-    `Zurich HB. Le billet pour Marseille coûte CHF 89. Tu n'as pas CHF 89. Les chemins de fer ne font pas dans la pitié.`,
-    `Zurique HB. A passagem para Marselha custa CHF 89. Você não tem CHF 89. A ferrovia não trabalha com pena.`,
-    `Zürich HB. Ein Billett nach Marseille kostet CHF 89. Du hast keine CHF 89. Die Bahn kennt kein Mitleid.`],
+    `Zurich HB. A ticket to Marseille is CHF {0}. You do not have CHF {0}. The railway does not do pity.`,
+    `Zurich HB. Le billet pour Marseille coûte CHF {0}. Tu n'as pas CHF {0}. Les chemins de fer ne font pas dans la pitié.`,
+    `Zurique HB. A passagem para Marselha custa CHF {0}. Você não tem CHF {0}. A ferrovia não trabalha com pena.`,
+    `Zürich HB. Ein Billett nach Marseille kostet CHF {0}. Du hast keine CHF {0}. Die Bahn kennt kein Mitleid.`,
+  ],
   hbQ: [
-    `Zurich HB. Ticket to Marseille, CHF 89? (takes the day)`,
-    `Zurich HB. Billet pour Marseille, CHF 89 ? (prend la journée)`,
-    `Zurique HB. Passagem para Marselha, CHF 89? (leva o dia todo)`,
-    `Zürich HB. Billett nach Marseille, CHF 89? (dauert den ganzen Tag)`],
+    `Zurich HB. Ticket to Marseille, CHF {0}? (takes the day)`,
+    `Zurich HB. Billet pour Marseille, CHF {0} ? (prend la journée)`,
+    `Zurique HB. Passagem para Marselha, CHF {0}? (leva o dia todo)`,
+    `Zürich HB. Billett nach Marseille, CHF {0}? (dauert den ganzen Tag)`,
+  ],
   hb1: [
     `The train leaves at 07:34. Not 07:35. This is Switzerland.`,
     `Le train part à 07h34. Pas 07h35. On est en Suisse.`,
@@ -191,10 +195,11 @@ export const TXT = {
   ],
 
   gareQ: [
-    `Gare Saint-Charles. Train back to Zurich, CHF 89? (takes the day)`,
-    `Gare Saint-Charles. Train retour pour Zurich, CHF 89 ? (prend la journée)`,
-    `Gare Saint-Charles. Trem de volta para Zurique, CHF 89? (leva o dia todo)`,
-    `Gare Saint-Charles. Zug zurück nach Zürich, CHF 89? (dauert den ganzen Tag)`],
+    `Gare Saint-Charles. Train back to Zurich, CHF {0}? (takes the day)`,
+    `Gare Saint-Charles. Train retour pour Zurich, CHF {0} ? (prend la journée)`,
+    `Gare Saint-Charles. Trem de volta para Zurique, CHF {0}? (leva o dia todo)`,
+    `Gare Saint-Charles. Zug zurück nach Zürich, CHF {0}? (dauert den ganzen Tag)`,
+  ],
   gareBroke: [
     `Your card is declined. Your sister buys the ticket. You will hear about this at every family dinner until 2040.`,
     `Ta carte est refusée. Ta sœur paie le billet. Tu en entendras parler à chaque repas de famille jusqu'en 2040.`,
@@ -675,4 +680,527 @@ export const TXT = {
     `Tu te réveilles à Zurich. Dehors il fait quatre degrés et les gens se plaignent.`,
     `Você acorda em Zurique. Lá fora faz quatro graus e as pessoas estão reclamando.`,
     `Du wachst in Zürich auf. Draussen sind es vier Grad und die Leute beschweren sich.`],
+  // ---- Zurich: more people ----
+  zTourist1: [
+    `"Excuse me, where can one eat cheaply around here?"`,
+    `« Excusez-moi, où peut-on manger pas cher par ici ? »`,
+    `"Com licença, onde dá para comer barato por aqui?"`,
+    `«Entschuldigung, wo kann man hier günstig essen?»`],
+  zTourist2: [
+    `You look at each other for a long moment. Then you both start laughing.`,
+    `Vous vous regardez un long moment. Puis vous éclatez de rire tous les deux.`,
+    `Vocês se olham por um bom tempo. Depois os dois caem na risada.`,
+    `Ihr schaut euch lange an. Dann fangt ihr beide an zu lachen.`],
+  zBanker: [
+    `A banker shouts into his phone: "No. NO. Sell the yen!" He covers the mic. "Sorry. I was ordering lunch."`,
+    `Un banquier hurle dans son téléphone : « Non. NON. Vendez le yen ! » Il couvre le micro. « Pardon. Je commandais à déjeuner. »`,
+    `Um banqueiro grita ao telefone: "Não. NÃO. Vende o iene!" Ele tapa o microfone. "Desculpa. Estava pedindo o almoço."`,
+    `Ein Banker brüllt ins Handy: «Nein. NEIN. Verkauf den Yen!» Er hält das Mikro zu. «Entschuldigung. Ich habe Mittagessen bestellt.»`],
+  zDog: [
+    `This is Rösti. He is a Bernese mountain dog and he has a better pension plan than you.`,
+    `Voici Rösti. C'est un bouvier bernois et il a un meilleur plan de retraite que toi.`,
+    `Este é o Rösti. É um boiadeiro de Berna e tem um plano de previdência melhor que o seu.`,
+    `Das ist Rösti. Er ist ein Berner Sennenhund und hat eine bessere Pensionskasse als du.`],
+  zLate: [
+    `"Sorry, sorry, the tram. Bouldering on Thursday? I'll be there at seven. So, eight."`,
+    `« Pardon, pardon, le tram. Bloc jeudi ? J'y serai à sept heures. Donc huit. »`,
+    `"Desculpa, desculpa, o bonde. Escalada na quinta? Chego às sete. Ou seja, oito."`,
+    `«Sorry, sorry, das Tram. Bouldern am Donnerstag? Ich bin um sieben da. Also acht.»`],
+  zMusician: [
+    `An alphorn player performs outside the bank. Nobody tips. Everybody films.`,
+    `Un joueur de cor des Alpes joue devant la banque. Personne ne donne. Tout le monde filme.`,
+    `Um tocador de trompa alpina se apresenta em frente ao banco. Ninguém dá gorjeta. Todo mundo filma.`,
+    `Ein Alphornbläser spielt vor der Bank. Niemand gibt etwas. Alle filmen.`],
+  zRecycle: [
+    `"Glass goes out on the first Tuesday. Not on Sunday. Never on Sunday. I saw you."`,
+    `« Le verre, c'est le premier mardi. Pas le dimanche. Jamais le dimanche. Je vous ai vu. »`,
+    `"Vidro é na primeira terça. Domingo não. Nunca no domingo. Eu vi você."`,
+    `«Glas kommt am ersten Dienstag raus. Nicht am Sonntag. Nie am Sonntag. Ich habe Sie gesehen.»`],
+  zExpat1: [
+    `"Cara, three years here and I still dream about pão de queijo. If you ever fly home, bring me some. I pay in gratitude."`,
+    `« Cara, trois ans ici et je rêve encore de pão de queijo. Si tu rentres un jour au pays, rapporte-m'en. Je paie en gratitude. »`,
+    `"Cara, três anos aqui e eu ainda sonho com pão de queijo. Se você for pra casa um dia, traz pra mim. Pago em gratidão."`,
+    `«Cara, drei Jahre hier und ich träume immer noch von Pão de Queijo. Wenn du mal heimfliegst, bring mir welche mit. Ich zahle in Dankbarkeit.»`],
+  zExpat2: [
+    `He opens the tupperware and goes quiet. "This is the best day I have had in Switzerland." It includes his wedding.`,
+    `Il ouvre le tupperware et se tait. « C'est mon plus beau jour en Suisse. » Mariage compris.`,
+    `Ele abre o tupperware e fica em silêncio. "Este é o melhor dia que eu tive na Suíça." Contando o casamento.`,
+    `Er öffnet die Tupperdose und wird still. «Das ist mein schönster Tag in der Schweiz.» Die Hochzeit eingerechnet.`],
+  zExpatDone: [`"Next time bring guaraná."`, `« La prochaine fois, rapporte du guaraná. »`, `"Da próxima vez traz guaraná."`, `«Nächstes Mal bring Guaraná mit.»`],
+
+  // ---- Airport and the flight home ----
+  lblAirport: [`Airport`, `Aéroport`, `Aeroporto`, `Flughafen`],
+  apBroke: [
+    `Zurich Airport. São Paulo and back: CHF 1,200. Your account says no, in three national languages.`,
+    `Aéroport de Zurich. São Paulo aller-retour : CHF 1 200. Ton compte dit non, dans trois langues nationales.`,
+    `Aeroporto de Zurique. São Paulo ida e volta: CHF 1.200. Sua conta diz não, em três línguas nacionais.`,
+    `Flughafen Zürich. São Paulo retour: CHF 1'200. Dein Konto sagt Nein, in drei Landessprachen.`],
+  apQ: [
+    `Zurich Airport. Fly to São Paulo to see your parents? Return ticket CHF 1,200. (two days each way)`,
+    `Aéroport de Zurich. Prendre l'avion pour São Paulo voir tes parents ? Aller-retour CHF 1 200. (deux jours par trajet)`,
+    `Aeroporto de Zurique. Voar para São Paulo ver seus pais? Ida e volta CHF 1.200. (dois dias cada trecho)`,
+    `Flughafen Zürich. Nach São Paulo zu deinen Eltern fliegen? Retourticket CHF 1'200. (zwei Tage pro Weg)`],
+  apChocQ: [
+    `Duty-free. Swiss chocolate for the family, CHF 35? Arriving without it is technically legal.`,
+    `Duty-free. Du chocolat suisse pour la famille, CHF 35 ? Arriver sans est techniquement légal.`,
+    `Duty-free. Chocolate suíço para a família, CHF 35? Chegar sem ele é tecnicamente permitido.`,
+    `Duty-free. Schweizer Schokolade für die Familie, CHF 35? Ohne anzukommen ist rein rechtlich erlaubt.`],
+  apFly1: [
+    `Eleven hours in seat 47E, between a crying baby and a man explaining crypto.`,
+    `Onze heures au siège 47E, entre un bébé qui pleure et un homme qui explique la crypto.`,
+    `Onze horas na poltrona 47E, entre um bebê chorando e um homem explicando cripto.`,
+    `Elf Stunden auf Sitz 47E, zwischen einem weinenden Baby und einem Mann, der Krypto erklärt.`],
+  apFly2: [
+    `You land. The air is warm and smells of rain and frying. Something in your chest unclenches.`,
+    `Tu atterris. L'air est chaud, il sent la pluie et la friture. Quelque chose se desserre dans ta poitrine.`,
+    `Você pousa. O ar é quente e cheira a chuva e fritura. Alguma coisa no peito se solta.`,
+    `Du landest. Die Luft ist warm und riecht nach Regen und Frittiertem. Etwas in deiner Brust lässt los.`],
+
+  // ---- Paragliding ----
+  pgInstr: [
+    `"Grüezi. Paragliding course, CHF 300. You run off the mountain, I shout advice from the ground."`,
+    `« Grüezi. Stage de parapente, CHF 300. Tu cours et tu sautes de la montagne, je crie des conseils d'en bas. »`,
+    `"Grüezi. Curso de parapente, CHF 300. Você corre e pula da montanha, eu grito conselhos lá de baixo."`,
+    `«Grüezi. Gleitschirmkurs, CHF 300. Du rennst vom Berg, ich rufe von unten Ratschläge.»`],
+  pgQ: [`Take the course for CHF 300?`, `Faire le stage pour CHF 300 ?`, `Fazer o curso por CHF 300?`, `Den Kurs für CHF 300 machen?`],
+  pgBroke: [
+    `"No money, no flying. Gravity is free. The wing is not."`,
+    `« Pas d'argent, pas de vol. La gravité est gratuite. L'aile, non. »`,
+    `"Sem dinheiro, sem voo. A gravidade é de graça. A vela, não."`,
+    `«Kein Geld, kein Flug. Die Schwerkraft ist gratis. Der Schirm nicht.»`],
+  pgHow: [
+    `Hold Up to climb, let go to sink. Stay off the peaks and out of the clouds. Land in one piece.`,
+    `Maintiens Haut pour monter, relâche pour descendre. Évite les sommets et les nuages. Atterris entier.`,
+    `Segure Cima para subir, solte para descer. Fique longe dos picos e das nuvens. Pouse inteiro.`,
+    `Halte Hoch zum Steigen, lass los zum Sinken. Bleib weg von Gipfeln und Wolken. Lande in einem Stück.`],
+  glideHud: [`Landing in {0}s · scrapes {1}/3`, `Atterrissage dans {0}s · accrochages {1}/3`, `Pouso em {0}s · raspões {1}/3`, `Landung in {0}s · Streifer {1}/3`],
+  pgFail: [
+    `You land in a tree. A cow watches. The instructor makes a note. Try again.`,
+    `Tu atterris dans un arbre. Une vache regarde. Le moniteur prend une note. Réessaie.`,
+    `Você pousa numa árvore. Uma vaca observa. O instrutor anota alguma coisa. Tente de novo.`,
+    `Du landest in einem Baum. Eine Kuh schaut zu. Der Fluglehrer macht sich eine Notiz. Versuch's nochmal.`],
+  pgWin1: [
+    `You touch down on the meadow as if you meant it. "Not bad," says the instructor, which in Swiss means magnificent.`,
+    `Tu te poses dans le pré comme si c'était voulu. « Pas mal », dit le moniteur, ce qui en suisse veut dire magnifique.`,
+    `Você pousa no gramado como se fosse de propósito. "Nada mal", diz o instrutor, o que em suíço significa magnífico.`,
+    `Du setzt auf der Wiese auf, als wäre es Absicht. «Nicht schlecht», sagt der Fluglehrer, was auf Schweizerisch grossartig heisst.`],
+  pgWin2: [
+    `You are a licensed pilot now. From up there, the rent looks very small.`,
+    `Tu es pilote breveté. De là-haut, le loyer a l'air tout petit.`,
+    `Agora você é piloto habilitado. Lá de cima, o aluguel parece bem pequeno.`,
+    `Du bist jetzt brevetierter Pilot. Von da oben sieht die Miete sehr klein aus.`],
+  pgAgain: [
+    `"Another flight? It is free now. The mountain is already paid for."`,
+    `« Encore un vol ? C'est gratuit maintenant. La montagne est déjà payée. »`,
+    `"Mais um voo? Agora é de graça. A montanha já está paga."`,
+    `«Noch ein Flug? Der ist jetzt gratis. Der Berg ist schon bezahlt.»`],
+  pgAgainWin: [
+    `Twenty minutes of silence above the city. Landing fee: zero. The best deal in Zurich.`,
+    `Vingt minutes de silence au-dessus de la ville. Taxe d'atterrissage : zéro. La meilleure affaire de Zurich.`,
+    `Vinte minutos de silêncio acima da cidade. Taxa de pouso: zero. O melhor negócio de Zurique.`,
+    `Zwanzig Minuten Stille über der Stadt. Landegebühr: null. Das beste Angebot in Zürich.`],
+
+  // ---- The river race ----
+  runOrg: [
+    `"Limmat Run! One hundred metres of glory along the river. Entry is CHF 40 and includes a banana."`,
+    `« Course de la Limmat ! Cent mètres de gloire le long de la rivière. Inscription CHF 40, banane comprise. »`,
+    `"Corrida do Limmat! Cem metros de glória à beira do rio. A inscrição é CHF 40 e inclui uma banana."`,
+    `«Limmatlauf! Hundert Meter Ruhm am Fluss entlang. Startgeld CHF 40, inklusive Banane.»`],
+  runQ: [`Enter the race for CHF 40?`, `S'inscrire à la course pour CHF 40 ?`, `Entrar na corrida por CHF 40?`, `Für CHF 40 mitlaufen?`],
+  runBroke: [`"No forty francs, no banana."`, `« Pas de quarante francs, pas de banane. »`, `"Sem quarenta francos, sem banana."`, `«Keine vierzig Franken, keine Banane.»`],
+  runHow: [
+    `Alternate Left and Right as fast as you can. Three others are running too.`,
+    `Alterne Gauche et Droite aussi vite que possible. Trois autres courent aussi.`,
+    `Alterne Esquerda e Direita o mais rápido que puder. Outros três também correm.`,
+    `Wechsle Links und Rechts ab, so schnell du kannst. Drei andere laufen auch mit.`],
+  mashHud: [`{0} m to go · position {1}/4`, `Encore {0} m · position {1}/4`, `Faltam {0} m · posição {1}/4`, `Noch {0} m · Platz {1}/4`],
+  runWin: [
+    `First place! You win a medal, a banana, and the right to mention it for six months.`,
+    `Première place ! Tu gagnes une médaille, une banane et le droit d'en parler pendant six mois.`,
+    `Primeiro lugar! Você ganha uma medalha, uma banana e o direito de comentar isso por seis meses.`,
+    `Erster Platz! Du gewinnst eine Medaille, eine Banane und das Recht, sechs Monate lang davon zu erzählen.`],
+  runLose: [
+    `You finish in place {0}. A man in jeans beat you. You get the banana anyway.`,
+    `Tu finis à la place {0}. Un homme en jean t'a battu. Tu as quand même la banane.`,
+    `Você termina em {0}º lugar. Um homem de calça jeans ganhou de você. A banana você leva mesmo assim.`,
+    `Du wirst {0}. Ein Mann in Jeans war schneller. Die Banane bekommst du trotzdem.`],
+
+  // ---- Marseille: the port, pétanque, the ball ----
+  maIce1: [
+    `"Pastis without ice is a crime here. Be an angel: the fishmonger down at the port has ice."`,
+    `« Un pastis sans glaçons, ici, c'est un crime. Sois un ange : le poissonnier du port a de la glace. »`,
+    `"Pastis sem gelo é crime por aqui. Seja um anjo: o peixeiro lá no porto tem gelo."`,
+    `«Pastis ohne Eis ist hier ein Verbrechen. Sei ein Engel: Der Fischhändler unten am Hafen hat Eis.»`],
+  maIce2: [
+    `"Santé. You may marry into this family." "I am already in it." "Then you may stay."`,
+    `« Santé. Tu peux entrer dans cette famille. » « J'y suis déjà. » « Alors tu peux rester. »`,
+    `"Santé. Você pode entrar para esta família." "Eu já estou nela." "Então pode ficar."`,
+    `«Santé. Du darfst in diese Familie einheiraten.» «Ich bin schon drin.» «Dann darfst du bleiben.»`],
+  maFish: [
+    `"Fresh fish! Caught this morning. Which morning, I am not at liberty to say."`,
+    `« Poisson frais ! Pêché ce matin. Quel matin, je ne suis pas autorisé à le dire. »`,
+    `"Peixe fresco! Pescado hoje de manhã. Qual manhã, não estou autorizado a dizer."`,
+    `«Frischer Fisch! Heute Morgen gefangen. Welcher Morgen, darf ich nicht sagen.»`],
+  maFishIce: [
+    `"Ice? For pastis? Then it is free. For fish I would have charged you."`,
+    `« De la glace ? Pour le pastis ? Alors c'est gratuit. Pour du poisson, j'aurais fait payer. »`,
+    `"Gelo? Para o pastis? Então é de graça. Para peixe eu cobraria."`,
+    `«Eis? Für Pastis? Dann ist es gratis. Für Fisch hätte ich was verlangt.»`],
+  pe1: [
+    `Three old men are playing pétanque. "Hé, le Suisse! You throw?"`,
+    `Trois vieux jouent à la pétanque. « Hé, le Suisse ! Tu tires ? »`,
+    `Três senhores jogam pétanque. "Hé, le Suisse! Vai jogar?"`,
+    `Drei alte Männer spielen Pétanque. «Hé, le Suisse! Wirfst du?»`],
+  peHow: [
+    `Press Space while the marker is in the green. Three throws.`,
+    `Appuie sur Espace quand le curseur est dans le vert. Trois lancers.`,
+    `Aperte Espaço quando o marcador estiver no verde. Três arremessos.`,
+    `Drück die Leertaste, wenn der Marker im Grünen ist. Drei Würfe.`],
+  peFail: [
+    `Your boule lands in a different arrondissement. "It is the wind," they say kindly. There is no wind.`,
+    `Ta boule atterrit dans un autre arrondissement. « C'est le vent », disent-ils gentiment. Il n'y a pas de vent.`,
+    `Sua bola cai em outro bairro. "É o vento", dizem com gentileza. Não tem vento.`,
+    `Deine Kugel landet in einem anderen Arrondissement. «Das ist der Wind», sagen sie freundlich. Es geht kein Wind.`],
+  peWin: [
+    `Three perfect throws. "Not bad for a Swiss." "I am Brazilian." "Not bad for a Swiss Brazilian."`,
+    `Trois lancers parfaits. « Pas mal pour un Suisse. » « Je suis brésilien. » « Pas mal pour un Suisse brésilien. »`,
+    `Três arremessos perfeitos. "Nada mal para um suíço." "Sou brasileiro." "Nada mal para um suíço brasileiro."`,
+    `Drei perfekte Würfe. «Nicht schlecht für einen Schweizer.» «Ich bin Brasilianer.» «Nicht schlecht für einen Schweizer Brasilianer.»`],
+  peDone: [`"Come back when you feel like losing, petit."`, `« Reviens quand tu auras envie de perdre, petit. »`, `"Volte quando quiser perder, petit."`, `«Komm wieder, wenn du verlieren willst, petit.»`],
+  peOther: [`"He cheats. I cheat better."`, `« Il triche. Moi, je triche mieux. »`, `"Ele rouba. Eu roubo melhor."`, `«Er schummelt. Ich schummle besser.»`],
+  maBall1: [
+    `"Our ball fell in the sea. Maman says we can't go in. But you're a grown-up. Sort of."`,
+    `« Notre ballon est tombé dans la mer. Maman dit qu'on n'a pas le droit d'y aller. Mais toi, tu es un adulte. Enfin, presque. »`,
+    `"Nossa bola caiu no mar. A mamãe disse que a gente não pode entrar. Mas você é adulto. Mais ou menos."`,
+    `«Unser Ball ist ins Meer gefallen. Maman sagt, wir dürfen nicht rein. Aber du bist erwachsen. So halb.»`],
+  maBallSee: [
+    `A ball floats in the harbour. It looks like it belongs to someone small.`,
+    `Un ballon flotte dans le port. Il a l'air d'appartenir à quelqu'un de petit.`,
+    `Uma bola boia no porto. Parece ser de alguém pequeno.`,
+    `Im Hafen treibt ein Ball. Er sieht aus, als gehöre er jemand Kleinem.`],
+  maBallGet: [
+    `You swim out and get the ball. A seagull applauds, or wants your sandwich.`,
+    `Tu nages jusqu'au ballon et tu le récupères. Une mouette applaudit, ou veut ton sandwich.`,
+    `Você nada até lá e pega a bola. Uma gaivota aplaude, ou quer o seu sanduíche.`,
+    `Du schwimmst raus und holst den Ball. Eine Möwe applaudiert, oder sie will dein Sandwich.`],
+  maBall2: [
+    `"You're the best uncle." "I'm your only uncle." "Still."`,
+    `« T'es le meilleur tonton. » « Je suis ton seul tonton. » « Quand même. »`,
+    `"Você é o melhor tio." "Eu sou seu único tio." "Mesmo assim."`,
+    `«Du bist der beste Onkel.» «Ich bin dein einziger Onkel.» «Trotzdem.»`],
+  maBoat: [
+    `A fishing boat called "Fada". Its owner is asleep in it. It is two in the afternoon.`,
+    `Un bateau de pêche nommé « Fada ». Son propriétaire dort dedans. Il est quatorze heures.`,
+    `Um barco de pesca chamado "Fada". O dono dorme dentro dele. São duas da tarde.`,
+    `Ein Fischerboot namens «Fada». Sein Besitzer schläft darin. Es ist zwei Uhr nachmittags.`],
+
+  // ---- Brazil ----
+  mBrazil: [`São Paulo, Brazil`, `São Paulo, Brésil`, `São Paulo, Brasil`, `São Paulo, Brasilien`],
+  brMom1: [
+    `"My son! You are so thin. Do they not have food in Switzerland? Go and sit with your aunt. Eat."`,
+    `« Mon fils ! Tu es tout maigre. Il n'y a pas de nourriture en Suisse ? Va t'asseoir avec ta tante. Mange. »`,
+    `"Meu filho! Você está tão magro. Não tem comida na Suíça? Vai sentar com a sua tia. Come."`,
+    `«Mein Sohn! Du bist so dünn. Gibt es in der Schweiz nichts zu essen? Setz dich zu deiner Tante. Iss.»`],
+  brMom2: [
+    `"Take this for the journey." It is a tupperware of pão de queijo the size of a suitcase.`,
+    `« Prends ça pour le voyage. » C'est un tupperware de pão de queijo de la taille d'une valise.`,
+    `"Leva isso para a viagem." É um tupperware de pão de queijo do tamanho de uma mala.`,
+    `«Nimm das für die Reise mit.» Es ist eine Tupperdose Pão de Queijo, so gross wie ein Koffer.`],
+  brMomDone: [`"Call more. A message is not a call."`, `« Appelle plus souvent. Un message, ce n'est pas un appel. »`, `"Liga mais. Mensagem não é ligação."`, `«Ruf öfter an. Eine Nachricht ist kein Anruf.»`],
+  brDad1: [
+    `"Come, the mango tree is loaded. I shake, you catch. Not the green ones. And not with your head." Left and Right to move.`,
+    `« Viens, le manguier est chargé. Je secoue, tu attrapes. Pas les vertes. Et pas avec la tête. » Gauche et Droite pour bouger.`,
+    `"Vem, a mangueira está carregada. Eu balanço, você pega. As verdes não. E não com a cabeça." Esquerda e Direita para andar.`,
+    `«Komm, der Mangobaum hängt voll. Ich schüttle, du fängst. Nicht die grünen. Und nicht mit dem Kopf.» Links und Rechts zum Laufen.`],
+  catchHud: [`Mangoes {0}/{1} · bumps {2}/{3}`, `Mangues {0}/{1} · bosses {2}/{3}`, `Mangas {0}/{1} · galos {2}/{3}`, `Mangos {0}/{1} · Beulen {2}/{3}`],
+  brDadFail: [
+    `A green mango gets you square on the head. Your father laughs for a full minute. Try again.`,
+    `Une mangue verte t'arrive en plein sur le crâne. Ton père rit pendant une minute entière. Réessaie.`,
+    `Uma manga verde acerta você bem na cabeça. Seu pai ri por um minuto inteiro. Tente de novo.`,
+    `Eine grüne Mango trifft dich mitten auf den Kopf. Dein Vater lacht eine volle Minute. Versuch's nochmal.`],
+  brDadWin: [
+    `A full basket. Your father nods at it for a long time. In this family, that is a speech.`,
+    `Un panier plein. Ton père hoche longuement la tête. Dans cette famille, c'est un discours.`,
+    `Um cesto cheio. Seu pai fica um tempão balançando a cabeça. Nesta família, isso é um discurso.`,
+    `Ein voller Korb. Dein Vater nickt ihn lange an. In dieser Familie ist das eine Rede.`],
+  brDadDone: [
+    `"Your grandfather planted that tree. Do not tell your mother I got emotional."`,
+    `« C'est ton grand-père qui a planté cet arbre. Ne dis pas à ta mère que j'étais ému. »`,
+    `"Foi seu avô que plantou essa árvore. Não conta para a sua mãe que eu me emocionei."`,
+    `«Den Baum hat dein Grossvater gepflanzt. Sag deiner Mutter nicht, dass ich gerührt war.»`],
+  brUncle: [
+    `"In Switzerland, do they have picanha?" "They have something they call picanha." He lays down the tongs in sorrow.`,
+    `« En Suisse, ils ont de la picanha ? » « Ils ont un truc qu'ils appellent picanha. » Il pose la pince, accablé.`,
+    `"Na Suíça tem picanha?" "Tem uma coisa que eles chamam de picanha." Ele larga o pegador, em luto.`,
+    `«Gibt es in der Schweiz Picanha?» «Es gibt etwas, das sie Picanha nennen.» Er legt die Grillzange nieder, in Trauer.`],
+  brCousin: [
+    `"Is it true the trains leave on time?" "To the second." "That sounds stressful."`,
+    `« C'est vrai que les trains partent à l'heure ? » « À la seconde. » « Ça a l'air stressant. »`,
+    `"É verdade que os trens saem na hora?" "No segundo." "Parece estressante."`,
+    `«Stimmt es, dass die Züge pünktlich fahren?» «Auf die Sekunde.» «Klingt stressig.»`],
+  brDog: [
+    `A caramel-coloured street dog adopts you on sight. Nobody knows whose he is. He is everybody's.`,
+    `Un chien des rues couleur caramel t'adopte au premier regard. Personne ne sait à qui il est. Il est à tout le monde.`,
+    `Um vira-lata caramelo te adota na hora. Ninguém sabe de quem ele é. Ele é de todo mundo.`,
+    `Ein karamellfarbener Strassenhund adoptiert dich auf den ersten Blick. Niemand weiss, wem er gehört. Er gehört allen.`],
+  brAunt1: [
+    `"There he is! Sit by me. I have questions." The Sunday lunch interrogation begins.`,
+    `« Le voilà ! Assieds-toi à côté de moi. J'ai des questions. » L'interrogatoire du déjeuner dominical commence.`,
+    `"Olha ele aí! Senta aqui do meu lado. Tenho umas perguntas." Começa o interrogatório do almoço de domingo.`,
+    `«Da ist er ja! Setz dich zu mir. Ich habe Fragen.» Das Verhör beim Sonntagsessen beginnt.`],
+  lunchTitle: [`SUNDAY LUNCH`, `DÉJEUNER DU DIMANCHE`, `ALMOÇO DE DOMINGO`, `SONNTAGSESSEN`],
+  lunchPrompt: [
+    `Your composure {0}/{1} · Her curiosity {2}/30`,
+    `Ton sang-froid {0}/{1} · Sa curiosité {2}/30`,
+    `Sua compostura {0}/{1} · Curiosidade dela {2}/30`,
+    `Deine Fassung {0}/{1} · Ihre Neugier {2}/30`],
+  lmPhotos: [`Show photos`, `Montrer des photos`, `Mostrar fotos`, `Fotos zeigen`],
+  lmPhotosL: [
+    `You show mountain photos. "Beautiful. And who took this one of you?"`,
+    `Tu montres des photos de montagne. « Magnifique. Et celle-ci, qui l'a prise ? »`,
+    `Você mostra fotos das montanhas. "Que lindo. E esta aqui, quem tirou?"`,
+    `Du zeigst Bergfotos. «Wunderschön. Und wer hat das hier von dir gemacht?»`],
+  lmFood: [`Praise the food`, `Complimenter le repas`, `Elogiar a comida`, `Das Essen loben`],
+  lmFoodL: [
+    `"Nobody makes beans like this." She softens. Your plate is refilled as a reward.`,
+    `« Personne ne fait les haricots comme ça. » Elle s'adoucit. Ton assiette est remplie en récompense.`,
+    `"Ninguém faz um feijão desses." Ela amolece. Seu prato é reabastecido como prêmio.`,
+    `«Niemand macht Bohnen wie du.» Sie wird weich. Zur Belohnung wird dein Teller nachgefüllt.`],
+  lmFootball: [`Football`, `Football`, `Futebol`, `Fussball`],
+  lmFootballL: [
+    `You bring up the national team. Three uncles start shouting at once. You gain a minute.`,
+    `Tu lances le sujet de la sélection. Trois oncles se mettent à crier en même temps. Tu gagnes une minute.`,
+    `Você puxa o assunto da seleção. Três tios começam a gritar ao mesmo tempo. Você ganha um minuto.`,
+    `Du bringst die Nationalmannschaft ins Spiel. Drei Onkel schreien gleichzeitig los. Du gewinnst eine Minute.`],
+  lmChoc: [`Swiss chocolate`, `Chocolat suisse`, `Chocolate suíço`, `Schweizer Schokolade`],
+  lmChocL: [
+    `You put the Swiss chocolate on the table. Silence. Then negotiations over who gets the big bar.`,
+    `Tu poses le chocolat suisse sur la table. Silence. Puis négociations pour savoir qui aura la grande tablette.`,
+    `Você põe o chocolate suíço na mesa. Silêncio. Depois, negociações sobre quem fica com a barra grande.`,
+    `Du legst die Schweizer Schokolade auf den Tisch. Stille. Dann Verhandlungen, wer die grosse Tafel bekommt.`],
+  lq1: [
+    `"And the girlfriends? Nobody? In all of Europe?"`,
+    `« Et les copines ? Personne ? Dans toute l'Europe ? »`,
+    `"E as namoradas? Ninguém? Na Europa inteira?"`,
+    `«Und die Freundinnen? Keine? In ganz Europa?»`],
+  lq2: [`"When are you coming back for good?"`, `« Tu rentres quand, pour de bon ? »`, `"Quando é que você volta de vez?"`, `«Wann kommst du endgültig zurück?»`],
+  lq3: [
+    `"Are you eating properly? You look like a tourist."`,
+    `« Tu manges correctement ? Tu as l'air d'un touriste. »`,
+    `"Você está comendo direito? Está com cara de turista."`,
+    `«Isst du auch richtig? Du siehst aus wie ein Tourist.»`],
+  brAuntWin1: [
+    `"He is doing well, this one," she announces to the table. You are approved until Christmas.`,
+    `« Il s'en sort bien, celui-là », annonce-t-elle à la tablée. Tu es validé jusqu'à Noël.`,
+    `"Esse aqui está indo bem", ela anuncia para a mesa. Você está aprovado até o Natal.`,
+    `«Der macht das gut», verkündet sie der ganzen Tafel. Du bist bis Weihnachten genehmigt.`],
+  brAuntWin2: [
+    `She presses a folded banknote into your hand, like when you were eight. It is still fifty reais.`,
+    `Elle glisse un billet plié dans ta main, comme quand tu avais huit ans. C'est toujours cinquante reais.`,
+    `Ela põe uma nota dobrada na sua mão, como quando você tinha oito anos. Continua sendo cinquenta reais.`,
+    `Sie drückt dir einen gefalteten Geldschein in die Hand, wie damals mit acht. Es sind immer noch fünfzig Reais.`],
+  brAuntLose: [
+    `You fold. You promise to visit more, call more, eat more and marry soon. Lunch continues.`,
+    `Tu craques. Tu promets de venir plus souvent, d'appeler plus, de manger plus et de te marier bientôt. Le déjeuner continue.`,
+    `Você se rende. Promete visitar mais, ligar mais, comer mais e casar logo. O almoço continua.`,
+    `Du gibst auf. Du versprichst, öfter zu kommen, öfter anzurufen, mehr zu essen und bald zu heiraten. Das Essen geht weiter.`],
+  brAuntDone: [
+    `"Next time bring a girlfriend. Or at least more chocolate."`,
+    `« La prochaine fois, amène une copine. Ou au moins plus de chocolat. »`,
+    `"Da próxima vez traz uma namorada. Ou pelo menos mais chocolate."`,
+    `«Nächstes Mal bring eine Freundin mit. Oder wenigstens mehr Schokolade.»`],
+  brAirQ: [
+    `Guarulhos airport. Fly back to Zurich? (two days)`,
+    `Aéroport de Guarulhos. Rentrer à Zurich ? (deux jours)`,
+    `Aeroporto de Guarulhos. Voltar para Zurique? (dois dias)`,
+    `Flughafen Guarulhos. Zurück nach Zürich fliegen? (zwei Tage)`],
+  brAir1: [
+    `Your mother cries at departures. Your father studies the ceiling. You promise to come back sooner, and mean it.`,
+    `Ta mère pleure aux départs. Ton père étudie le plafond. Tu promets de revenir plus vite, et tu le penses.`,
+    `Sua mãe chora no embarque. Seu pai estuda o teto. Você promete voltar mais cedo, e é sincero.`,
+    `Deine Mutter weint beim Abflug. Dein Vater studiert die Decke. Du versprichst, früher wiederzukommen, und meinst es so.`],
+
+  // ---- Memory: Wiener Neustadt, 2017 ----
+  mWiener: same(`Wiener Neustadt, 2017`),
+  boxWnHint: [
+    `Next in the box: a headlight module. Your own bike light has barely been used. Ride three kilometres first.`,
+    `Ensuite dans le carton : un module de phare. Ta propre lampe de vélo n'a presque pas servi. Roule d'abord trois kilomètres.`,
+    `O próximo na caixa: um módulo de farol. A luz da sua bicicleta mal foi usada. Pedale três quilômetros primeiro.`,
+    `Als Nächstes in der Kiste: ein Scheinwerfermodul. Dein eigenes Velolicht wurde kaum benutzt. Fahr erst drei Kilometer.`],
+  boxWnOpen: [
+    `The headlight module. Wiener Neustadt, 2017. You test car headlights with computer vision. The cars are worth more than your degree.`,
+    `Le module de phare. Wiener Neustadt, 2017. Tu testes des phares de voiture par vision par ordinateur. Les voitures valent plus que ton diplôme.`,
+    `O módulo de farol. Wiener Neustadt, 2017. Você testa faróis de carro com visão computacional. Os carros valem mais que o seu diploma.`,
+    `Das Scheinwerfermodul. Wiener Neustadt, 2017. Du testest Autoscheinwerfer mit Computer Vision. Die Autos sind mehr wert als dein Abschluss.`],
+  wnBoss: [
+    `"Morning. The new matrix headlight fails its test. Every LED has to be on. Get the test bench key from the porter."`,
+    `« Bonjour. Le nouveau phare matriciel échoue au test. Toutes les LED doivent être allumées. Va chercher la clé du banc d'essai chez le concierge. »`,
+    `"Bom dia. O novo farol matricial não passa no teste. Todos os LEDs têm de estar acesos. Pegue a chave da bancada com o porteiro."`,
+    `«Morgen. Der neue Matrix-Scheinwerfer fällt beim Test durch. Jede LED muss leuchten. Hol den Prüfstandschlüssel beim Portier.»`],
+  wnCol: [
+    `A colleague eats a Leberkässemmel at nine in the morning, with total commitment. "Mahlzeit."`,
+    `Un collègue mange un Leberkässemmel à neuf heures du matin, avec un engagement total. « Mahlzeit. »`,
+    `Um colega come um Leberkässemmel às nove da manhã, com total dedicação. "Mahlzeit."`,
+    `Ein Kollege isst um neun Uhr morgens eine Leberkässemmel, mit voller Hingabe. «Mahlzeit.»`],
+  wnPorter1: [
+    `"The key? For that you need form A38. From HR."`,
+    `« La clé ? Pour ça, il vous faut le formulaire A38. Aux RH. »`,
+    `"A chave? Para isso você precisa do formulário A38. No RH."`,
+    `«Der Schlüssel? Dafür brauchen Sie Formular A38. Von der Personalabteilung.»`],
+  wnHr1: [`"Form A38 is issued by the porter."`, `« Le formulaire A38 est délivré par le concierge. »`, `"O formulário A38 é emitido pelo porteiro."`, `«Formular A38 stellt der Portier aus.»`],
+  wnPorter2: [
+    `"HR said that? Then I need form A39. Also from HR."`,
+    `« Les RH ont dit ça ? Alors il me faut le formulaire A39. Aux RH aussi. »`,
+    `"O RH disse isso? Então eu preciso do formulário A39. Também no RH."`,
+    `«Das hat die Personalabteilung gesagt? Dann brauche ich Formular A39. Auch von dort.»`],
+  wnHr2: [
+    `HR sighs, opens a drawer full of keys and hands you one. "There are no forms. He just likes visitors."`,
+    `Les RH soupirent, ouvrent un tiroir plein de clés et t'en tendent une. « Il n'y a pas de formulaires. Il aime juste les visites. »`,
+    `O RH suspira, abre uma gaveta cheia de chaves e te entrega uma. "Não existe formulário. Ele só gosta de visita."`,
+    `Die Personalabteilung seufzt, öffnet eine Schublade voller Schlüssel und gibt dir einen. «Es gibt keine Formulare. Er mag einfach Besuch.»`],
+  wnPorterDone: [`"Come back anytime. Bring forms."`, `« Revenez quand vous voulez. Avec des formulaires. »`, `"Volte quando quiser. Traga formulários."`, `«Kommen Sie jederzeit wieder. Bringen Sie Formulare mit.»`],
+  wnHrDone: [`"Was there anything else? No? Wonderful."`, `« Autre chose ? Non ? Merveilleux. »`, `"Mais alguma coisa? Não? Maravilha."`, `«Sonst noch etwas? Nein? Wunderbar.»`],
+  wnNoKey: [
+    `The test bench is locked. The key is with the porter. Probably.`,
+    `Le banc d'essai est fermé à clé. La clé est chez le concierge. Probablement.`,
+    `A bancada de testes está trancada. A chave está com o porteiro. Provavelmente.`,
+    `Der Prüfstand ist abgeschlossen. Der Schlüssel ist beim Portier. Wahrscheinlich.`],
+  wnHow: [
+    `Each press flips one LED and its neighbours. Arrows move, Space presses. Light all nine.`,
+    `Chaque pression inverse une LED et ses voisines. Flèches pour bouger, Espace pour appuyer. Allume les neuf.`,
+    `Cada toque inverte um LED e os vizinhos. Setas movem, Espaço aperta. Acenda os nove.`,
+    `Jeder Druck schaltet eine LED und ihre Nachbarn um. Pfeile bewegen, Leertaste drückt. Bring alle neun zum Leuchten.`],
+  lightsHud: [`Light all nine · {0}s left`, `Allume les neuf · {0}s restantes`, `Acenda os nove · {0}s restantes`, `Alle neun an · noch {0}s`],
+  wnFail: [
+    `The headlight blinks an insult in Morse code. Try again.`,
+    `Le phare clignote une insulte en morse. Réessaie.`,
+    `O farol pisca um insulto em código Morse. Tente de novo.`,
+    `Der Scheinwerfer blinkt eine Beleidigung im Morsecode. Versuch's nochmal.`],
+  wn1: [
+    `Nine LEDs, steady. The boss looks at them, then at you. "Passt scho." You have peaked.`,
+    `Neuf LED, stables. Le chef les regarde, puis te regarde. « Passt scho. » Tu as atteint ton sommet.`,
+    `Nove LEDs, firmes. O chefe olha para eles, depois para você. "Passt scho." Você chegou ao auge.`,
+    `Neun LEDs, stabil. Der Chef schaut sie an, dann dich. «Passt scho.» Mehr geht nicht.`],
+  wn2: [
+    `You learned FULL BEAM: you ride your bike even faster.`,
+    `Tu as appris PLEINS PHARES : tu roules encore plus vite à vélo.`,
+    `Você aprendeu FAROL ALTO: você pedala ainda mais rápido.`,
+    `Du hast FERNLICHT gelernt: Du fährst noch schneller Velo.`],
+  wn3: [
+    `You wake up in Zurich. Your bike light is still broken, but now you know why.`,
+    `Tu te réveilles à Zurich. Ta lampe de vélo est toujours cassée, mais maintenant tu sais pourquoi.`,
+    `Você acorda em Zurique. A luz da bicicleta continua quebrada, mas agora você sabe por quê.`,
+    `Du wachst in Zürich auf. Dein Velolicht ist immer noch kaputt, aber jetzt weisst du, warum.`],
+
+  // ---- Memory: Zurich, 2020 ----
+  mBank: same(`Zürich, 2020`),
+  boxBkHint: [
+    `Last in the box: a bank badge. It only respects people with five thousand francs in their account.`,
+    `Dernier objet du carton : un badge de banque. Il ne respecte que les gens qui ont cinq mille francs sur leur compte.`,
+    `Por último na caixa: um crachá de banco. Ele só respeita quem tem cinco mil francos na conta.`,
+    `Zuletzt in der Kiste: ein Bankbadge. Er respektiert nur Leute mit fünftausend Franken auf dem Konto.`],
+  boxBkOpen: [
+    `The badge. Zurich, 2020. You have moved to the most expensive city on earth, in a pandemic, to work for a bank, from your kitchen.`,
+    `Le badge. Zurich, 2020. Tu as emménagé dans la ville la plus chère du monde, en pleine pandémie, pour travailler pour une banque, depuis ta cuisine.`,
+    `O crachá. Zurique, 2020. Você se mudou para a cidade mais cara do mundo, numa pandemia, para trabalhar num banco, da sua cozinha.`,
+    `Der Badge. Zürich, 2020. Du bist in die teuerste Stadt der Welt gezogen, mitten in einer Pandemie, um für eine Bank zu arbeiten, von deiner Küche aus.`],
+  bkIt1: [
+    `"Welcome to Three Keys Bank. Here is your laptop, your token and a forty-page guide to the VPN. Please never come to the office."`,
+    `« Bienvenue chez Three Keys Bank. Voici votre portable, votre jeton et un guide de quarante pages pour le VPN. Ne venez jamais au bureau, s'il vous plaît. »`,
+    `"Bem-vindo ao Three Keys Bank. Aqui estão seu laptop, seu token e um guia de quarenta páginas para a VPN. Por favor, nunca venha ao escritório."`,
+    `«Willkommen bei der Three Keys Bank. Hier sind Ihr Laptop, Ihr Token und eine vierzigseitige Anleitung fürs VPN. Bitte kommen Sie nie ins Büro.»`],
+  bkItDone: [
+    `"Have you tried turning it off and never on again?"`,
+    `« Vous avez essayé de l'éteindre et de ne plus jamais le rallumer ? »`,
+    `"Já tentou desligar e nunca mais ligar?"`,
+    `«Haben Sie versucht, ihn auszuschalten und nie wieder ein?»`],
+  bkQueue: [
+    `Forty people queue for a flat viewing. The flat is 31 square metres. Someone has brought their parents as references.`,
+    `Quarante personnes font la queue pour visiter un appartement. Il fait 31 mètres carrés. Quelqu'un a amené ses parents comme références.`,
+    `Quarenta pessoas na fila para visitar um apartamento. Ele tem 31 metros quadrados. Alguém trouxe os pais como referência.`,
+    `Vierzig Leute stehen für eine Wohnungsbesichtigung an. Die Wohnung hat 31 Quadratmeter. Jemand hat die Eltern als Referenz mitgebracht.`],
+  bkAgent1: [
+    `"Dossier? Debt register extract? No? Then you are just a man in a stairwell. The district office issues it."`,
+    `« Dossier ? Extrait du registre des poursuites ? Non ? Alors vous n'êtes qu'un homme dans une cage d'escalier. Le bureau de district le délivre. »`,
+    `"Dossiê? Certidão negativa de dívidas? Não? Então você é só um homem numa escada. O cartório do distrito emite."`,
+    `«Dossier? Betreibungsauszug? Nein? Dann sind Sie nur ein Mann im Treppenhaus. Den gibt es beim Kreisbüro.»`],
+  bkOfficeIdle: [
+    `The district office. You have no reason to be here, which has never stopped anyone.`,
+    `Le bureau de district. Tu n'as aucune raison d'être ici, ce qui n'a jamais arrêté personne.`,
+    `O cartório do distrito. Você não tem motivo para estar aqui, o que nunca impediu ninguém.`,
+    `Das Kreisbüro. Du hast keinen Grund, hier zu sein, was noch nie jemanden aufgehalten hat.`],
+  bkOffice1: [`You take a number: 847. Now serving: 12.`, `Tu prends un numéro : 847. Numéro appelé : 12.`, `Você pega uma senha: 847. Atendendo agora: 12.`, `Du ziehst eine Nummer: 847. Aufgerufen wird: 12.`],
+  bkOffice2: [
+    `Now serving: 13. A man is asking about dog tax.`,
+    `Numéro appelé : 13. Un homme pose des questions sur l'impôt sur les chiens.`,
+    `Atendendo agora: 13. Um homem pergunta sobre o imposto de cachorro.`,
+    `Aufgerufen wird: 13. Ein Mann erkundigt sich nach der Hundesteuer.`],
+  bkOffice3: [
+    `Your number comes up. The extract costs CHF 17 and proves you owe nobody anything, yet.`,
+    `Ton numéro est appelé. L'extrait coûte CHF 17 et prouve que tu ne dois rien à personne, pour l'instant.`,
+    `Sua senha é chamada. A certidão custa CHF 17 e prova que você não deve nada a ninguém, por enquanto.`,
+    `Deine Nummer wird aufgerufen. Der Auszug kostet CHF 17 und beweist, dass du niemandem etwas schuldest, noch nicht.`],
+  bkOfficeDone: [`Now serving: 848. Not you.`, `Numéro appelé : 848. Pas toi.`, `Atendendo agora: 848. Não é você.`, `Aufgerufen wird: 848. Nicht du.`],
+  bkAgent2: [
+    `"Ah, the extract. That flat is gone. But I have another: smaller, darker, three hundred more. You take it?" You take it.`,
+    `« Ah, l'extrait. Cet appartement est parti. Mais j'en ai un autre : plus petit, plus sombre, trois cents de plus. Vous le prenez ? » Tu le prends.`,
+    `"Ah, a certidão. Aquele apartamento já foi. Mas tenho outro: menor, mais escuro, trezentos a mais. Fica com ele?" Você fica.`,
+    `«Ah, der Auszug. Die Wohnung ist weg. Aber ich habe eine andere: kleiner, dunkler, dreihundert mehr. Nehmen Sie sie?» Du nimmst sie.`],
+  bkAgentDone: [
+    `"Laundry day is Thursday, 14:00 to 14:45. Do not negotiate."`,
+    `« Le jour de lessive, c'est jeudi, de 14h00 à 14h45. Ne négociez pas. »`,
+    `"O dia de lavar roupa é quinta, das 14:00 às 14:45. Não negocie."`,
+    `«Waschtag ist Donnerstag, 14:00 bis 14:45. Nicht verhandeln.»`],
+  bkNoLaptop: [
+    `The compliance system needs your laptop. IT is by the side of the building.`,
+    `Le système de conformité a besoin de ton portable. L'informatique est sur le côté du bâtiment.`,
+    `O sistema de compliance precisa do seu laptop. A TI fica na lateral do prédio.`,
+    `Das Compliance-System braucht deinen Laptop. Die IT ist seitlich am Gebäude.`],
+  bkNoFlat: [
+    `You open the laptop and realise you have nowhere to put it down. Find a flat first.`,
+    `Tu ouvres le portable et tu réalises que tu n'as nulle part où le poser. Trouve d'abord un appartement.`,
+    `Você abre o laptop e percebe que não tem onde apoiá-lo. Arrume um apartamento primeiro.`,
+    `Du klappst den Laptop auf und merkst, dass du ihn nirgends hinstellen kannst. Such dir erst eine Wohnung.`],
+  bkHow: [
+    `Financial crime screening. Left arrow: looks fine. Right arrow: suspicious. Be quick.`,
+    `Contrôle anti-criminalité financière. Flèche gauche : rien à signaler. Flèche droite : suspect. Fais vite.`,
+    `Triagem de crimes financeiros. Seta esquerda: tudo certo. Seta direita: suspeito. Seja rápido.`,
+    `Prüfung auf Finanzkriminalität. Pfeil links: unauffällig. Pfeil rechts: verdächtig. Mach schnell.`],
+  sortHud: [`Reviewed {0}/{1} · mistakes {2}/{3}`, `Traités {0}/{1} · erreurs {2}/{3}`, `Analisados {0}/{1} · erros {2}/{3}`, `Geprüft {0}/{1} · Fehler {2}/{3}`],
+  sortOk: [`← looks fine`, `← rien à signaler`, `← tudo certo`, `← unauffällig`],
+  sortBad: [`suspicious →`, `suspect →`, `suspeito →`, `verdächtig →`],
+  bkFail: [
+    `You approve the prince and block a grandmother's knitting club. Compliance would like a word. Try again.`,
+    `Tu valides le prince et tu bloques le club de tricot d'une grand-mère. La conformité aimerait te parler. Réessaie.`,
+    `Você aprova o príncipe e bloqueia o clube de tricô de uma vovó. O compliance quer uma palavrinha. Tente de novo.`,
+    `Du winkst den Prinzen durch und sperrst den Strickclub einer Grossmutter. Compliance hätte gern ein Wort mit dir. Versuch's nochmal.`],
+  bk1: [
+    `A clean sheet. Your manager sends a thumbs-up emoji. In banking, this counts as a hug.`,
+    `Sans faute. Ton manager envoie un pouce levé. Dans la banque, ça compte comme une accolade.`,
+    `Sem erros. Seu gerente manda um emoji de joinha. No banco, isso conta como um abraço.`,
+    `Fehlerfrei. Dein Chef schickt ein Daumen-hoch-Emoji. In der Bank zählt das als Umarmung.`],
+  bk2: [
+    `You learned HALF-FARE: train tickets now cost half. It is the most Swiss thing about you.`,
+    `Tu as appris le DEMI-TARIF : les billets de train coûtent moitié prix. C'est ce que tu as de plus suisse.`,
+    `Você aprendeu MEIA TARIFA: as passagens de trem agora custam a metade. É a coisa mais suíça em você.`,
+    `Du hast HALBTAX gelernt: Zugbillette kosten jetzt die Hälfte. Es ist das Schweizerischste an dir.`],
+  bk3: [
+    `You wake up in Zurich, the present one. Same city, same prices, better bicycle.`,
+    `Tu te réveilles à Zurich, celle d'aujourd'hui. Même ville, mêmes prix, meilleur vélo.`,
+    `Você acorda em Zurique, a de hoje. Mesma cidade, mesmos preços, bicicleta melhor.`,
+    `Du wachst in Zürich auf, dem heutigen. Gleiche Stadt, gleiche Preise, besseres Velo.`],
 } satisfies Record<string, Line>;
+
+// Transactions for the bank's sorting game. `bad` means it should be flagged as suspicious.
+export const SORT_ITEMS: { bad: boolean; text: Line }[] = [
+  { bad: false, text: [`CHF 4.80 · coffee`, `CHF 4.80 · café`, `CHF 4.80 · café`, `CHF 4.80 · Kaffee`] },
+  { bad: false, text: [`CHF 1,850 · rent`, `CHF 1 850 · loyer`, `CHF 1.850 · aluguel`, `CHF 1'850 · Miete`] },
+  { bad: false, text: [`CHF 89 · train to Marseille`, `CHF 89 · train pour Marseille`, `CHF 89 · trem para Marselha`, `CHF 89 · Zug nach Marseille`] },
+  { bad: false, text: [`CHF 12.50 · groceries`, `CHF 12.50 · courses`, `CHF 12.50 · mercado`, `CHF 12.50 · Einkauf`] },
+  { bad: false, text: [`CHF 40 · running race, incl. banana`, `CHF 40 · course à pied, banane comprise`, `CHF 40 · corrida, com banana`, `CHF 40 · Volkslauf, inkl. Banane`] },
+  { bad: true, text: [`CHF 9,999 · "consulting" · every Tuesday`, `CHF 9 999 · « conseil » · tous les mardis`, `CHF 9.999 · "consultoria" · toda terça`, `CHF 9'999 · «Beratung» · jeden Dienstag`] },
+  { bad: true, text: [`CHF 2,000,000 · gift from a prince`, `CHF 2 000 000 · cadeau d'un prince`, `CHF 2.000.000 · presente de um príncipe`, `CHF 2'000'000 · Geschenk eines Prinzen`] },
+  { bad: true, text: [`CHF 50,000 · cash · "found it"`, `CHF 50 000 · espèces · « trouvé par terre »`, `CHF 50.000 · dinheiro vivo · "achei"`, `CHF 50'000 · bar · «gefunden»`] },
+  { bad: true, text: [`CHF 700,000 · yacht · paid by a bakery`, `CHF 700 000 · yacht · payé par une boulangerie`, `CHF 700.000 · iate · pago por uma padaria`, `CHF 700'000 · Jacht · bezahlt von einer Bäckerei`] },
+  { bad: true, text: [`CHF 1 · sent 80,000 times · same account`, `CHF 1 · envoyé 80 000 fois · même compte`, `CHF 1 · enviado 80.000 vezes · mesma conta`, `CHF 1 · 80'000 Mal überwiesen · gleiches Konto`] },
+];

@@ -52,23 +52,34 @@ Exploring is nice, but every stage must mix in puzzles and action. Money is neve
 
 Run: `bun run dev` then open http://localhost:3000. Tests: `bun test`. Hosted on GitHub Pages from `main` (repo michelkluger/life-game).
 
-Present day: flat, Zurich, Marseille; money and rent; bike (Shift); swimming; interview encounter; animated train ride with a sprint minigame; wardrobe puzzle; birthday-cake quest; building signs.
+### Present day
 
-Memories in the box, opened in chronological order, each called up by something in the present:
+| Place | People and quests |
+|---|---|
+| Flat | bed (sleep a day), job portal, the box of memories |
+| Zurich (36x18) | interview at Gletscher Labs; neighbour's wardrobe (one-time CHF 120); lake swimming; paragliding school on the mountain (CHF 300 once); river race (CHF 40); station; airport; tourist, banker, Rösti the dog, the always-late climbing friend, alphorn player, recycling neighbour; the Brazilian expat who wants pão de queijo |
+| Marseille (30x13) | birthday cake; ice for the pastis from the fishmonger; pétanque with the old men; the nieces' ball in the harbour (swim for it); boats |
+| Brazil (26x11) | return flight CHF 1,200, chocolate CHF 35 at duty-free; Sunday-lunch duel with the aunt (chocolate is the winning move); mango tree with the father; mother packs pão de queijo after lunch; uncle, cousin, the caramel dog |
+
+### Memories in the box
+
+Opened in chronological order, each called up by something in the present:
 
 | Memory | Opens after | Play | Reward |
 |---|---|---|---|
 | Scout camp, 2007 | failing the interview | find rope, arrow-memory knots | BE PREPARED (wins the interview) |
-| Svalbard, 2015 | swimming in the lake | polar-night fog, find the bear guard, fly the robot and collect samples | swim at full speed |
+| Svalbard, 2015 | swimming in the lake | polar-night fog, bear guard, fly the robot and collect samples | swim at full speed |
 | Vienna, 2016 | getting the job | three tries for a coffee, timing bar | slower crowds in sprints |
-| Munich, 2018 | the birthday | keep the dish on the satellite, then a reaction game putting out a fire | one extra mistake in timing and reaction games |
-| Antarctica, 2019 | paying a month's rent | whiteout flag line, balance the mast in the wind, cold-battery quiz | ends the box |
+| Wiener Neustadt, 2017 | riding 3 km | form A38 runaround between porter and HR, lights-out headlight | faster bike |
+| Munich, 2018 | the birthday | dish tracking, then a kitchen-fire reaction game | one extra mistake in timing and reaction games |
+| Antarctica, 2019 | paying a month's rent | whiteout flag line, mast balancing, cold-battery quiz | the parka |
+| Zurich, 2020 | CHF 5,000 in the account | laptop from IT, flat hunt via the district office, transaction sorting | half-fare train tickets |
 
-The build ends once the box is empty, the job is won and the cake delivered.
+The build ends once the box is empty, the job is won, the cake delivered and the Sunday lunch survived.
 
-Also: activity tracker (10 tiles = 1 km) with a totals panel and a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
+### Minigames
 
-Minigames (user direction 2026-11-10: they are a big part of the fun, so vary them; each kind appears once, twice at most with a different theme):
+User direction 2026-11-10: they are a big part of the fun, so vary them; each kind appears once, twice at most with a different theme.
 
 | Kind | Call | Used for |
 |---|---|---|
@@ -76,22 +87,32 @@ Minigames (user direction 2026-11-10: they are a big part of the fun, so vary th
 | Card matching | `c.pairs(seconds)` | the neighbour's wardrobe |
 | Lane dodger | `c.dodge(seconds)` | changing trains in Geneva |
 | Reaction | `c.whack(count, tex)` | platform changes in Lyon, kitchen fire in Munich |
-| Timing bar | `c.timing(rounds)` | Vienna flight computer |
+| Timing bar | `c.timing(rounds)` | Vienna flight computer, pétanque |
 | Tracking | `c.aim(seconds)` | Munich satellite dish |
 | Free-move collecting | `c.collect(n, seconds)` | Svalbard robot |
 | Balance | `c.balance(seconds)` | Antarctic mast |
-| Turn-based | `c.interview()` | job interview |
+| Lights out | `c.leds(seconds)` | Wiener Neustadt headlight |
+| Sorting | `c.sort(count)` | bank compliance |
+| Gliding | `c.glide(seconds)` | paragliding |
+| Sprint | `c.mash(metres)` | river race |
+| Catching | `c.gather(n)` | mango tree |
+| Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
 
-All run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Other building blocks: `c.backdrop()`, map `fog`.
+All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Duels are data in `logic.ts`: the ordinary moves can never win, the special move (earned elsewhere) can, and a test proves both. Other building blocks: `c.backdrop()`, map `fog`, `spawn`.
+
+Also: activity tracker (10 tiles = 1 km) in a side column with a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
+
+Tests cover: map shape, every character reachable from the spawn point, a tune for every place, every line in four languages, duel balance, and a scripted playthrough of the whole game.
 
 Known gaps:
 - Art is drawn in code, not CC0 packs.
 - Keyboard only, no touch controls.
-- Assumed two nieces; family unnamed.
+- Assumed two nieces; family unnamed. Brazil's cast (mother, father, aunt, uncle, cousin) is invented.
 - FR/PT/DE text is AI-translated and not yet proofread by Michel.
-- Memory order follows the years (Svalbard before the Vienna job), not the original chapter numbering.
-- No Wiener Neustadt, UK, or São Paulo university/childhood stage yet.
+- Memory order follows the years, not the original chapter numbering.
+- Minigame difficulty is tuned by estimate and simulation, not by play.
+- Phaser gotcha: a scene method named like a Phaser plugin (`load`, `lights`, `time`...) is silently shadowed; `create()` now throws at startup if that happens.
 
 ## Open
 
-- Brazil, paragliding, running, climbing, dating, friends, all endings.
+- Dating, more friends, climbing, São Paulo university years, the UK, all endings.
