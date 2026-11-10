@@ -2,7 +2,7 @@ import { test, expect } from 'bun:test';
 import { MAPS, afterScript, onSwim, type Ctx } from './content';
 import { TXT, SORT_ITEMS } from './strings';
 import { freq, trackNames, trackNotes } from './music';
-import { DUELS, duel, newState, newFight, fightTurn, passDays, pay, RENT, type DuelId, type Fight } from './logic';
+import { DUELS, ENDINGS, duel, ending, newState, newFight, fightTurn, passDays, pay, RENT, type DuelId, type Fight, type State } from './logic';
 
 const TERRAIN = '#T~,.123=^';
 const free = (map: string, x: number, y: number) => {
@@ -87,6 +87,29 @@ test('no duel can be won with ordinary moves, and each can with its special move
   }
 });
 
+test('every future can be reached, and the right one wins', () => {
+  const with_ = (flags: string[], more: Partial<State> = {}): State => ({ ...newState(), ...more, flags: Object.fromEntries(flags.map(f => [f, true])) });
+  expect(ending(newState())).toBe('zurich'); // nothing done: you stay
+  expect(ending(with_(['phd']))).toBe('science');
+  expect(ending(with_(['startup']))).toBe('founder');
+  expect(ending(with_(['moveMarseille']))).toBe('marseille');
+  expect(ending(with_(['moveBrazil']))).toBe('brazil');
+  expect(ending(with_(['dating']))).toBe('zurich');
+  // without any commitment, what you actually spent time on decides
+  expect(ending(with_(['birthday', 'ballDone', 'lunch']))).toBe('marseille');
+  // a commitment outweighs a few good deeds elsewhere
+  expect(ending(with_(['phd', 'lunch', 'mangoes']))).toBe('science');
+  // two equal commitments: the later one wins
+  expect(ending(with_(['phd', 'startup'], { n: { at_phd: 1, at_startup: 2 } }))).toBe('founder');
+  expect(ending(with_(['phd', 'startup'], { n: { at_phd: 2, at_startup: 1 } }))).toBe('science');
+  // secret futures beat everything
+  expect(ending(with_(['moveBrazil'], { n: { box: 5 } }))).toBe('time');
+  expect(ending(with_(['svalbard', 'antarctica', 'phd'], { dist: { walk: 0, bike: 0, swim: 30 } }))).toBe('antarctica');
+  expect(ending(with_(['pilot', 'dating'], { n: { flights: 3 } }))).toBe('sky');
+  expect(ending(with_(['phd', 'munich', 'medal', 'pilot']))).toBe('astronaut');
+  for (const e of ENDINGS) for (const part of ['endT_', 'endA_', 'endB_']) expect(TXT, part + e).toHaveProperty(part + e);
+});
+
 test('the whole game can be played to the end', async () => {
   const ok = async () => true;
   const c: Ctx = {
@@ -96,7 +119,7 @@ test('the whole game can be played to the end', async () => {
     go(map, x, y) { expect(free(map, x, y), `go ${map} ${x},${y}`).toBe(true); Object.assign(c.s, { map, x, y }); },
     days: async n => { passDays(c.s, n); },
     refresh() {}, backdrop() {},
-    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok,
+    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok,
     dodge: async () => 0,
     mash: async () => 1,
     // Play the special move if you have earned it, otherwise the first one, until someone gives.
@@ -211,6 +234,30 @@ test('the whole game can be played to the end', async () => {
   // Back home: deliver the pão de queijo, fly, race, and ride the train at half fare.
   await act('zurich', 'e', 'P', 'R');
   expect(f.paoqGiven && f.pilot && f.medal).toBe(true);
+  // Commitments and the rest of life in Zurich.
+  await act('zurich', 'e');                       // the expat pitches the company; first answer is yes
+  expect(f.startup).toBe(true);
+  await act('zurich', 'g');
+  expect(f.climbed).toBeUndefined();              // nobody invited you yet
+  await act('zurich', 'l', 'g', 'u');
+  expect(f.climbed && f.phd).toBe(true);
+  await act('zurich', 'F');
+  const pickLast = c.choose;
+  c.choose = async (_p, opts) => 1;               // laptop: the dating app
+  await act('flat', 'C');
+  expect(f.match).toBe(true);
+  await act('flat', 'D');
+  const answers = [1, 0, 1];                      // the three good answers
+  c.choose = async () => answers.shift()!;
+  await act('zurich', 'c');
+  expect(f.dating).toBe(true);
+  await act('zurich', 'F');
+  c.choose = async (_p, opts) => opts.length - 1; // laptop: decide
+  await act('flat', 'C');
+  expect(ENDINGS.some(e => f['saw_' + e])).toBe(true);
+  expect(f.saw_astronaut).toBe(true);             // this player did everything, which earns a secret future
+  c.choose = pickLast;
+  await act('flat', 'D');
   const before = c.s.money;
   await act('zurich', 'H');
   expect(before - c.s.money).toBe(45);

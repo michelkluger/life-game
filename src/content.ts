@@ -1,6 +1,6 @@
 // Story content: maps, characters, what happens when you bump into them. Text lives in strings.ts.
 // No engine imports, so a test can play the whole thing through.
-import { type State, type DuelId, pay } from './logic';
+import { type State, type DuelId, pay, ending, ENDINGS } from './logic';
 import { TXT as t, type Line, same } from './strings';
 
 export type Ctx = {
@@ -27,6 +27,7 @@ export type Ctx = {
   mash(metres: number): Promise<number>;              // alternate Left/Right to run; returns your place (1-4)
   gather(n: number): Promise<boolean>;                // catch the ripe ones falling, avoid the green ones
   tag(n: number, seconds: number): Promise<boolean>;  // you are it: touch n fleeing kids in time
+  climb(n: number): Promise<boolean>;                 // press the arrow on each hold, bottom to top
 };
 export type Script = (c: Ctx) => Promise<void>;
 // `on` is the tile drawn under the entity (doors in walls, things in water); `label` is a sign above it.
@@ -44,6 +45,10 @@ const CAKE = 28, FLIGHT = 1200, CHOCOLATE = 35, COURSE = 300, RACE = 40; // also
 const ticket = (s: State) => (s.flags.halbtax ? 45 : 89);                 // the bank memory earns you the half-fare card
 const arrive = (c: Ctx, map: string) => c.go(map, ...MAPS[map].spawn);
 const wakeUp = (c: Ctx) => c.go('flat', 8, 2);
+const bump = (c: Ctx, key: string) => (c.s.n[key] = (c.s.n[key] ?? 0) + 1);
+// A commitment made in conversation: it weighs heavily on the future, and the latest one breaks ties.
+const commit = (c: Ctx, flag: string) => { c.s.flags[flag] = true; c.s.n['at_' + flag] = bump(c, 'seq'); };
+const T = t as Record<string, Line>;
 
 export const intro: Script = c => c.say(t.intro1, t.intro2, t.intro3);
 
@@ -99,12 +104,26 @@ export const MAPS: Record<string, MapDef> = {
         await c.days(1);
       } },
       C: { tex: 'pc', act: async c => {
-        await c.say(t.pc1);
-        if (!c.s.flags.employed) await c.say(t.pc2);
+        const f = c.s.flags;
+        const pick = await c.choose(t.pcMenu, [t.pcJobs, t.pcDating, ...(f.end ? [t.pcDecide] : [])]);
+        if (pick === 0) {
+          await c.say(t.pc1);
+          if (!f.employed) await c.say(t.pc2);
+        } else if (pick === 1) {
+          if (f.dating) return c.say(t.pcDatingDone);
+          if (f.match) return c.say(t.pcMatchWaiting);
+          f.match = true; // she now waits by the lake
+          await c.say(t.pcMatch1, t.pcMatch2);
+        } else {
+          const id = ending(c.s);
+          f['saw_' + id] = true;
+          await c.say(t.decide1, T['endT_' + id], T['endA_' + id], T['endB_' + id],
+            fill(t.endSeen, ENDINGS.filter(e => f['saw_' + e]).length, ENDINGS.length));
+        }
       } },
       X: { tex: 'box', act: async c => {
         const m = MEMORIES.find(m => !c.s.flags[m.done]);
-        if (!m) return c.say(t.boxEmpty);
+        if (!m) return c.say(bump(c, 'box') < 3 ? t.boxEmpty : t.boxEmpty2); // keep looking and something odd happens
         if (!m.ready(c.s)) return c.say(m.hint);
         await c.say(...m.open);
         arrive(c, m.map);
@@ -122,8 +141,8 @@ export const MAPS: Record<string, MapDef> = {
       'T~~~~~~~~.,,,,,,,,.222O222..1111111T',
       'T~~~~~~~~.,......,,,,,,,,,..111A111T',
       'T~~~~~~~~.,..m...,.......,,,,,,,,,.T',
-      'T~~~~~~~~R,......,..t..............T',
-      'T........K,......,........11111....T',
+      'T~~~~~~~~R,......,..t..u...........T',
+      'T...c....K,......,........11111....T',
       'T.####....,..N...,..b.....11H11....T',
       'T.#F##.r..,......,,,,,,,,,,,,,,....T',
       'T..,,,,,,,,,,,,,,,.........========T',
@@ -131,8 +150,8 @@ export const MAPS: Record<string, MapDef> = {
       'T..,..l..........,......e..........T',
       'T^^,^^^^^........,.................T',
       'T^.,.....^.......,,,,,,,,,,,,,,,,,.T',
-      'T^.P.....^.........................T',
-      'T^.......^.........................T',
+      'T^.P.....^..............33333......T',
+      'T^.......^..............33g33......T',
       'T^^^^^^^^^.........................T',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
@@ -142,13 +161,63 @@ export const MAPS: Record<string, MapDef> = {
       t: { tex: 'tourist', act: c => c.say(t.zTourist1, t.zTourist2) },
       b: { tex: 'banker', act: c => c.say(t.zBanker) },
       d: { tex: 'dog', act: c => c.say(t.zDog) },
-      l: { tex: 'friend', act: c => c.say(t.zLate) },
+      l: { tex: 'friend', act: async c => {
+        const f = c.s.flags;
+        if (f.climbed) return c.say(t.zLate3);
+        await c.say(f.climbInvite ? t.zLate2 : t.zLate);
+        f.climbInvite = true;
+      } },
+      g: { tex: 'door', on: 'cream', label: same('Boulderhalle'), act: async c => {
+        const f = c.s.flags;
+        if (!f.climbInvite) return c.say(t.gymIdle);
+        if (f.climbed) return c.say(t.gymDone);
+        await c.say(t.gym1, t.gymHow);
+        if (!await c.climb(10)) return c.say(t.gymFail);
+        f.climbed = true;
+        await c.say(t.gymWin);
+      } },
+      // Commitment: science. She wants three stories from the box before she will listen.
+      u: { tex: 'prof', act: async c => {
+        const f = c.s.flags;
+        if (f.phd) return c.say(t.uniDone);
+        if (MEMORIES.filter(m => f[m.done]).length < 3) return c.say(t.uni1);
+        await c.say(t.uni2);
+        const pick = await c.choose(t.uniQ, [t.uniA1, t.uniA2, t.uniA3]);
+        await c.say([t.uniR1, t.uniR2, t.uniR3][pick]);
+        commit(c, 'phd');
+        await c.say(t.uni3);
+      } },
+      // The date: three questions, one good answer each. Two good answers and there is a second date.
+      c: { tex: 'date', hide: s => !s.flags.match || !!s.flags.dating, act: async c => {
+        const rounds: [Line, Line[], Line[], number][] = [ // question, answers, reactions, index of the good answer
+          [t.dq1, [t.dq1a, t.dq1b, t.dq1c], [t.dr1a, t.dr1b, t.dr1c], 1],
+          [t.dq2, [t.dq2a, t.dq2b, t.dq2c], [t.dr2a, t.dr2b, t.dr2c], 0],
+          [t.dq3, [t.dq3a, t.dq3b, t.dq3c], [t.dr3a, t.dr3b, t.dr3c], 1],
+        ];
+        await c.say(t.date1);
+        let good = 0;
+        for (const [q, answers, reactions, best] of rounds) {
+          const pick = await c.choose(q, answers);
+          if (pick === best) good++;
+          await c.say(reactions[pick]);
+        }
+        if (good < 2) { c.s.flags.match = false; c.refresh(); return c.say(t.dateLose); }
+        commit(c, 'dating'); c.refresh();
+        await c.say(t.dateWin1, t.dateWin2);
+      } },
       m: { tex: 'musician', act: c => c.say(t.zMusician) },
       r: { tex: 'recycler', act: c => c.say(t.zRecycle) },
       // Side quest across two countries: he wants pão de queijo, your mother supplies it.
       e: { tex: 'expat', act: async c => {
         const f = c.s.flags;
-        if (f.paoqGiven) return c.say(t.zExpatDone);
+        if (f.startup) return c.say(t.zStartupDone);
+        if (f.paoqGiven) {
+          await c.say(t.zStartup1);
+          if (!await yes(c, t.zStartupQ)) return c.say(t.zExpatDone);
+          if (!pay(c.s, 2000)) return c.say(t.zStartupBroke);
+          commit(c, 'startup');
+          return c.say(t.zStartup2);
+        }
         if (!f.paoq) return c.say(t.zExpat1);
         f.paoqGiven = true;
         await c.say(t.zExpat2);
@@ -182,7 +251,7 @@ export const MAPS: Record<string, MapDef> = {
         const price = ticket(c.s);
         if (c.s.money < price) return c.say(fill(t.hbBroke, price));
         if (!await yes(c, fill(t.hbQ, price))) return;
-        pay(c.s, price);
+        pay(c.s, price); bump(c, 'marseille');
         await trainRide(c, [t.hb1, t.hb2], t.dodgeIntro, async () => await c.dodge(12) < 3);
         arrive(c, 'marseille');
       } },
@@ -190,7 +259,7 @@ export const MAPS: Record<string, MapDef> = {
         const f = c.s.flags;
         if (c.s.money < FLIGHT) return c.say(t.apBroke);
         if (!await yes(c, t.apQ)) return;
-        pay(c.s, FLIGHT);
+        pay(c.s, FLIGHT); bump(c, 'brazil');
         if (!f.chocolate && await yes(c, t.apChocQ) && pay(c.s, CHOCOLATE)) f.chocolate = true;
         await c.say(t.apFly1, t.apFly2);
         await c.days(2);
@@ -201,7 +270,9 @@ export const MAPS: Record<string, MapDef> = {
         const f = c.s.flags;
         if (f.pilot) {
           await c.say(t.pgAgain);
-          return c.say(await c.glide(20) ? t.pgAgainWin : t.pgFail);
+          if (!await c.glide(20)) return c.say(t.pgFail);
+          bump(c, 'flights');
+          return c.say(t.pgAgainWin);
         }
         await c.say(t.pgInstr);
         if (!f.coursePaid) {
@@ -211,7 +282,7 @@ export const MAPS: Record<string, MapDef> = {
         }
         await c.say(t.pgHow);
         if (!await c.glide(20)) return c.say(t.pgFail);
-        f.pilot = true;
+        f.pilot = true; bump(c, 'flights');
         await c.say(t.pgWin1, t.pgWin2);
       } },
       R: { tex: 'organiser', act: async c => {
@@ -262,7 +333,11 @@ export const MAPS: Record<string, MapDef> = {
       } },
       S: { tex: 'sister', act: async c => {
         const f = c.s.flags;
-        if (f.birthday) return c.say(t.sisDone);
+        if (f.birthday) {
+          if (f.moveMarseille || !await yes(c, t.maMoveQ)) return c.say(t.sisDone);
+          commit(c, 'moveMarseille');
+          return c.say(t.maMoveYes);
+        }
         if (!f.cake) { f.cakeAsked = true; return c.say(t.sis1, t.sis2); }
         f.birthday = true;
         await c.say(t.sisWin1, t.sisWin2, t.sisWin3);
@@ -342,7 +417,12 @@ export const MAPS: Record<string, MapDef> = {
       M: { tex: 'mom', act: async c => {
         const f = c.s.flags;
         if (!f.lunch) return c.say(t.brMom1);
-        if (f.paoq) return c.say(t.brMomDone);
+        if (f.paoq) {
+          if (f.moveBrazil) return c.say(t.brMomDone);
+          if (!await yes(c, t.brMoveQ)) return c.say(t.brMoveNo);
+          commit(c, 'moveBrazil');
+          return c.say(t.brMoveYes);
+        }
         f.paoq = true;
         await c.say(t.brMom2);
       } },

@@ -39,10 +39,10 @@ export const TXT = {
     `Die Kiste ist leer, der Job gehört dir, die Torte ist gegessen und die Tante überstanden. Einen Abend lang ist nichts überfällig.`,
   ],
   end2: [
-    `That is the end of this build. Still to come: dating, more friends, the university years, and the futures you can choose.`,
-    `C'est la fin de cette version. À venir : les rencards, d'autres amis, les années d'université et les futurs à choisir.`,
-    `Fim desta versão. Ainda por vir: encontros, mais amigos, os anos de faculdade e os futuros que você pode escolher.`,
-    `Das ist das Ende dieser Version. Es folgen: Dates, mehr Freunde, die Uni-Jahre und die Zukünfte, die du wählen kannst.`,
+    `Whenever you are ready, open the laptop at home and decide what comes next. Or keep living: everything you do still changes the answer.`,
+    `Quand tu seras prêt, ouvre l'ordinateur à la maison et décide de la suite. Ou continue à vivre : tout ce que tu fais change encore la réponse.`,
+    `Quando estiver pronto, abra o laptop em casa e decida o que vem agora. Ou continue vivendo: tudo o que você faz ainda muda a resposta.`,
+    `Wenn du so weit bist, klapp zu Hause den Laptop auf und entscheide, wie es weitergeht. Oder leb weiter: Alles, was du tust, ändert die Antwort noch.`,
   ],
 
   bedQ: [`Sleep until tomorrow?`, `Dormir jusqu'à demain ?`, `Dormir até amanhã?`, `Bis morgen schlafen?`],
@@ -1296,7 +1296,350 @@ export const TXT = {
     `Une vieille pierre, bien entretenue, avec des petits cailloux posés dessus par les visiteurs. Tu en ajoutes un. Quelqu'un balaie ici chaque matin. Tu sais qui.`,
     `Uma lápide antiga, bem cuidada, com pedrinhas deixadas em cima pelos visitantes. Você põe mais uma. Alguém varre aqui toda manhã. Você sabe quem.`,
     `Ein alter Stein, gut gepflegt, mit kleinen Steinchen obendrauf, von Besuchern hingelegt. Du legst einen dazu. Jemand fegt hier jeden Morgen. Du weisst, wer.`],
+  // ---- The laptop: jobs, dating, and deciding what comes next ----
+  pcMenu: [`Your laptop.`, `Ton ordinateur.`, `Seu laptop.`, `Dein Laptop.`],
+  pcJobs: [`Job portal`, `Portail d'emploi`, `Portal de vagas`, `Jobportal`],
+  pcDating: [`Dating app`, `Appli de rencontres`, `App de namoro`, `Dating-App`],
+  pcDecide: [`Decide what comes next`, `Décider de la suite`, `Decidir o que vem agora`, `Entscheiden, wie es weitergeht`],
+  pcMatch1: [
+    `Three hundred swipes. One match. Her profile says "fluent in sarcasm" and has a photo with a goat.`,
+    `Trois cents swipes. Un match. Son profil dit « bilingue en sarcasme » et montre une photo avec une chèvre.`,
+    `Trezentos swipes. Um match. O perfil dela diz "fluente em sarcasmo" e tem uma foto com uma cabra.`,
+    `Dreihundert Swipes. Ein Match. In ihrem Profil steht «fliessend sarkastisch», dazu ein Foto mit einer Ziege.`],
+  pcMatch2: [
+    `She suggests coffee by the lake. Today. You own nothing to wear that is not a Berkelium T-shirt.`,
+    `Elle propose un café au bord du lac. Aujourd'hui. Tu n'as rien à te mettre qui ne soit pas un t-shirt Berkélium.`,
+    `Ela sugere um café na beira do lago. Hoje. Você não tem nada para vestir que não seja uma camiseta de Berquélio.`,
+    `Sie schlägt Kaffee am See vor. Heute. Du besitzt nichts zum Anziehen, das kein Berkelium-T-Shirt ist.`],
+  pcMatchWaiting: [
+    `Your match is waiting by the lake. The app reminds you every four minutes.`,
+    `Ton match t'attend au bord du lac. L'appli te le rappelle toutes les quatre minutes.`,
+    `Seu match está esperando na beira do lago. O app te lembra a cada quatro minutos.`,
+    `Dein Match wartet am See. Die App erinnert dich alle vier Minuten daran.`],
+  pcDatingDone: [
+    `You deleted the app. The phone feels lighter.`,
+    `Tu as supprimé l'appli. Le téléphone paraît plus léger.`,
+    `Você apagou o app. O celular parece mais leve.`,
+    `Du hast die App gelöscht. Das Handy fühlt sich leichter an.`],
+  decide1: [
+    `You close every other tab. What do you actually want?`,
+    `Tu fermes tous les autres onglets. Qu'est-ce que tu veux vraiment ?`,
+    `Você fecha todas as outras abas. O que você quer de verdade?`,
+    `Du schliesst alle anderen Tabs. Was willst du eigentlich?`],
+  endSeen: [
+    `Futures seen: {0} of {1}. Which one you get depends on what you do. You can keep living and decide again.`,
+    `Futurs vus : {0} sur {1}. Celui que tu obtiens dépend de ce que tu fais. Tu peux continuer à vivre et décider à nouveau.`,
+    `Futuros vistos: {0} de {1}. Qual você recebe depende do que você faz. Dá para continuar vivendo e decidir de novo.`,
+    `Gesehene Zukünfte: {0} von {1}. Welche du bekommst, hängt davon ab, was du tust. Du kannst weiterleben und neu entscheiden.`],
+  boxEmpty2: [
+    `The box is still empty. It is humming slightly. Probably the fridge.`,
+    `Le carton est toujours vide. Il bourdonne légèrement. Sûrement le frigo.`,
+    `A caixa continua vazia. Está zumbindo um pouco. Deve ser a geladeira.`,
+    `Die Kiste ist immer noch leer. Sie summt leise. Wahrscheinlich der Kühlschrank.`],
+
+  // ---- The date ----
+  date1: [
+    `She is early. In Zurich this is called on time. "So. You are the one with the element on his shirt."`,
+    `Elle est en avance. À Zurich, on appelle ça être à l'heure. « Alors. C'est toi, celui avec l'élément sur le t-shirt. »`,
+    `Ela chegou cedo. Em Zurique isso se chama chegar na hora. "Então. É você o do elemento na camiseta."`,
+    `Sie ist zu früh. In Zürich nennt man das pünktlich. «So. Du bist also der mit dem Element auf dem Shirt.»`],
+  dq1: [`"What do you do when you are not working?"`, `« Tu fais quoi quand tu ne travailles pas ? »`, `"O que você faz quando não está trabalhando?"`, `«Was machst du, wenn du nicht arbeitest?»`],
+  dq1a: [`List every sport, with weekly distances`, `Énumérer chaque sport, avec les distances hebdomadaires`, `Listar cada esporte, com as distâncias semanais`, `Jede Sportart aufzählen, mit Wochenkilometern`],
+  dq1b: [`Ask what she does first`, `Lui demander d'abord ce qu'elle fait, elle`, `Perguntar primeiro o que ela faz`, `Erst fragen, was sie macht`],
+  dq1c: [`"I jump off mountains."`, `« Je saute des montagnes. »`, `"Eu pulo de montanhas."`, `«Ich springe von Bergen.»`],
+  dr1a: [
+    `You are four minutes into your running statistics. She has checked the time twice.`,
+    `Tu en es à quatre minutes de statistiques de course. Elle a regardé l'heure deux fois.`,
+    `Você está há quatro minutos nas suas estatísticas de corrida. Ela já olhou as horas duas vezes.`,
+    `Du bist seit vier Minuten bei deinen Laufstatistiken. Sie hat zweimal auf die Uhr geschaut.`],
+  dr1b: [
+    `She talks about her pottery for ten minutes. You learn the word "glaze". You are doing great.`,
+    `Elle parle de sa poterie pendant dix minutes. Tu apprends le mot « émail ». Tu t'en sors très bien.`,
+    `Ela fala da cerâmica dela por dez minutos. Você aprende a palavra "esmalte". Você está indo muito bem.`,
+    `Sie erzählt zehn Minuten von ihrer Töpferei. Du lernst das Wort «Glasur». Du machst das grossartig.`],
+  dr1c: [
+    `"With a parachute?" "Sort of." She is interested, and slightly worried.`,
+    `« Avec un parachute ? » « En quelque sorte. » Elle est intéressée, et un peu inquiète.`,
+    `"De paraquedas?" "Mais ou menos." Ela fica interessada, e um pouco preocupada.`,
+    `«Mit Fallschirm?» «So ähnlich.» Sie ist interessiert und leicht besorgt.`],
+  dq2: [`"And your family, are they here?"`, `« Et ta famille, elle est ici ? »`, `"E a sua família, mora aqui?"`, `«Und deine Familie, ist die hier?»`],
+  dq2a: [`"Everyone I love is a train or a plane away."`, `« Tous ceux que j'aime sont à un train ou un avion d'ici. »`, `"Todo mundo que eu amo está a um trem ou a um avião daqui."`, `«Alle, die ich liebe, sind einen Zug oder einen Flug entfernt.»`],
+  dq2b: [`Explain your tax situation across three countries`, `Expliquer ta situation fiscale dans trois pays`, `Explicar sua situação fiscal em três países`, `Deine Steuersituation in drei Ländern erklären`],
+  dq2c: [`Show the drawings from your nieces`, `Montrer les dessins de tes nièces`, `Mostrar os desenhos das sobrinhas`, `Die Zeichnungen deiner Nichten zeigen`],
+  dr2a: [
+    `It comes out more honest than planned. She puts her cup down. "That must be hard." It is. It also worked.`,
+    `C'est sorti plus sincère que prévu. Elle pose sa tasse. « Ça doit être dur. » Ça l'est. Et ça a marché.`,
+    `Sai mais sincero do que o planejado. Ela apoia a xícara. "Deve ser difícil." É. E também funcionou.`,
+    `Es klingt ehrlicher als geplant. Sie stellt die Tasse ab. «Das ist sicher schwer.» Ist es. Es hat auch funktioniert.`],
+  dr2b: [
+    `You say "withholding tax" on a first date. Somewhere, a violin stops.`,
+    `Tu dis « impôt à la source » à un premier rendez-vous. Quelque part, un violon s'arrête.`,
+    `Você diz "imposto retido na fonte" num primeiro encontro. Em algum lugar, um violino para de tocar.`,
+    `Du sagst «Quellensteuer» beim ersten Date. Irgendwo verstummt eine Geige.`],
+  dr2c: [
+    `She studies the very large dog you do not own. "He seems nice."`,
+    `Elle examine le très gros chien que tu n'as pas. « Il a l'air gentil. »`,
+    `Ela examina o cachorro enorme que você não tem. "Ele parece legal."`,
+    `Sie betrachtet den sehr grossen Hund, den du nicht hast. «Der wirkt nett.»`],
+  dq3: [`"So what are you looking for?"`, `« Et tu cherches quoi, au juste ? »`, `"E o que você está procurando?"`, `«Und was suchst du so?»`],
+  dq3a: [`"A flat under two thousand francs."`, `« Un appartement à moins de deux mille francs. »`, `"Um apartamento por menos de dois mil francos."`, `«Eine Wohnung unter zweitausend Franken.»`],
+  dq3b: [`"Honestly? I have a box at home I only just unpacked."`, `« Honnêtement ? J'ai un carton chez moi que je viens à peine de déballer. »`, `"Sinceramente? Tenho uma caixa em casa que só agora eu abri."`, `«Ehrlich? Ich habe zu Hause eine Kiste, die ich gerade erst ausgepackt habe.»`],
+  dq3c: [`"Depends. What is your salary?"`, `« Ça dépend. Tu gagnes combien ? »`, `"Depende. Quanto você ganha?"`, `«Kommt drauf an. Was verdienst du?»`],
+  dr3a: [
+    `She laughs. "Aren't we all." A solid joke. Not an answer.`,
+    `Elle rit. « Comme tout le monde. » Bonne blague. Pas une réponse.`,
+    `Ela ri. "Quem não está." Boa piada. Não é uma resposta.`,
+    `Sie lacht. «Wer nicht.» Guter Witz. Keine Antwort.`],
+  dr3b: [
+    `You tell her about the box. She does not run. She asks what was in it.`,
+    `Tu lui parles du carton. Elle ne s'enfuit pas. Elle demande ce qu'il y avait dedans.`,
+    `Você conta da caixa. Ela não sai correndo. Pergunta o que tinha dentro.`,
+    `Du erzählst ihr von der Kiste. Sie läuft nicht weg. Sie fragt, was drin war.`],
+  dr3c: [
+    `You meant it as a joke about Zurich. It did not land as a joke about Zurich.`,
+    `C'était une blague sur Zurich. Elle n'a pas été reçue comme une blague sur Zurich.`,
+    `Era para ser uma piada sobre Zurique. Não foi recebida como uma piada sobre Zurique.`,
+    `Es war als Witz über Zürich gemeint. Es kam nicht als Witz über Zürich an.`],
+  dateWin1: [
+    `She says she would like to do this again. You say "me too" in a normal voice, which is the hardest thing you have done all year.`,
+    `Elle dit qu'elle aimerait remettre ça. Tu réponds « moi aussi » d'une voix normale, ce qui est la chose la plus difficile que tu aies faite de l'année.`,
+    `Ela diz que gostaria de repetir. Você responde "eu também" com voz normal, a coisa mais difícil que você fez no ano.`,
+    `Sie sagt, sie würde das gern wiederholen. Du sagst «ich auch» mit normaler Stimme, das Schwierigste, was du dieses Jahr getan hast.`],
+  dateWin2: [
+    `On the way home you notice the lake. It was there the whole time.`,
+    `En rentrant, tu remarques le lac. Il était là depuis le début.`,
+    `No caminho de casa você repara no lago. Ele estava lá o tempo todo.`,
+    `Auf dem Heimweg fällt dir der See auf. Er war die ganze Zeit da.`],
+  dateLose: [
+    `"You are really nice." The four coldest words in any language. The app offers you more matches.`,
+    `« Tu es vraiment gentil. » Les quatre mots les plus froids de toutes les langues. L'appli te propose d'autres matchs.`,
+    `"Você é muito legal." As quatro palavras mais frias de qualquer idioma. O app te oferece mais matches.`,
+    `«Du bist echt nett.» Die vier kältesten Wörter jeder Sprache. Die App bietet dir weitere Matches an.`],
+
+  // ---- Climbing with the friend who is always late ----
+  zLate2: [`"Thursday. Seven. I will be there. Probably."`, `« Jeudi. Sept heures. J'y serai. Probablement. »`, `"Quinta. Sete. Vou estar lá. Provavelmente."`, `«Donnerstag. Sieben. Ich bin da. Wahrscheinlich.»`],
+  zLate3: [
+    `"You topped the yellow one? Without me? I was nearly there. I was on the tram."`,
+    `« Tu as sorti la jaune ? Sans moi ? J'y étais presque. J'étais dans le tram. »`,
+    `"Você fechou a amarela? Sem mim? Eu estava quase chegando. Estava no bonde."`,
+    `«Du hast die Gelbe getoppt? Ohne mich? Ich war fast da. Ich war im Tram.»`],
+  gymIdle: [
+    `A bouldering hall. It smells of chalk and optimism.`,
+    `Une salle de bloc. Ça sent la magnésie et l'optimisme.`,
+    `Um ginásio de boulder. Cheira a magnésio e otimismo.`,
+    `Eine Boulderhalle. Es riecht nach Magnesia und Optimismus.`],
+  gym1: [
+    `Your friend said seven. It is twenty to eight. You chalk up alone.`,
+    `Ton ami avait dit sept heures. Il est huit heures moins vingt. Tu te magnésies tout seul.`,
+    `Seu amigo disse sete. São vinte para as oito. Você passa o magnésio sozinho.`,
+    `Dein Freund hat sieben gesagt. Es ist zwanzig vor acht. Du chalkst dich allein ein.`],
+  gymHow: [
+    `Read the route from the bottom: press the arrow shown on each hold, in order. A wrong arrow and you slip.`,
+    `Lis la voie depuis le bas : appuie sur la flèche de chaque prise, dans l'ordre. Une mauvaise flèche et tu glisses.`,
+    `Leia a via de baixo para cima: aperte a seta de cada agarra, na ordem. Seta errada e você escorrega.`,
+    `Lies die Route von unten: Drück an jedem Griff den gezeigten Pfeil, der Reihe nach. Falscher Pfeil und du rutschst ab.`],
+  climbHud: [`Holds {0}/{1} · slips {2}/{3} · {4}s`, `Prises {0}/{1} · glissades {2}/{3} · {4}s`, `Agarras {0}/{1} · escorregões {2}/{3} · {4}s`, `Griffe {0}/{1} · Rutscher {2}/{3} · {4}s`],
+  gymFail: [
+    `You peel off the wall and land on the mat like a dropped sandwich. Try again.`,
+    `Tu te décolles du mur et tu atterris sur le tapis comme un sandwich tombé. Réessaie.`,
+    `Você descola da parede e cai no colchão feito um sanduíche derrubado. Tente de novo.`,
+    `Du löst dich von der Wand und landest auf der Matte wie ein fallen gelassenes Sandwich. Versuch's nochmal.`],
+  gymWin: [
+    `You top out just as your friend walks in. "Did I miss anything?" "Everything." "Cool. Beer?"`,
+    `Tu sors la voie pile quand ton ami arrive. « J'ai raté quelque chose ? » « Tout. » « Cool. Une bière ? »`,
+    `Você chega ao topo bem quando seu amigo entra. "Perdi alguma coisa?" "Tudo." "Legal. Cerveja?"`,
+    `Du toppst genau, als dein Freund reinkommt. «Hab ich was verpasst?» «Alles.» «Cool. Bier?»`],
+  gymDone: [
+    `The yellow route. You own it now. Emotionally.`,
+    `La voie jaune. Elle est à toi maintenant. Émotionnellement.`,
+    `A via amarela. Agora ela é sua. Emocionalmente.`,
+    `Die gelbe Route. Sie gehört jetzt dir. Emotional.`],
+
+  // ---- Commitments: each one pulls the future its way ----
+  uni1: [
+    `"A doctorate is three good stories and a literature review. Come back when you have the stories."`,
+    `« Un doctorat, c'est trois bonnes histoires et une revue de littérature. Revenez quand vous aurez les histoires. »`,
+    `"Um doutorado são três boas histórias e uma revisão bibliográfica. Volte quando tiver as histórias."`,
+    `«Ein Doktorat besteht aus drei guten Geschichten und einem Literaturüberblick. Kommen Sie wieder, wenn Sie die Geschichten haben.»`],
+  uni2: [
+    `"So you fixed a logger at minus thirty and flew satellites, and now you want to study ice. Sit down."`,
+    `« Donc vous avez réparé un enregistreur par moins trente et piloté des satellites, et maintenant vous voulez étudier la glace. Asseyez-vous. »`,
+    `"Então você consertou um registrador a trinta abaixo de zero e pilotou satélites, e agora quer estudar gelo. Sente-se."`,
+    `«Sie haben also bei minus dreissig einen Logger repariert und Satelliten geflogen, und jetzt wollen Sie Eis erforschen. Setzen Sie sich.»`],
+  uniQ: [`"Why a doctorate, at your age?"`, `« Pourquoi un doctorat, à votre âge ? »`, `"Por que um doutorado, na sua idade?"`, `«Warum ein Doktorat, in Ihrem Alter?»`],
+  uniA1: [`"I like not knowing things."`, `« J'aime ne pas savoir. »`, `"Eu gosto de não saber as coisas."`, `«Ich mag es, Dinge nicht zu wissen.»`],
+  uniA2: [`"For the salary."`, `« Pour le salaire. »`, `"Pelo salário."`, `«Wegen des Lohns.»`],
+  uniA3: [`"I keep fixing things in the cold. I want to know why they break."`, `« Je répare sans arrêt des choses dans le froid. Je veux savoir pourquoi elles cassent. »`, `"Eu vivo consertando coisas no frio. Quero saber por que elas quebram."`, `«Ich repariere ständig Dinge in der Kälte. Ich will wissen, warum sie kaputtgehen.»`],
+  uniR1: [`"Good. You will be very happy here."`, `« Bien. Vous serez très heureux ici. »`, `"Ótimo. Você vai ser muito feliz aqui."`, `«Gut. Sie werden hier sehr glücklich sein.»`],
+  uniR2: [
+    `She laughs for a long time. "Oh, you are funny. You will fit in."`,
+    `Elle rit longtemps. « Oh, vous êtes drôle. Vous allez vous plaire ici. »`,
+    `Ela ri por um bom tempo. "Ah, você é engraçado. Vai se dar bem aqui."`,
+    `Sie lacht lange. «Oh, Sie sind lustig. Sie passen hierher.»`],
+  uniR3: [
+    `She writes something down. It is the first time a professor has written down something you said.`,
+    `Elle note quelque chose. C'est la première fois qu'un professeur note ce que tu dis.`,
+    `Ela anota alguma coisa. É a primeira vez que um professor anota algo que você disse.`,
+    `Sie schreibt etwas auf. Zum ersten Mal notiert eine Professorin etwas, das du gesagt hast.`],
+  uni3: [
+    `"Send me two pages by Friday." You have a research proposal to write. You feel twenty-five and terrified. It is wonderful.`,
+    `« Envoyez-moi deux pages d'ici vendredi. » Tu as un projet de recherche à écrire. Tu te sens vingt-cinq ans et terrifié. C'est merveilleux.`,
+    `"Me mande duas páginas até sexta." Você tem um projeto de pesquisa para escrever. Sente-se com vinte e cinco anos e apavorado. É maravilhoso.`,
+    `«Schicken Sie mir bis Freitag zwei Seiten.» Du hast ein Forschungsproposal zu schreiben. Du fühlst dich wie fünfundzwanzig und hast Angst. Es ist wunderbar.`],
+  uniDone: [`"Two pages. Friday. I have not forgotten."`, `« Deux pages. Vendredi. Je n'ai pas oublié. »`, `"Duas páginas. Sexta. Eu não esqueci."`, `«Zwei Seiten. Freitag. Ich habe es nicht vergessen.»`],
+  zStartup1: [
+    `"Cara. Hear me out. Pão de Queijo Zürich GmbH. The Swiss have never tasted happiness. I need CHF 2,000 and someone who can build a website."`,
+    `« Cara. Écoute-moi. Pão de Queijo Zürich GmbH. Les Suisses n'ont jamais goûté au bonheur. Il me faut CHF 2 000 et quelqu'un qui sait faire un site web. »`,
+    `"Cara. Me escuta. Pão de Queijo Zürich GmbH. Os suíços nunca provaram a felicidade. Preciso de CHF 2.000 e de alguém que saiba fazer um site."`,
+    `«Cara. Hör zu. Pão de Queijo Zürich GmbH. Die Schweizer haben noch nie Glück geschmeckt. Ich brauche CHF 2'000 und jemanden, der eine Website bauen kann.»`],
+  zStartupQ: [
+    `Put CHF 2,000 into the pão de queijo business?`,
+    `Mettre CHF 2 000 dans l'affaire de pão de queijo ?`,
+    `Colocar CHF 2.000 no negócio de pão de queijo?`,
+    `CHF 2'000 ins Pão-de-Queijo-Geschäft stecken?`],
+  zStartupBroke: [
+    `"No money? Then we are both founders already."`,
+    `« Pas d'argent ? Alors on est déjà deux fondateurs. »`,
+    `"Sem dinheiro? Então já somos dois fundadores."`,
+    `«Kein Geld? Dann sind wir beide schon Gründer.»`],
+  zStartup2: [
+    `You are now co-founder and CTO of a cheese-bread company. Your first ticket reads "logo???".`,
+    `Te voilà cofondateur et CTO d'une entreprise de pains au fromage. Ton premier ticket s'intitule « logo ??? ».`,
+    `Agora você é cofundador e CTO de uma empresa de pão de queijo. Seu primeiro ticket diz "logo???".`,
+    `Du bist jetzt Mitgründer und CTO einer Käsebrötchen-Firma. Dein erstes Ticket heisst «Logo???».`],
+  zStartupDone: [
+    `"We sold out at the Saturday market. A lady asked if it is gluten-free. It is! We are going to be rich, or at least fed."`,
+    `« On a tout vendu au marché du samedi. Une dame a demandé si c'était sans gluten. Ça l'est ! On va être riches, ou au moins nourris. »`,
+    `"Vendemos tudo na feira de sábado. Uma senhora perguntou se é sem glúten. É! A gente vai ficar rico, ou pelo menos alimentado."`,
+    `«Am Samstagsmarkt waren wir ausverkauft. Eine Dame hat gefragt, ob es glutenfrei ist. Ist es! Wir werden reich, oder wenigstens satt.»`],
+  maMoveQ: [
+    `"There is a flat free two streets from us. Small, loud, perfect. Shall I ask about it?"`,
+    `« Il y a un appartement libre à deux rues de chez nous. Petit, bruyant, parfait. Je me renseigne ? »`,
+    `"Tem um apartamento vago a duas ruas da gente. Pequeno, barulhento, perfeito. Quer que eu pergunte?"`,
+    `«Zwei Strassen von uns ist eine Wohnung frei. Klein, laut, perfekt. Soll ich nachfragen?»`],
+  maMoveYes: [
+    `"I am calling the landlord. The girls are going to scream." The girls scream.`,
+    `« J'appelle le propriétaire. Les filles vont hurler. » Les filles hurlent.`,
+    `"Vou ligar para o proprietário. As meninas vão gritar." As meninas gritam.`,
+    `«Ich rufe den Vermieter an. Die Mädchen werden kreischen.» Die Mädchen kreischen.`],
+  brMoveQ: [
+    `"Your room is still your room. Are you coming back for good, one of these days?"`,
+    `« Ta chambre est toujours ta chambre. Tu reviens pour de bon, un de ces jours ? »`,
+    `"Seu quarto continua sendo seu quarto. Você volta de vez, um dia desses?"`,
+    `«Dein Zimmer ist immer noch dein Zimmer. Kommst du eines Tages endgültig zurück?»`],
+  brMoveYes: [
+    `"Soon, mãe. I mean it." She does not answer. She goes to check that the room has clean sheets.`,
+    `« Bientôt, mãe. Je suis sérieux. » Elle ne répond pas. Elle va vérifier que la chambre a des draps propres.`,
+    `"Logo, mãe. É sério." Ela não responde. Vai conferir se o quarto está com lençol limpo.`,
+    `«Bald, mãe. Ich meine es ernst.» Sie antwortet nicht. Sie geht nachsehen, ob das Zimmer frisch bezogen ist.`],
+  brMoveNo: [
+    `"Not yet, mãe." She nods, and packs more pão de queijo.`,
+    `« Pas encore, mãe. » Elle hoche la tête et emballe encore du pão de queijo.`,
+    `"Ainda não, mãe." Ela faz que sim com a cabeça e embala mais pão de queijo.`,
+    `«Noch nicht, mãe.» Sie nickt und packt noch mehr Pão de Queijo ein.`],
+
+  // ---- The futures: title and two lines each ----
+  endT_science: [`FUTURE: THE LAB`, `FUTUR : LE LABO`, `FUTURO: O LABORATÓRIO`, `ZUKUNFT: DAS LABOR`],
+  endA_science: [
+    `You take the doctorate. The salary is a third of the bank's and the questions are ten times better.`,
+    `Tu fais le doctorat. Le salaire est le tiers de celui de la banque et les questions sont dix fois meilleures.`,
+    `Você faz o doutorado. O salário é um terço do do banco e as perguntas são dez vezes melhores.`,
+    `Du machst das Doktorat. Der Lohn ist ein Drittel dessen bei der Bank und die Fragen sind zehnmal besser.`],
+  endB_science: [
+    `Four years later you defend a thesis about ice in front of your parents, who understand none of it and cry anyway.`,
+    `Quatre ans plus tard, tu soutiens une thèse sur la glace devant tes parents, qui n'y comprennent rien et pleurent quand même.`,
+    `Quatro anos depois você defende uma tese sobre gelo na frente dos seus pais, que não entendem nada e choram mesmo assim.`,
+    `Vier Jahre später verteidigst du eine Dissertation über Eis vor deinen Eltern, die nichts davon verstehen und trotzdem weinen.`],
+  endT_founder: [`FUTURE: THE COMPANY`, `FUTUR : LA BOÎTE`, `FUTURO: A EMPRESA`, `ZUKUNFT: DIE FIRMA`],
+  endA_founder: [
+    `Pão de Queijo Zürich GmbH opens its third stand. You are CTO, courier, and the one who fixes the oven.`,
+    `Pão de Queijo Zürich GmbH ouvre son troisième stand. Tu es CTO, livreur et celui qui répare le four.`,
+    `A Pão de Queijo Zürich GmbH abre a terceira barraca. Você é CTO, entregador e quem conserta o forno.`,
+    `Die Pão de Queijo Zürich GmbH eröffnet ihren dritten Stand. Du bist CTO, Kurier und der, der den Ofen repariert.`],
+  endB_founder: [
+    `A Swiss newspaper calls it "surprisingly joyful". Your grandmother demands royalties for the recipe.`,
+    `Un journal suisse parle d'une affaire « étonnamment joyeuse ». Ta grand-mère réclame des droits d'auteur pour la recette.`,
+    `Um jornal suíço chama de "surpreendentemente alegre". Sua avó exige royalties pela receita.`,
+    `Eine Schweizer Zeitung nennt es «überraschend fröhlich». Deine Grossmutter verlangt Tantiemen für das Rezept.`],
+  endT_marseille: [`FUTURE: TWO STREETS AWAY`, `FUTUR : À DEUX RUES`, `FUTURO: A DUAS RUAS`, `ZUKUNFT: ZWEI STRASSEN WEITER`],
+  endA_marseille: [
+    `You move to Marseille. The flat is small and loud, and your nieces let themselves in.`,
+    `Tu emménages à Marseille. L'appartement est petit et bruyant, et tes nièces entrent sans frapper.`,
+    `Você se muda para Marselha. O apartamento é pequeno e barulhento, e suas sobrinhas entram sem bater.`,
+    `Du ziehst nach Marseille. Die Wohnung ist klein und laut, und deine Nichten kommen einfach rein.`],
+  endB_marseille: [
+    `You work remotely, badly, between school runs. Nobody says "you should live closer" any more. They say "you are late".`,
+    `Tu télétravailles, mal, entre deux trajets d'école. Plus personne ne dit « tu devrais habiter plus près ». On dit « tu es en retard ».`,
+    `Você trabalha remoto, mal, entre uma ida e outra à escola. Ninguém mais diz "você devia morar mais perto". Dizem "você está atrasado".`,
+    `Du arbeitest remote, schlecht, zwischen den Schulwegen. Niemand sagt mehr «du solltest näher wohnen». Sie sagen «du bist zu spät».`],
+  endT_brazil: [`FUTURE: HOME`, `FUTUR : À LA MAISON`, `FUTURO: EM CASA`, `ZUKUNFT: DAHEIM`],
+  endA_brazil: [
+    `You go back. The mango tree has grown. So has the queue for Sunday lunch.`,
+    `Tu rentres. Le manguier a grandi. La file pour le déjeuner du dimanche aussi.`,
+    `Você volta. A mangueira cresceu. A fila do almoço de domingo também.`,
+    `Du gehst zurück. Der Mangobaum ist gewachsen. Die Schlange beim Sonntagsessen auch.`],
+  endB_brazil: [
+    `You miss the trains for a month. Then your grandmother puts a plate in front of you, and you stop counting what you miss.`,
+    `Les trains te manquent pendant un mois. Puis ta grand-mère pose une assiette devant toi, et tu arrêtes de compter ce qui te manque.`,
+    `Você sente falta dos trens por um mês. Aí sua avó põe um prato na sua frente, e você para de contar do que sente falta.`,
+    `Einen Monat lang fehlen dir die Züge. Dann stellt dir deine Grossmutter einen Teller hin, und du hörst auf zu zählen, was dir fehlt.`],
+  endT_zurich: [`FUTURE: THE CITY THAT GREW ON YOU`, `FUTUR : LA VILLE QUI T'A EU`, `FUTURO: A CIDADE QUE TE CONQUISTOU`, `ZUKUNFT: DIE STADT, DIE DICH GEKRIEGT HAT`],
+  endA_zurich: [
+    `You stay. One day you catch yourself complaining that a train is two minutes late, and you realise you are home.`,
+    `Tu restes. Un jour, tu te surprends à râler parce qu'un train a deux minutes de retard, et tu comprends que tu es chez toi.`,
+    `Você fica. Um dia se pega reclamando de um trem dois minutos atrasado, e percebe que está em casa.`,
+    `Du bleibst. Eines Tages ertappst du dich dabei, dich über zwei Minuten Zugverspätung zu ärgern, und merkst: Du bist zu Hause.`],
+  endB_zurich: [
+    `The rent is still absurd. The lake is still free. And these days somebody waits by it.`,
+    `Le loyer est toujours absurde. Le lac est toujours gratuit. Et désormais, quelqu'un t'y attend.`,
+    `O aluguel continua absurdo. O lago continua de graça. E agora tem alguém esperando lá.`,
+    `Die Miete ist immer noch absurd. Der See ist immer noch gratis. Und inzwischen wartet dort jemand.`],
+  endT_antarctica: [`SECRET FUTURE: SOUTH`, `FUTUR SECRET : LE SUD`, `FUTURO SECRETO: SUL`, `GEHEIME ZUKUNFT: SÜDEN`],
+  endA_antarctica: [
+    `You sign up for the winter. Fourteen months, twelve people, one washing machine.`,
+    `Tu signes pour l'hivernage. Quatorze mois, douze personnes, une machine à laver.`,
+    `Você se inscreve para o inverno. Catorze meses, doze pessoas, uma máquina de lavar.`,
+    `Du meldest dich für die Überwinterung. Vierzehn Monate, zwölf Leute, eine Waschmaschine.`],
+  endB_antarctica: [
+    `The penguin from last time recognises you. It is still not impressed.`,
+    `Le manchot de la dernière fois te reconnaît. Il n'est toujours pas impressionné.`,
+    `O pinguim da outra vez te reconhece. Continua não impressionado.`,
+    `Der Pinguin vom letzten Mal erkennt dich wieder. Er ist immer noch nicht beeindruckt.`],
+  endT_sky: [`SECRET FUTURE: NEVER LANDED`, `FUTUR SECRET : JAMAIS REDESCENDU`, `FUTURO SECRETO: NUNCA POUSOU`, `GEHEIME ZUKUNFT: NIE GELANDET`],
+  endA_sky: [
+    `One evening the thermal is too good and you simply keep going. Over the Alps, over the sea.`,
+    `Un soir, le thermique est trop bon et tu continues, tout simplement. Par-dessus les Alpes, par-dessus la mer.`,
+    `Uma tarde a térmica está boa demais e você simplesmente continua. Por cima dos Alpes, por cima do mar.`,
+    `Eines Abends ist die Thermik zu gut und du fliegst einfach weiter. Über die Alpen, über das Meer.`],
+  endB_sky: [
+    `They say that on clear days you can see a small navy dot above Marseille, waving.`,
+    `On dit que par temps clair, on aperçoit au-dessus de Marseille un petit point bleu marine qui fait coucou.`,
+    `Dizem que em dia claro dá para ver um pontinho azul-marinho sobre Marselha, acenando.`,
+    `Man sagt, an klaren Tagen sehe man über Marseille einen kleinen dunkelblauen Punkt, der winkt.`],
+  endT_astronaut: [`SECRET FUTURE: UP`, `FUTUR SECRET : LÀ-HAUT`, `FUTURO SECRETO: LÁ EM CIMA`, `GEHEIME ZUKUNFT: NACH OBEN`],
+  endA_astronaut: [
+    `The space agency wanted someone who has flown satellites, survived the ice, runs fast and can fix anything with numb fingers. It is a short list.`,
+    `L'agence spatiale cherchait quelqu'un qui a piloté des satellites, survécu à la glace, court vite et répare tout avec les doigts gelés. La liste est courte.`,
+    `A agência espacial queria alguém que pilotou satélites, sobreviveu ao gelo, corre rápido e conserta qualquer coisa com os dedos dormentes. A lista é curta.`,
+    `Die Raumfahrtagentur suchte jemanden, der Satelliten geflogen, das Eis überlebt hat, schnell läuft und mit tauben Fingern alles repariert. Die Liste ist kurz.`],
+  endB_astronaut: [
+    `From orbit you see Zurich, Marseille and São Paulo within the same hour. For once, everyone you love is on the way.`,
+    `Depuis l'orbite, tu vois Zurich, Marseille et São Paulo dans la même heure. Pour une fois, tous ceux que tu aimes sont sur le chemin.`,
+    `Da órbita você vê Zurique, Marselha e São Paulo na mesma hora. Pela primeira vez, todo mundo que você ama fica no caminho.`,
+    `Aus dem Orbit siehst du Zürich, Marseille und São Paulo innerhalb einer Stunde. Ausnahmsweise liegen alle, die du liebst, auf dem Weg.`],
+  endT_time: [`SECRET FUTURE: THE BOX`, `FUTUR SECRET : LE CARTON`, `FUTURO SECRETO: A CAIXA`, `GEHEIME ZUKUNFT: DIE KISTE`],
+  endA_time: [
+    `The fifth time you look into the empty box, it looks back. It was never a moving box.`,
+    `La cinquième fois que tu regardes dans le carton vide, il te regarde aussi. Ça n'a jamais été un carton de déménagement.`,
+    `Na quinta vez que você olha para dentro da caixa vazia, ela olha de volta. Nunca foi uma caixa de mudança.`,
+    `Als du zum fünften Mal in die leere Kiste schaust, schaut sie zurück. Es war nie eine Umzugskiste.`],
+  endB_time: [
+    `You climb in. It is 2007. You are seventeen, it is about to rain, and this time you know exactly where the rope is.`,
+    `Tu grimpes dedans. On est en 2007. Tu as dix-sept ans, il va pleuvoir, et cette fois tu sais exactement où est la corde.`,
+    `Você entra. É 2007. Você tem dezessete anos, vai chover, e desta vez sabe exatamente onde está a corda.`,
+    `Du steigst hinein. Es ist 2007. Du bist siebzehn, gleich regnet es, und diesmal weisst du genau, wo das Seil liegt.`],
 } satisfies Record<string, Line>;
+
 
 
 // Transactions for the bank's sorting game. `bad` means it should be flagged as suspicious.

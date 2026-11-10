@@ -85,6 +85,7 @@ const ART: Record<string, Rect[]> = {
   balloon: [['#e2372c', 2, 1, 5, 6], ['#3f8fd0', 9, 3, 5, 6], ['#999', 4, 7, 1, 8], ['#999', 11, 9, 1, 6]],
   caketable: [['#fff', 1, 8, 14, 5], ['#8a5a44', 2, 13, 2, 3], ['#8a5a44', 12, 13, 2, 3], ['#f5b7d0', 5, 4, 6, 4], ['#f2c94c', 7, 2, 1, 2], ['#5a3a1a', 2, 7, 1, 1], ['#5a3a1a', 4, 7, 1, 1], ['#5a3a1a', 12, 7, 1, 1]],
   castle: [['#e2372c', 0, 6, 16, 10], ['#f2c94c', 0, 2, 4, 4], ['#f2c94c', 12, 2, 4, 4], ['#3f8fd0', 4, 9, 8, 7]],
+  date: person('#16a085', '#7b3f00'),
   banker: person('#1c2333', '#2b2320'),
   friend: person('#8e44ad', '#a5682a'),
   musician: person('#b0392b', '#eee'),
@@ -207,7 +208,7 @@ class World extends Phaser.Scene implements Ctx {
     this.fog = this.ui(this.add.image(W / 2, H / 2, 'fog_dark'), 20).setVisible(false);
 
     // Phaser puts its own plugins on the scene (load, lights, time...), which silently shadow a method of the same name.
-    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'build', 'play'])
+    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'climb', 'build', 'play'])
       if (typeof (this as any)[k] !== 'function') throw new Error(`World.${k} is shadowed by a Phaser plugin: rename it`);
     this.keys = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.on('keydown', (e: KeyboardEvent) => {
@@ -801,6 +802,32 @@ class World extends Phaser.Scene implements Ctx {
         const free = kids.filter(k => !k.out).length;
         label.setText(this.tr(TXT.tagHud, n - free, n, this.left(seconds, t)));
         return free === 0 ? true : t >= seconds * 1000 ? false : undefined;
+      };
+    });
+  }
+
+  // Route reading: holds run bottom to top, each with an arrow; press them in order before your arms give out. (Bouldering.)
+  climb(n: number, seconds = 15) {
+    return this.play<boolean>(0x4a4e57, (add, label) => {
+      const KEYS = ['ArrowLeft', 'ArrowUp', 'ArrowRight'], GLYPH = '←↑→', X = [W / 2 - 110, W / 2, W / 2 + 110];
+      const route = Array.from({ length: n }, () => Math.floor(Math.random() * 3));
+      const y = (i: number) => 430 - i * (330 / n);
+      route.forEach((r, i) => {
+        add(this.add.circle(X[r], y(i), 12, [0xf2c94c, 0xe2574c, 0x3fbf7f][r]));
+        add(this.add.text(X[r], y(i), GLYPH[r], { ...FONT, fontSize: '17px', color: '#1c1e21' }).setOrigin(0.5), 62);
+      });
+      const me = add(this.add.image(W / 2, 455, 'me').setScale(0.85), 63);
+      let at = 0, slips = 0;
+      this.onKey = c => {
+        const k = KEYS.indexOf(c);
+        if (k < 0 || at >= n) return;
+        if (k !== route[at]) { slips++; this.cameras.main.shake(120, 0.01); return; }
+        me.setPosition(X[route[at]] + 26, y(at));
+        at++;
+      };
+      return (_, t) => {
+        label.setText(this.tr(TXT.climbHud, at, n, slips, this.lives, this.left(seconds, t)));
+        return at >= n ? true : slips >= this.lives || t >= seconds * 1000 ? false : undefined;
       };
     });
   }
