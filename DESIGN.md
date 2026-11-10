@@ -121,7 +121,7 @@ User direction 2026-11-10: they are a big part of the fun, so vary them; each ki
 | Conversation choices | plain `c.choose` | the date |
 | Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
 
-All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Duels are data in `logic.ts`: the ordinary moves can never win, the special move (earned elsewhere) can, and a test proves both. Other building blocks: `c.backdrop()`, map `fog`, `spawn`.
+All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Duels are data in `logic.ts`: the ordinary moves can never win, the special move (earned elsewhere) can, and a test proves both. Other building blocks: `c.backdrop("train" | "plane")` travel scenes, map `fog`, `spawn`.
 
 Also: touch controls (on-screen pad on phones and tablets), sound effects for dialogue, success and mistakes, a two-frame walk; activity tracker (10 tiles = 1 km) in a side column with a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
 

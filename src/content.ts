@@ -10,7 +10,7 @@ export type Ctx = {
   go(map: string, x: number, y: number): void;
   days(n?: number): Promise<void>;
   duel(kind: DuelId): Promise<boolean>;    // turn-based conversation (interview, family lunch)
-  backdrop(on: boolean): void;             // train-ride scene behind the dialogue
+  backdrop(kind: false | 'train' | 'plane'): void; // travel scene behind the dialogue
   refresh(): void;
   // Minigames: each returns whether you made it, unless noted.
   simon(n: number): Promise<boolean>;                 // memorise and repeat n arrows
@@ -78,7 +78,7 @@ export const afterScript: Script = async c => {
 
 // Animated ride, then a game to make the connection. Missing it costs an extra day.
 async function trainRide(c: Ctx, lines: Line[], how: Line, game: () => Promise<boolean>) {
-  c.backdrop(true);
+  c.backdrop('train');
   await c.say(...lines, how);
   const missed = !await game();
   await c.say(missed ? t.dodgeMiss : t.dodgeOk);
@@ -261,7 +261,9 @@ export const MAPS: Record<string, MapDef> = {
         if (!await yes(c, t.apQ)) return;
         pay(c.s, FLIGHT); bump(c, 'brazil');
         if (!f.chocolate && await yes(c, t.apChocQ) && pay(c.s, CHOCOLATE)) f.chocolate = true;
+        c.backdrop('plane');
         await c.say(t.apFly1, t.apFly2);
+        c.backdrop(false);
         await c.days(2);
         arrive(c, 'brazil');
       } },
@@ -411,6 +413,9 @@ export const MAPS: Record<string, MapDef> = {
       X: { tex: 'door', on: 'stone', label: t.lblAirport, act: async c => {
         if (!await yes(c, t.brAirQ)) return;
         await c.say(t.brAir1);
+        c.backdrop('plane');
+        await c.say(t.brFly);
+        c.backdrop(false);
         await c.days(2);
         c.go('zurich', 31, 4);
       } },

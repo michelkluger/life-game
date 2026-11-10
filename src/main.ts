@@ -148,6 +148,17 @@ const DETAIL: Record<string, (x: Ctx2) => void> = {
 
 DETAIL.me_walk = DETAIL.me;
 
+function drawPlane(x: Ctx2) {
+  x.fillStyle = '#c9ced6'; x.beginPath(); x.moveTo(150, 44); x.lineTo(92, 78); x.lineTo(72, 78); x.lineTo(104, 44); x.fill(); // wing
+  x.fillStyle = '#f4f6f9'; x.beginPath(); x.roundRect(10, 26, 186, 24, 12); x.fill();                                          // fuselage
+  x.beginPath(); x.moveTo(186, 26); x.quadraticCurveTo(222, 38, 186, 50); x.fill();                                            // nose
+  x.fillStyle = '#d62b2b'; x.beginPath(); x.moveTo(12, 30); x.lineTo(2, 2); x.lineTo(24, 2); x.lineTo(46, 28); x.fill();      // tail fin
+  x.fillRect(14, 41, 184, 3);                                                                                                  // stripe
+  x.fillStyle = '#3d5a80'; for (let i = 0; i < 11; i++) x.fillRect(48 + i * 13, 31, 7, 6);                                     // windows
+  x.fillStyle = '#1d2733'; x.fillRect(194, 31, 11, 6);                                                                         // cockpit
+  x.fillStyle = '#8a8f98'; x.beginPath(); x.roundRect(98, 53, 32, 11, 5); x.fill();                                            // engine
+}
+
 function drawTrain(x: Ctx2) {
   x.fillStyle = '#555'; x.fillRect(0, 6, 240, 5);
   x.fillStyle = '#d62b2b'; x.fillRect(0, 10, 240, 44);
@@ -203,6 +214,8 @@ class World extends Phaser.Scene implements Ctx {
     }
     const train = this.textures.createCanvas('train', 240, 72)!;
     drawTrain(train.context); train.refresh();
+    const plane = this.textures.createCanvas('plane', 224, 80)!;
+    drawPlane(plane.context); plane.refresh();
     // Fog: a clear circle around the player fading to solid colour (polar night, whiteout).
     for (const [key, rgb] of [['fog_dark', '6,9,22'], ['fog_white', '244,247,250']]) {
       const fog = this.textures.createCanvas(key, W, H)!, g = fog.context.createRadialGradient(W / 2, H / 2, 70, W / 2, H / 2, 210);
@@ -838,20 +851,26 @@ class World extends Phaser.Scene implements Ctx {
     });
   }
 
-  // Train rolling through hills, shown behind the dialogue box.
-  backdrop(on: boolean) {
+  // Travel scene behind the dialogue box: a train through hills, or a plane above the clouds.
+  backdrop(kind: false | 'train' | 'plane') {
     this.scenery.forEach(o => { this.tweens.killTweensOf(o); o.destroy(); });
     this.scenery = []; this.hills = [];
-    music.play(on ? 'train' : this.s.map);
-    if (!on) return;
+    music.play(kind ? 'train' : this.s.map);
+    if (!kind) return;
     const add = <G extends Obj>(o: G) => { this.scenery.push(o); return this.ui(o, 50); };
-    add(this.add.rectangle(W / 2, H / 2, W, H, 0x9fd3f0));
+    const plane = kind === 'plane';
+    add(this.add.rectangle(W / 2, H / 2, W, H, plane ? 0x5fa8e8 : 0x9fd3f0));
     add(this.add.circle(610, 70, 30, 0xffe08a));
-    for (let i = 0; i < 5; i++) this.hills.push(add(this.add.ellipse(i * 230, 290, 340, 170 + (i % 2) * 70, i % 2 ? 0x4c8a3f : 0x6bb35a)));
-    add(this.add.rectangle(W / 2, 390, W, 200, 0x5a9e4b));
-    add(this.add.rectangle(W / 2, 318, W, 6, 0x4a4038));
-    const train = add(this.add.image(W / 2, 280, 'train'));
-    this.tweens.add({ targets: train, y: 278, duration: 140, yoyo: true, repeat: -1 });
+    if (plane) { // clouds drift past (they reuse the hills' scrolling), the Atlantic far below
+      add(this.add.rectangle(W / 2, 322, W, 30, 0x2a5f93));
+      for (let i = 0; i < 6; i++) this.hills.push(add(this.add.ellipse(i * 190, 80 + (i * 67) % 200, 150 + (i % 3) * 40, 44, 0xffffff, 0.92)));
+    } else {
+      for (let i = 0; i < 5; i++) this.hills.push(add(this.add.ellipse(i * 230, 290, 340, 170 + (i % 2) * 70, i % 2 ? 0x4c8a3f : 0x6bb35a)));
+      add(this.add.rectangle(W / 2, 390, W, 200, 0x5a9e4b));
+      add(this.add.rectangle(W / 2, 318, W, 6, 0x4a4038));
+    }
+    const craft = add(this.add.image(W / 2, plane ? 200 : 280, kind));
+    this.tweens.add({ targets: craft, y: craft.y - (plane ? 9 : 2), duration: plane ? 900 : 140, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
 }
 

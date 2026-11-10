@@ -1638,6 +1638,11 @@ export const TXT = {
     `Tu grimpes dedans. On est en 2007. Tu as dix-sept ans, il va pleuvoir, et cette fois tu sais exactement où est la corde.`,
     `Você entra. É 2007. Você tem dezessete anos, vai chover, e desta vez sabe exatamente onde está a corda.`,
     `Du steigst hinein. Es ist 2007. Du bist siebzehn, gleich regnet es, und diesmal weisst du genau, wo das Seil liegt.`],
+  brFly: [
+    `Eleven hours back. You watch three films and remember none. Below, the Atlantic does not care about anybody's plans.`,
+    `Onze heures de retour. Tu regardes trois films et n'en retiens aucun. En bas, l'Atlantique se moque des projets de tout le monde.`,
+    `Onze horas de volta. Você assiste a três filmes e não lembra de nenhum. Lá embaixo, o Atlântico não liga para os planos de ninguém.`,
+    `Elf Stunden zurück. Du schaust drei Filme und erinnerst dich an keinen. Unten kümmert sich der Atlantik um niemandes Pläne.`],
 } satisfies Record<string, Line>;
 
 
