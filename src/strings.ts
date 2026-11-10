@@ -1762,11 +1762,17 @@ export const TXT = {
     `"Nós somos os Capuns. Igual ao prato. A gente pedala oitenta quilômetros para justificar um prato só. Vem junto?"`,
     `«Wir sind die Capuns. Wie das Gericht. Wir fahren achtzig Kilometer, um einen Teller zu rechtfertigen. Kommst du mit?»`],
   cpHow: [
-    `Stay right behind the rider in front with Left and Right: the draft saves your legs. When it is your turn, hold Up and pull at the front.`,
-    `Reste juste derrière le coureur devant toi avec Gauche et Droite : l'aspiration économise tes jambes. Quand c'est ton tour, maintiens Haut et prends le relais.`,
-    `Fique logo atrás do ciclista da frente com Esquerda e Direita: o vácuo poupa as pernas. Quando for a sua vez, segure Cima e puxe o pelotão.`,
-    `Bleib mit Links und Rechts direkt hinter dem Fahrer vor dir: Der Windschatten schont die Beine. Wenn du dran bist, halte Hoch und führ vorne.`],
-  cpTurn: [`YOUR TURN: hold Up`, `À TOI : maintiens Haut`, `SUA VEZ: segure Cima`, `DU BIST DRAN: Hoch halten`],
+    `The line drifts across the road. Use Up and Down to stay level with the rider in front: the draft saves your legs. When it is your turn, hold Right and pull at the front.`,
+    `La file se déplace sur la route. Avec Haut et Bas, reste à la hauteur du coureur devant toi : l'aspiration économise tes jambes. Quand c'est ton tour, maintiens Droite et prends le relais.`,
+    `A fila se desloca pela estrada. Use Cima e Baixo para ficar na linha do ciclista da frente: o vácuo poupa as pernas. Quando for a sua vez, segure Direita e puxe o pelotão.`,
+    `Die Reihe wandert über die Strasse. Bleib mit Hoch und Runter auf der Linie des Fahrers vor dir: Der Windschatten schont die Beine. Wenn du dran bist, halte Rechts und führ vorne.`,
+  ],
+  cpTurn: [
+    `YOUR TURN: hold Right`,
+    `À TOI : maintiens Droite`,
+    `SUA VEZ: segure Direita`,
+    `DU BIST DRAN: Rechts halten`,
+  ],
   paceHud: [`Legs {0}% · grumbles {1}/{2} · {3}s`, `Jambes {0}% · râleries {1}/{2} · {3}s`, `Pernas {0}% · resmungos {1}/{2} · {3}s`, `Beine {0}% · Gemurre {1}/{2} · {3}s`],
   cpWin: [
     `You finish with the group. At the stop, the capuns arrive: chard, dough, bacon, cream. Nobody speaks for six minutes.`,

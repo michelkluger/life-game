@@ -91,7 +91,7 @@ const ART: Record<string, Rect[]> = {
   date: person('#16a085', '#7b3f00'),
   badger1: person('#5d6d7e', '#f4f4f4'),
   badger2: person('#34495e', '#111'),
-  capun: [['#d9c38a', 4, 0, 6, 2], ['#e8b88a', 4, 2, 6, 4], ['#222', 8, 3, 1, 1], ['#2e7d32', 4, 6, 6, 3], ['#e8b88a', 9, 7, 3, 1]], // rider in the club's green
+  capun: [['#f4f4f4', 3, 0, 8, 2], ['#2e7d32', 5, 0, 2, 2], ['#e8b88a', 4, 2, 6, 4], ['#222', 8, 3, 1, 1], ['#2e7d32', 4, 6, 6, 3], ['#e8b88a', 9, 7, 3, 1]], // rider in the club's green
   pumpkin: [['#e67e22', 2, 5, 12, 9], ['#d35400', 5, 5, 1, 9], ['#d35400', 10, 5, 1, 9], ['#2e7d32', 7, 2, 2, 3], ['#222', 4, 8, 2, 2], ['#222', 10, 8, 2, 2], ['#222', 5, 11, 6, 1]],
   cryptoman: person('#111418', '#d9c38a'),
   baby: person('#aed6f1', '#e8c9a0', '#f1c9a5'),
@@ -991,30 +991,32 @@ class World extends Phaser.Scene implements Ctx {
     });
   }
 
-  // Paceline: sit in the draft of the rider ahead as the line snakes along the road, and pull at the front when it is your turn.
-  // Out of the draft your energy drains fast; shirking your turn makes the group grumble. (Riding with the Capuns.)
+  // Paceline, seen from the side: the road runs left to right and everyone rides to the right. The line drifts across
+  // the road; stay level with the rider ahead (Up/Down) to sit in the draft, and surge to the front (hold Right) on your turn.
+  // Out of the draft your legs drain; shirking your turn makes the group grumble. (Riding with the Capuns.)
   paceline(seconds: number) {
     return this.play<boolean>(0x4f8a45, (add, label) => {
-      add(this.add.rectangle(W / 2, H / 2, 320, H + 80, 0x55585f));
-      const dashes = [0, 1, 2, 3, 4, 5].map(i => add(this.add.rectangle(W / 2, i * 90, 6, 40, 0xffffff, 0.7)));
-      const sway = (t: number) => W / 2 + 95 * Math.sin(t / 1700) + 25 * Math.sin(t / 600);
-      const riders = [0, 1, 2].map(i => add(this.add.image(W / 2, 150 + i * 62, 'capun').setScale(1.1), 62));
-      const me = add(this.add.image(W / 2, 350, 'me_bike').setScale(1.1), 63);
-      const call = add(this.add.text(W / 2, 100, '', { ...FONT, fontSize: '22px', color: '#f2c94c', backgroundColor: '#101820', padding: { x: 8, y: 4 } }).setOrigin(0.5), 64);
-      add(this.add.rectangle(60, 250, 22, 204, 0x0d151e).setStrokeStyle(2, 0x6b7a8a));
-      const bar = add(this.add.rectangle(60, 350, 16, 200, 0x3fbf7f).setOrigin(0.5, 1), 62);
+      const MID = 285;
+      add(this.add.rectangle(W / 2, MID, W + 80, 250, 0x55585f));
+      const dashes = [0, 1, 2, 3, 4, 5, 6].map(i => add(this.add.rectangle(i * 130, MID, 46, 5, 0xffffff, 0.7)));
+      const sway = (t: number) => MID + 70 * Math.sin(t / 1700) + 20 * Math.sin(t / 600);
+      const riders = [0, 1, 2].map(i => add(this.add.image(470 - i * 78, MID, 'capun').setScale(1.1), 62)); // riders[2] is the one you follow
+      const me = add(this.add.image(236, MID, 'me_bike').setScale(1.1), 63);
+      const call = add(this.add.text(W / 2, 112, '', { ...FONT, fontSize: '22px', color: '#f2c94c', backgroundColor: '#101820', padding: { x: 8, y: 4 } }).setOrigin(0.5), 64);
+      add(this.add.rectangle(40, MID, 22, 204, 0x0d151e).setStrokeStyle(2, 0x6b7a8a), 64);
+      const bar = add(this.add.rectangle(40, MID + 100, 16, 200, 0x3fbf7f).setOrigin(0.5, 1), 65);
       let energy = 100, grumbles = 0, shirk = 0, turnAt = 6000;
       return (dt, t) => {
-        dashes.forEach(d => { d.y = (d.y + dt * 0.35) % (H + 40); });
-        riders.forEach((r, i) => { r.x = sway(t - (2 - i) * 220); }); // the wiggle travels down the line
+        dashes.forEach(d => { d.x -= dt * 0.38; if (d.x < -40) d.x += 910; }); // the road rolls past underneath
+        riders.forEach((r, i) => { r.y = sway(t - i * 220); });              // the wiggle travels back down the line
         const h = this.held(), myTurn = t > turnAt && t < turnAt + 2500;
         if (t >= turnAt + 2500) turnAt = t + 5000 + Math.random() * 2000;
-        me.x = Phaser.Math.Clamp(me.x + h.x * dt * 0.22, W / 2 - 140, W / 2 + 140);
-        const pulling = myTurn && h.y < 0;
-        me.y += ((pulling ? 96 : 350) - me.y) * Math.min(1, dt / 180); // surge to the front while you pull
-        const drafting = !myTurn && Math.abs(me.x - riders[2].x) < 46;
+        me.y = Phaser.Math.Clamp(me.y + h.y * dt * 0.22, MID - 105, MID + 105);
+        const pulling = myTurn && h.x > 0;
+        me.x += ((pulling ? 548 : 236) - me.x) * Math.min(1, dt / 180);       // out and up to the front while you pull
+        const drafting = !myTurn && Math.abs(me.y - riders[2].y) < 46;
         if (myTurn) { if (pulling) energy -= dt * 0.012; else shirk += dt; }
-        else energy += (drafting ? 0.006 : -0.013) * dt; // tuned by simulation: attentive riders finish, idle ones are dropped
+        else energy += (drafting ? 0.006 : -0.013) * dt;                      // tuned by simulation: attentive riders finish, idle ones are dropped
         if (shirk > 1200) { shirk = 0; grumbles++; this.ouch(); }
         energy = Phaser.Math.Clamp(energy, 0, 100);
         bar.setSize(16, 2 * energy).setFillStyle(energy > 35 ? 0x3fbf7f : 0xe2574c);
