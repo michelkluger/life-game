@@ -1762,10 +1762,10 @@ export const TXT = {
     `"Nós somos os Capuns. Igual ao prato. A gente pedala oitenta quilômetros para justificar um prato só. Vem junto?"`,
     `«Wir sind die Capuns. Wie das Gericht. Wir fahren achtzig Kilometer, um einen Teller zu rechtfertigen. Kommst du mit?»`],
   cpHow: [
-    `The line drifts across the road. Use Up and Down to stay level with the rider in front: the draft saves your legs. When it is your turn, hold Right and pull at the front.`,
-    `La file se déplace sur la route. Avec Haut et Bas, reste à la hauteur du coureur devant toi : l'aspiration économise tes jambes. Quand c'est ton tour, maintiens Droite et prends le relais.`,
-    `A fila se desloca pela estrada. Use Cima e Baixo para ficar na linha do ciclista da frente: o vácuo poupa as pernas. Quando for a sua vez, segure Direita e puxe o pelotão.`,
-    `Die Reihe wandert über die Strasse. Bleib mit Hoch und Runter auf der Linie des Fahrers vor dir: Der Windschatten schont die Beine. Wenn du dran bist, halte Rechts und führ vorne.`,
+    `Use Up and Down to stay level with the rider in front: the draft saves your legs. On your turn, hold Right and pull at the front. Cars overtake: a warning shows their lane. Stay out of it, or they swerve round you, honk, and give you a fright.`,
+    `Avec Haut et Bas, reste à la hauteur du coureur devant toi : l'aspiration économise tes jambes. À ton tour, maintiens Droite et prends le relais. Des voitures doublent : un signal indique leur voie. Écarte-toi, sinon elles t'évitent de justesse, klaxonnent et te font peur.`,
+    `Use Cima e Baixo para ficar na linha do ciclista da frente: o vácuo poupa as pernas. Na sua vez, segure Direita e puxe o pelotão. Carros ultrapassam: um aviso mostra a faixa deles. Saia dela, ou eles desviam de você, buzinam e te dão um susto.`,
+    `Bleib mit Hoch und Runter auf der Linie des Fahrers vor dir: Der Windschatten schont die Beine. Wenn du dran bist, halte Rechts und führ vorne. Autos überholen: Ein Warnzeichen zeigt ihre Spur. Bleib draussen, sonst weichen sie knapp aus, hupen und erschrecken dich.`,
   ],
   cpTurn: [
     `YOUR TURN: hold Right`,

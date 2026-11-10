@@ -93,9 +93,10 @@ export function unlock() {
 export function toggleMute() { muted = !muted; start(); }
 
 // Sound effects: a soft tick for dialogue, two rising notes for success, a low thud for a mistake.
-export function sfx(kind: 'tick' | 'ok' | 'bad') {
+export function sfx(kind: 'tick' | 'ok' | 'bad' | 'honk') {
   if (!ac || muted) return;
   if (kind === 'tick') note(880, 0.06, 'sine', 0.03);
   if (kind === 'bad') note(110, 0.25, 'triangle', 0.12);
+  if (kind === 'honk') { note(415, 0.42, 'square', 0.05); note(523, 0.42, 'square', 0.05); } // two-tone car horn
   if (kind === 'ok') { note(660, 0.18, 'triangle', 0.07); setTimeout(() => ac && !muted && note(990, 0.3, 'triangle', 0.07), 110); }
 }

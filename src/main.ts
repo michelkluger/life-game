@@ -167,6 +167,28 @@ function drawPlane(x: Ctx2) {
   x.fillStyle = '#8a8f98'; x.beginPath(); x.roundRect(98, 53, 32, 11, 5); x.fill();                                            // engine
 }
 
+function drawCar(x: Ctx2, paint: string) {
+  x.fillStyle = paint; x.beginPath(); x.roundRect(2, 16, 92, 20, 7); x.fill();                       // body
+  x.beginPath(); x.moveTo(22, 17); x.lineTo(32, 3); x.lineTo(64, 3); x.lineTo(76, 17); x.fill();     // cabin
+  x.fillStyle = '#bfe6ff'; x.beginPath(); x.moveTo(27, 16); x.lineTo(34, 6); x.lineTo(46, 6); x.lineTo(46, 16); x.fill();
+  x.beginPath(); x.moveTo(49, 16); x.lineTo(49, 6); x.lineTo(62, 6); x.lineTo(71, 16); x.fill();     // windows
+  x.fillStyle = '#fff3b0'; x.fillRect(90, 20, 4, 5);                                                 // headlight
+  x.fillStyle = '#1a1a1a'; for (const cx of [22, 74]) { x.beginPath(); x.arc(cx, 37, 7, 0, 7); x.fill(); }
+  x.fillStyle = '#999'; for (const cx of [22, 74]) { x.beginPath(); x.arc(cx, 37, 3, 0, 7); x.fill(); }
+}
+
+// What Zurich drivers shout at cyclists. Left in Swiss German on purpose: it is funnier, and nothing depends on reading it.
+const HONKS = [
+  `Hesch s'Gfühl, d'Strass ghört dir?!`,
+  `Fahr doch uf em Veloweg, du Löli!`,
+  `Gopfridstutz, scho wieder Velofahrer!`,
+  `Ich zahl Stüüre für die Strass!`,
+  `Chasch nöd im Wald go fahre?!`,
+  `Sorry gäll, aber gaht's no?!`,
+  `Näbenand fahre isch verbote, gäll!`,
+  `Ich ha's pressant, ihr Gümmeler!`,
+];
+
 function drawTrain(x: Ctx2) {
   x.fillStyle = '#555'; x.fillRect(0, 6, 240, 5);
   x.fillStyle = '#d62b2b'; x.fillRect(0, 10, 240, 44);
@@ -223,6 +245,10 @@ class World extends Phaser.Scene implements Ctx {
     }
     const train = this.textures.createCanvas('train', 240, 72)!;
     drawTrain(train.context); train.refresh();
+    for (const [key, paint] of [['car', '#c0392b'], ['car2', '#2e5f9e'], ['car3', '#e8e8e8']]) {
+      const car = this.textures.createCanvas(key, 96, 46)!;
+      drawCar(car.context, paint); car.refresh();
+    }
     const plane = this.textures.createCanvas('plane', 224, 80)!;
     drawPlane(plane.context); plane.refresh();
     // Fog: a clear circle around the player fading to solid colour (polar night, whiteout).
@@ -1005,8 +1031,37 @@ class World extends Phaser.Scene implements Ctx {
       const call = add(this.add.text(W / 2, 112, '', { ...FONT, fontSize: '22px', color: '#f2c94c', backgroundColor: '#101820', padding: { x: 8, y: 4 } }).setOrigin(0.5), 64);
       add(this.add.rectangle(40, MID, 22, 204, 0x0d151e).setStrokeStyle(2, 0x6b7a8a), 64);
       const bar = add(this.add.rectangle(40, MID + 100, 16, 200, 0x3fbf7f).setOrigin(0.5, 1), 65);
-      let energy = 100, grumbles = 0, shirk = 0, turnAt = 6000;
+      // Cars overtake from behind. Nobody is ever hit: a car whose lane is blocked swerves round at the last moment,
+      // honks and has an opinion. If it was you in the way, the fright costs some legs.
+      const cars: { o: Phaser.GameObjects.Image; warn: Phaser.GameObjects.Text; lane: number; side: number }[] = [];
+      const shout = add(this.add.text(0, 0, '', { ...FONT, fontSize: '15px', color: '#1c1e21', backgroundColor: '#ffffff', padding: { x: 7, y: 4 } }).setOrigin(0.5, 1), 66).setVisible(false);
+      let energy = 100, grumbles = 0, shirk = 0, turnAt = 6000, nextCar = 3000, quiet = 0;
       return (dt, t) => {
+        if (t > nextCar && t < seconds * 1000 - 3000) {
+          nextCar = t + 4200 + Math.random() * 2800;
+          const lane = MID + (Math.random() < 0.5 ? -1 : 1) * (30 + Math.random() * 60);
+          cars.push({
+            o: add(this.add.image(-380, lane, ['car', 'car2', 'car3'][Math.floor(Math.random() * 3)]), 61),
+            warn: add(this.add.text(14, lane, '!', { ...FONT, fontSize: '30px', color: '#f2c94c', fontStyle: 'bold' }).setOrigin(0.5), 66),
+            lane, side: 0,
+          });
+        }
+        for (const car of cars) {
+          car.o.x += dt * 0.46;
+          car.warn.setVisible(car.o.x < -40); // a moment's warning at the edge of the road
+          const blocking = [me, ...riders].filter(r => r.x > car.o.x - 30 && r.x - car.o.x < 150 && Math.abs(r.y - car.lane) < 40);
+          if (blocking.length && !car.side) {
+            car.side = blocking[0].y >= car.lane ? -1 : 1; // swerve away from whoever is there
+            music.sfx('honk');
+            shout.setText(HONKS[Math.floor(Math.random() * HONKS.length)]).setVisible(true);
+            quiet = t + 1900;
+            if (blocking.includes(me)) { energy -= 8; this.cameras.main.shake(90, 0.006); }
+          }
+          const alongside = [me, ...riders].some(r => Math.abs(r.x - car.o.x) < 150);
+          car.o.y += ((car.side && alongside ? car.lane + car.side * 78 : car.lane) - car.o.y) * Math.min(1, dt / 110);
+          if (car.side && t < quiet) shout.setPosition(Phaser.Math.Clamp(car.o.x, 150, W - 150), car.o.y - 26);
+        }
+        if (t > quiet) shout.setVisible(false);
         dashes.forEach(d => { d.x -= dt * 0.38; if (d.x < -40) d.x += 910; }); // the road rolls past underneath
         riders.forEach((r, i) => { r.y = sway(t - i * 220); });              // the wiggle travels back down the line
         const h = this.held(), myTurn = t > turnAt && t < turnAt + 2500;
