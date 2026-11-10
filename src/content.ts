@@ -28,6 +28,7 @@ export type Ctx = {
   gather(n: number): Promise<boolean>;                // catch the ripe ones falling, avoid the green ones
   tag(n: number, seconds: number): Promise<boolean>;  // you are it: touch n fleeing kids in time
   climb(n: number): Promise<boolean>;                 // press the arrow on each hold, bottom to top
+  sneak(seconds: number, theme: 'armrest' | 'baby'): Promise<boolean>; // hold Space to advance, only while unobserved
 };
 export type Script = (c: Ctx) => Promise<void>;
 // `on` is the tile drawn under the entity (doors in walls, things in water); `label` is a sign above it.
@@ -262,7 +263,8 @@ export const MAPS: Record<string, MapDef> = {
         pay(c.s, FLIGHT); bump(c, 'brazil');
         if (!f.chocolate && await yes(c, t.apChocQ) && pay(c.s, CHOCOLATE)) f.chocolate = true;
         c.backdrop('plane');
-        await c.say(t.apFly1, t.apFly2);
+        await c.say(t.apFly1, t.apSneakHow);
+        await c.say(await c.sneak(25, 'armrest') ? t.apSneakWin : t.apSneakLose, t.apFly2);
         c.backdrop(false);
         await c.days(2);
         arrive(c, 'brazil');
@@ -414,7 +416,8 @@ export const MAPS: Record<string, MapDef> = {
         if (!await yes(c, t.brAirQ)) return;
         await c.say(t.brAir1);
         c.backdrop('plane');
-        await c.say(t.brFly);
+        await c.say(t.brFly, t.brSneakHow);
+        await c.say(await c.sneak(25, 'baby') ? t.brSneakWin : t.brSneakLose);
         c.backdrop(false);
         await c.days(2);
         c.go('zurich', 31, 4);

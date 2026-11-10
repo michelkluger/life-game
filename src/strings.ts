@@ -1643,6 +1643,39 @@ export const TXT = {
     `Onze heures de retour. Tu regardes trois films et n'en retiens aucun. En bas, l'Atlantique se moque des projets de tout le monde.`,
     `Onze horas de volta. Você assiste a três filmes e não lembra de nenhum. Lá embaixo, o Atlântico não liga para os planos de ninguém.`,
     `Elf Stunden zurück. Du schaust drei Filme und erinnerst dich an keinen. Unten kümmert sich der Atlantik um niemandes Pläne.`],
+  // ---- On the plane ----
+  apSneakHow: [
+    `The crypto man in 47D has both armrests. Hold Space to slide your elbow over, but only while he looks away. Freeze when he turns.`,
+    `L'homme à la crypto du 47D occupe les deux accoudoirs. Maintiens Espace pour glisser ton coude, mais seulement quand il regarde ailleurs. Fige-toi quand il se retourne.`,
+    `O homem das criptos na 47D está com os dois apoios de braço. Segure Espaço para deslizar o cotovelo, mas só quando ele olhar para o outro lado. Congele quando ele virar.`,
+    `Der Krypto-Mann auf 47D hat beide Armlehnen. Halte die Leertaste, um den Ellbogen rüberzuschieben, aber nur, wenn er wegschaut. Erstarre, wenn er sich umdreht.`],
+  sneakHud: [`Armrest {0}% · caught {1}/{2} · {3}s`, `Accoudoir {0}% · repéré {1}/{2} · {3}s`, `Apoio de braço {0}% · flagrado {1}/{2} · {3}s`, `Armlehne {0}% · ertappt {1}/{2} · {3}s`],
+  apSneakWin: [
+    `The armrest is yours. You do not move your arm for nine hours, on principle.`,
+    `L'accoudoir est à toi. Tu ne bouges plus le bras pendant neuf heures, par principe.`,
+    `O apoio de braço é seu. Você não mexe o braço por nove horas, por princípio.`,
+    `Die Armlehne gehört dir. Aus Prinzip bewegst du den Arm neun Stunden lang nicht.`],
+  apSneakLose: [
+    `He keeps both armrests and starts explaining stablecoins. Nine hours to go.`,
+    `Il garde les deux accoudoirs et se met à expliquer les stablecoins. Encore neuf heures.`,
+    `Ele fica com os dois apoios e começa a explicar stablecoins. Faltam nove horas.`,
+    `Er behält beide Armlehnen und fängt an, Stablecoins zu erklären. Noch neun Stunden.`],
+  brSneakHow: [
+    `Seat 47E again. The baby in 47F is finally asleep and you need the toilet. Hold Space to creep past, and freeze whenever it stirs.`,
+    `Encore le siège 47E. Le bébé du 47F dort enfin et tu dois aller aux toilettes. Maintiens Espace pour te faufiler, et fige-toi dès qu'il remue.`,
+    `Poltrona 47E de novo. O bebê da 47F finalmente dormiu e você precisa ir ao banheiro. Segure Espaço para passar de fininho, e congele sempre que ele se mexer.`,
+    `Wieder Sitz 47E. Das Baby auf 47F schläft endlich und du musst aufs WC. Halte die Leertaste, um dich vorbeizuschleichen, und erstarre, sobald es sich regt.`],
+  sneakHudBaby: [`Past the baby {0}% · woken {1}/{2} · {3}s`, `Devant le bébé {0}% · réveillé {1}/{2} · {3}s`, `Passando pelo bebê {0}% · acordou {1}/{2} · {3}s`, `Am Baby vorbei {0}% · geweckt {1}/{2} · {3}s`],
+  brSneakWin: [
+    `You make it there and back. The baby sleeps on. You have rarely been prouder of anything.`,
+    `Tu fais l'aller-retour. Le bébé dort toujours. Tu as rarement été aussi fier de quelque chose.`,
+    `Você vai e volta. O bebê continua dormindo. Poucas vezes você teve tanto orgulho de alguma coisa.`,
+    `Du schaffst es hin und zurück. Das Baby schläft weiter. Selten warst du auf etwas so stolz.`],
+  brSneakLose: [
+    `The baby wakes. Two hundred people know it was you.`,
+    `Le bébé se réveille. Deux cents personnes savent que c'était toi.`,
+    `O bebê acorda. Duzentas pessoas sabem que foi você.`,
+    `Das Baby wacht auf. Zweihundert Leute wissen, dass du es warst.`],
 } satisfies Record<string, Line>;
 
 

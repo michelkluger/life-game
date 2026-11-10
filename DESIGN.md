@@ -118,6 +118,7 @@ User direction 2026-11-10: they are a big part of the fun, so vary them; each ki
 | Catching | `c.gather(n)` | mango tree |
 | Tag | `c.tag(n, seconds)` | kids at the birthday party |
 | Route reading | `c.climb(n)` | bouldering |
+| Red light, green light | `c.sneak(seconds, theme)` | the armrest on the flight out, the sleeping baby on the flight back |
 | Conversation choices | plain `c.choose` | the date |
 | Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
 

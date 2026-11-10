@@ -119,7 +119,7 @@ test('the whole game can be played to the end', async () => {
     go(map, x, y) { expect(free(map, x, y), `go ${map} ${x},${y}`).toBe(true); Object.assign(c.s, { map, x, y }); },
     days: async n => { passDays(c.s, n); },
     refresh() {}, backdrop() {},
-    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok,
+    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok, sneak: ok,
     dodge: async () => 0,
     mash: async () => 1,
     // Play the special move if you have earned it, otherwise the first one, until someone gives.

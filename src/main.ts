@@ -8,7 +8,7 @@ import * as music from './music';
 const T = 48, W = 720, H = 480, SAVE = 'life-game-save';
 const TILE: Record<string, string> = { '#': 'wall', '~': 'water', ',': 'path', '1': 'stone', '2': 'glass', '3': 'cream', '=': 'track', '^': 'rock' };
 const SOLID = '#T123=^';
-const pad = { x: 0, y: 0, shift: false }; // touch controls: direction held and bike toggle
+const pad = { x: 0, y: 0, shift: false, a: false }; // touch controls: direction held and bike toggle
 
 // Art is authored on a 16x16 grid and drawn at 3x into 48px textures; DETAIL adds fine 48px touches.
 type Rect = [color: string, x: number, y: number, w: number, h: number];
@@ -88,6 +88,8 @@ const ART: Record<string, Rect[]> = {
   caketable: [['#fff', 1, 8, 14, 5], ['#8a5a44', 2, 13, 2, 3], ['#8a5a44', 12, 13, 2, 3], ['#f5b7d0', 5, 4, 6, 4], ['#f2c94c', 7, 2, 1, 2], ['#5a3a1a', 2, 7, 1, 1], ['#5a3a1a', 4, 7, 1, 1], ['#5a3a1a', 12, 7, 1, 1]],
   castle: [['#e2372c', 0, 6, 16, 10], ['#f2c94c', 0, 2, 4, 4], ['#f2c94c', 12, 2, 4, 4], ['#3f8fd0', 4, 9, 8, 7]],
   date: person('#16a085', '#7b3f00'),
+  cryptoman: person('#111418', '#d9c38a'),
+  baby: person('#aed6f1', '#e8c9a0', '#f1c9a5'),
   banker: person('#1c2333', '#2b2320'),
   friend: person('#8e44ad', '#a5682a'),
   musician: person('#b0392b', '#eee'),
@@ -225,7 +227,7 @@ class World extends Phaser.Scene implements Ctx {
     this.fog = this.ui(this.add.image(W / 2, H / 2, 'fog_dark'), 20).setVisible(false);
 
     // Phaser puts its own plugins on the scene (load, lights, time...), which silently shadow a method of the same name.
-    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'climb', 'build', 'play'])
+    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'climb', 'sneak', 'build', 'play'])
       if (typeof (this as any)[k] !== 'function') throw new Error(`World.${k} is shadowed by a Phaser plugin: rename it`);
     this.keys = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.on('keydown', (e: KeyboardEvent) => {
@@ -851,6 +853,31 @@ class World extends Phaser.Scene implements Ctx {
     });
   }
 
+  // Red light, green light: hold Space to creep forward, but only while they are not looking. (The flight.)
+  sneak(seconds: number, theme: 'armrest' | 'baby') {
+    return this.play<boolean>(0x26324a, (add, label) => {
+      add(this.add.image(130, 150, 'me').setOrigin(0).setScale(10 / 3), 62);
+      const foe = add(this.add.image(470, 150, theme === 'baby' ? 'baby' : 'cryptoman').setOrigin(0).setScale(10 / 3), 62);
+      const mood = add(this.add.text(550, 112, '', { ...FONT, fontSize: '44px' }).setOrigin(0.5), 63);
+      add(this.add.rectangle(W / 2, 372, 424, 26, 0x0d151e).setStrokeStyle(2, 0x6b7a8a));
+      const bar = add(this.add.rectangle(W / 2 - 208, 372, 1, 18, 0x3fbf7f).setOrigin(0, 0.5), 62);
+      let progress = 0, caught = 0, looking = false, flip = 1500, grace = 0;
+      return (dt, t) => {
+        if (t > flip) { looking = !looking; flip = t + (looking ? 700 + Math.random() * 800 : 1200 + Math.random() * 1500); grace = 250; }
+        grace -= dt;
+        const soon = !looking && flip - t < 400; // a moment's warning before they turn
+        mood.setText(looking ? '!' : soon ? '?' : 'z').setColor(looking ? '#ff6b6b' : soon ? '#f2c94c' : '#8a93a6');
+        foe.setAlpha(looking ? 1 : 0.6);
+        const pushing = this.keys.space.isDown || pad.a;
+        if (pushing && looking && grace <= 0) { caught++; progress = Math.max(0, progress - 25); grace = 700; this.ouch(); }
+        else if (pushing && !looking) progress += dt * 0.012; // about eight seconds of pushing in total
+        bar.setSize(416 * Math.min(1, progress / 100), 18);
+        label.setText(this.tr(theme === 'baby' ? TXT.sneakHudBaby : TXT.sneakHud, Math.floor(Math.min(100, progress)), caught, this.lives, this.left(seconds, t)));
+        return progress >= 100 ? true : caught >= this.lives || t >= seconds * 1000 ? false : undefined;
+      };
+    });
+  }
+
   // Travel scene behind the dialogue box: a train through hills, or a plane above the clouds.
   backdrop(kind: false | 'train' | 'plane') {
     this.scenery.forEach(o => { this.tweens.killTweensOf(o); o.destroy(); });
@@ -885,7 +912,7 @@ const game = new Phaser.Game({
 const DIR: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
 for (const b of document.querySelectorAll<HTMLElement>('#pad [data-key]')) {
   const code = b.dataset.key!;
-  const release = () => { if (DIR[code]) pad.x = pad.y = 0; };
+  const release = () => { if (DIR[code]) pad.x = pad.y = 0; if (code === 'Space') pad.a = false; };
   b.addEventListener('pointerdown', e => {
     e.preventDefault();
     music.unlock();
@@ -893,7 +920,7 @@ for (const b of document.querySelectorAll<HTMLElement>('#pad [data-key]')) {
     if (code === 'Shift') { pad.shift = !pad.shift; b.classList.toggle('on', pad.shift); }
     else if (code === 'KeyL') world.setLang((world.s.lang + 1) % LANGS.length);
     else if (code === 'KeyM') music.toggleMute();
-    else { if (DIR[code]) [pad.x, pad.y] = DIR[code]; world.onKey?.(code); }
+    else { if (DIR[code]) [pad.x, pad.y] = DIR[code]; if (code === 'Space') pad.a = true; world.onKey?.(code); }
   });
   for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(ev, release);
 } // handle for poking at state from the browser console
