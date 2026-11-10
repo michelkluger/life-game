@@ -72,6 +72,19 @@ const ART: Record<string, Rect[]> = {
   mango: [['#f2a01e', 4, 4, 8, 9], ['#e2572c', 6, 4, 5, 4], ['#3d8444', 7, 2, 2, 2]],
   greenmango: [['#4f9a45', 4, 4, 8, 9], ['#7fc46a', 6, 5, 3, 3], ['#3d8444', 7, 2, 2, 2]],
   glider: [['#e2372c', 1, 1, 14, 3], ['#f2c94c', 5, 1, 6, 3], ['#555', 3, 4, 1, 5], ['#555', 12, 4, 1, 5], ['#e8b88a', 6, 6, 4, 3], [NAVY, 6, 9, 4, 4], ['#2b2b3a', 6, 13, 4, 2]],
+  // Headstone with visitors' pebbles on top; the sign carries a Star of David (drawn in DETAIL).
+  tomb: [['#5a9e4b', 3, 14, 10, 2], ['#9aa0a8', 4, 5, 8, 10], ['#b9c0c8', 5, 4, 6, 2], ['#7d838c', 6, 8, 4, 1], ['#7d838c', 6, 10, 4, 1], ['#5d636b', 5, 3, 2, 1], ['#e8e2d4', 8, 3, 1, 1], ['#5d636b', 10, 3, 1, 1]],
+  sign: [['#8a5a44', 7, 9, 2, 7], ['#f4efe6', 2, 1, 12, 9]],
+  grandma: person('#c39bd3', '#f4f4f4', '#c99a6e'),
+  host: person('#e74c3c', '#2b2320', '#c68e5e'),
+  friend2: person('#3498db', '#5a3a1a', '#c99a6e'),
+  friend3: person('#1abc9c', '#111', '#b98a5e'),
+  friend4: person('#f39c12', '#6b4a2b', '#d9a877'),
+  kid2: person('#e84393', '#2b2320', '#c99a6e'),
+  kid3: person('#00b894', '#5a3a1a', '#d9a877'),
+  balloon: [['#e2372c', 2, 1, 5, 6], ['#3f8fd0', 9, 3, 5, 6], ['#999', 4, 7, 1, 8], ['#999', 11, 9, 1, 6]],
+  caketable: [['#fff', 1, 8, 14, 5], ['#8a5a44', 2, 13, 2, 3], ['#8a5a44', 12, 13, 2, 3], ['#f5b7d0', 5, 4, 6, 4], ['#f2c94c', 7, 2, 1, 2], ['#5a3a1a', 2, 7, 1, 1], ['#5a3a1a', 4, 7, 1, 1], ['#5a3a1a', 12, 7, 1, 1]],
+  castle: [['#e2372c', 0, 6, 16, 10], ['#f2c94c', 0, 2, 4, 4], ['#f2c94c', 12, 2, 4, 4], ['#3f8fd0', 4, 9, 8, 7]],
   banker: person('#1c2333', '#2b2320'),
   friend: person('#8e44ad', '#a5682a'),
   musician: person('#b0392b', '#eee'),
@@ -101,6 +114,13 @@ const ART: Record<string, Rect[]> = {
 };
 
 const DETAIL: Record<string, (x: Ctx2) => void> = {
+  // Star of David on the cemetery sign: two overlapping triangles.
+  sign(x) {
+    x.strokeStyle = '#2a5db0'; x.lineWidth = 2; x.lineJoin = 'round';
+    for (const flip of [1, -1]) {
+      x.beginPath(); x.moveTo(24, 16.5 - 10 * flip); x.lineTo(33, 16.5 + 5 * flip); x.lineTo(15, 16.5 + 5 * flip); x.closePath(); x.stroke();
+    }
+  },
   // The Berkelium shirt: gold frame and "Bk" on navy.
   me(x) {
     x.strokeStyle = x.fillStyle = '#f2b01e';
@@ -187,7 +207,7 @@ class World extends Phaser.Scene implements Ctx {
     this.fog = this.ui(this.add.image(W / 2, H / 2, 'fog_dark'), 20).setVisible(false);
 
     // Phaser puts its own plugins on the scene (load, lights, time...), which silently shadow a method of the same name.
-    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'build', 'play'])
+    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'build', 'play'])
       if (typeof (this as any)[k] !== 'function') throw new Error(`World.${k} is shadowed by a Phaser plugin: rename it`);
     this.keys = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.on('keydown', (e: KeyboardEvent) => {
@@ -746,6 +766,41 @@ class World extends Phaser.Scene implements Ctx {
         }
         label.setText(this.tr(TXT.catchHud, got, n, misses, this.lives));
         return got >= n ? true : misses >= this.lives ? false : undefined;
+      };
+    });
+  }
+
+  // Tag: you are it. Kids bolt when you get close and wander otherwise; corner them all in time. (The birthday party.)
+  tag(n: number, seconds: number) {
+    return this.play<boolean>(0x7fc97f, (add, label) => {
+      label.setColor('#1c1e21');
+      const me = add(this.add.image(W / 2, 270, 'me').setScale(1.4), 63);
+      const kids = Array.from({ length: n }, (_, i) => ({
+        o: add(this.add.image(60 + Math.random() * (W - 120), 110 + Math.random() * (H - 160), ['kid', 'kid2', 'kid3'][i % 3]).setScale(0.95), 62),
+        dir: Math.random() * 6.28, dash: 0, out: false,
+      }));
+      return (dt, t) => {
+        const h = this.held();
+        me.x = Phaser.Math.Clamp(me.x + h.x * dt * 0.3, 30, W - 30);
+        me.y = Phaser.Math.Clamp(me.y + h.y * dt * 0.3, 90, H - 30);
+        for (const k of kids) {
+          if (k.out) continue;
+          const d = Phaser.Math.Distance.Between(k.o.x, k.o.y, me.x, me.y);
+          if (d < 36) { k.out = true; k.o.setAlpha(0.25); continue; }
+          const scared = d < 150, cornered = k.o.x < 45 || k.o.x > W - 45 || k.o.y < 105 || k.o.y > H - 45;
+          k.dash -= dt;
+          if (k.dash <= 0) {
+            // Cornered kids bolt back towards the middle, squealing; otherwise they run from you, or wander.
+            if (scared && cornered) { k.dash = 700; k.dir = Math.atan2(270 - k.o.y, W / 2 - k.o.x) + (Math.random() - 0.5) * 1.6; }
+            else k.dir = scared ? Math.atan2(k.o.y - me.y, k.o.x - me.x) + Math.sin(t / 300 + k.o.x) * 0.6 : k.dir + (Math.random() - 0.5) * 0.3;
+          }
+          const step = (k.dash > 0 ? 0.55 : scared ? 0.26 : 0.08) * dt; // tuned by simulation: a perfect chaser needs about 8 s
+          k.o.x = Phaser.Math.Clamp(k.o.x + Math.cos(k.dir) * step, 30, W - 30);
+          k.o.y = Phaser.Math.Clamp(k.o.y + Math.sin(k.dir) * step, 90, H - 30);
+        }
+        const free = kids.filter(k => !k.out).length;
+        label.setText(this.tr(TXT.tagHud, n - free, n, this.left(seconds, t)));
+        return free === 0 ? true : t >= seconds * 1000 ? false : undefined;
       };
     });
   }

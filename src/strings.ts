@@ -908,10 +908,11 @@ export const TXT = {
     `«Nimm das für die Reise mit.» Es ist eine Tupperdose Pão de Queijo, so gross wie ein Koffer.`],
   brMomDone: [`"Call more. A message is not a call."`, `« Appelle plus souvent. Un message, ce n'est pas un appel. »`, `"Liga mais. Mensagem não é ligação."`, `«Ruf öfter an. Eine Nachricht ist kein Anruf.»`],
   brDad1: [
-    `"Come, the mango tree is loaded. I shake, you catch. Not the green ones. And not with your head." Left and Right to move.`,
-    `« Viens, le manguier est chargé. Je secoue, tu attrapes. Pas les vertes. Et pas avec la tête. » Gauche et Droite pour bouger.`,
-    `"Vem, a mangueira está carregada. Eu balanço, você pega. As verdes não. E não com a cabeça." Esquerda e Direita para andar.`,
-    `«Komm, der Mangobaum hängt voll. Ich schüttle, du fängst. Nicht die grünen. Und nicht mit dem Kopf.» Links und Rechts zum Laufen.`],
+    `"There you are. Come, the mango tree behind the old section is loaded. Best mangoes in the city: quiet neighbours, nobody steals them. I shake, you catch. Not the green ones. And not with your head." Left and Right to move.`,
+    `« Te voilà. Viens, le manguier derrière la vieille section est chargé. Les meilleures mangues de la ville : des voisins tranquilles, personne ne les vole. Je secoue, tu attrapes. Pas les vertes. Et pas avec la tête. » Gauche et Droite pour bouger.`,
+    `"Olha você aí. Vem, a mangueira atrás da quadra antiga está carregada. As melhores mangas da cidade: vizinhança quieta, ninguém rouba. Eu balanço, você pega. As verdes não. E não com a cabeça." Esquerda e Direita para andar.`,
+    `«Da bist du ja. Komm, der Mangobaum hinter dem alten Teil hängt voll. Die besten Mangos der Stadt: ruhige Nachbarn, niemand klaut sie. Ich schüttle, du fängst. Nicht die grünen. Und nicht mit dem Kopf.» Links und Rechts zum Laufen.`,
+  ],
   catchHud: [`Mangoes {0}/{1} · bumps {2}/{3}`, `Mangues {0}/{1} · bosses {2}/{3}`, `Mangas {0}/{1} · galos {2}/{3}`, `Mangos {0}/{1} · Beulen {2}/{3}`],
   brDadFail: [
     `A green mango gets you square on the head. Your father laughs for a full minute. Try again.`,
@@ -924,10 +925,11 @@ export const TXT = {
     `Um cesto cheio. Seu pai fica um tempão balançando a cabeça. Nesta família, isso é um discurso.`,
     `Ein voller Korb. Dein Vater nickt ihn lange an. In dieser Familie ist das eine Rede.`],
   brDadDone: [
-    `"Your grandfather planted that tree. Do not tell your mother I got emotional."`,
-    `« C'est ton grand-père qui a planté cet arbre. Ne dis pas à ta mère que j'étais ému. »`,
-    `"Foi seu avô que plantou essa árvore. Não conta para a sua mãe que eu me emocionei."`,
-    `«Den Baum hat dein Grossvater gepflanzt. Sag deiner Mutter nicht, dass ich gerührt war.»`],
+    `"I planted that tree my first year here. All these years of shade for people who cannot thank me. Do not tell your mother I got emotional."`,
+    `« J'ai planté cet arbre ma première année ici. Toutes ces années d'ombre pour des gens qui ne peuvent pas me remercier. Ne dis pas à ta mère que j'étais ému. »`,
+    `"Plantei essa árvore no meu primeiro ano aqui. Todos esses anos de sombra para gente que não pode me agradecer. Não conta para a sua mãe que eu me emocionei."`,
+    `«Den Baum habe ich in meinem ersten Jahr hier gepflanzt. All die Jahre Schatten für Leute, die sich nicht bedanken können. Sag deiner Mutter nicht, dass ich gerührt war.»`,
+  ],
   brUncle: [
     `"In Switzerland, do they have picanha?" "They have something they call picanha." He lays down the tongs in sorrow.`,
     `« En Suisse, ils ont de la picanha ? » « Ils ont un truc qu'ils appellent picanha. » Il pose la pince, accablé.`,
@@ -1189,7 +1191,113 @@ export const TXT = {
     `Tu te réveilles à Zurich, celle d'aujourd'hui. Même ville, mêmes prix, meilleur vélo.`,
     `Você acorda em Zurique, a de hoje. Mesma cidade, mesmos preços, bicicleta melhor.`,
     `Du wachst in Zürich auf, dem heutigen. Gleiche Stadt, gleiche Preise, besseres Velo.`],
+  // ---- Brazil: grandma, and the friends' birthday party ----
+  brGran1: [
+    `"My grandson! Let me look at you. Handsome. Thin, but handsome. Bring me mangoes from the tree at your father's work and I will make the sweet you like."`,
+    `« Mon petit-fils ! Laisse-moi te regarder. Beau. Maigre, mais beau. Apporte-moi des mangues de l'arbre du travail de ton père et je te ferai la confiture que tu aimes. »`,
+    `"Meu neto! Deixa eu olhar pra você. Bonito. Magro, mas bonito. Me traz manga do pé lá do serviço do seu pai que eu faço o doce que você gosta."`,
+    `«Mein Enkel! Lass dich anschauen. Hübsch. Dünn, aber hübsch. Bring mir Mangos vom Baum bei der Arbeit deines Vaters, dann mache ich dir die Süssspeise, die du magst.»`,
+  ],
+  brGran2: [
+    `She makes the mango sweet from memory, talking the whole time. You realise you would pay any airfare for this kitchen.`,
+    `Elle prépare la confiture de mangue de mémoire, sans s'arrêter de parler. Tu réalises que tu paierais n'importe quel billet d'avion pour cette cuisine.`,
+    `Ela faz o doce de manga de cabeça, falando o tempo todo. Você percebe que pagaria qualquer passagem por esta cozinha.`,
+    `Sie kocht die Mango-Süssspeise aus dem Kopf und redet die ganze Zeit. Dir wird klar: Für diese Küche würdest du jeden Flugpreis zahlen.`],
+  brGran3: [
+    `"Now fix my phone. The WhatsApp disappeared." The brightness was at zero. You are now the family genius.`,
+    `« Maintenant, répare mon téléphone. Le WhatsApp a disparu. » La luminosité était à zéro. Te voilà le génie de la famille.`,
+    `"Agora arruma meu celular. O zap sumiu." O brilho estava no zero. Agora você é o gênio da família.`,
+    `«Jetzt reparier mein Handy. Das WhatsApp ist verschwunden.» Die Helligkeit stand auf null. Du bist jetzt das Familiengenie.`],
+  brGranDone: [
+    `"God bless you. Take a coat." "It is thirty degrees." "Take it."`,
+    `« Que Dieu te bénisse. Prends une veste. » « Il fait trente degrés. » « Prends-la. »`,
+    `"Deus te abençoe. Leva um casaco." "Está fazendo trinta graus." "Leva."`,
+    `«Gott segne dich. Nimm eine Jacke mit.» «Es hat dreissig Grad.» «Nimm sie.»`],
+  brPartyEmpty: [
+    `"You came! Wait. Empty-handed? To a birthday? Your grandmother raised you better than this."`,
+    `« Tu es venu ! Attends. Les mains vides ? À un anniversaire ? Ta grand-mère t'a mieux élevé que ça. »`,
+    `"Você veio! Peraí. De mão abanando? Num aniversário? Sua avó te educou melhor que isso."`,
+    `«Du bist gekommen! Moment. Mit leeren Händen? Zu einem Geburtstag? Deine Grossmutter hat dich besser erzogen.»`],
+  brPartyIn: [
+    `"Grandma's mango sweet! You may enter. Also, the children were promised that the uncle from Switzerland plays tag."`,
+    `« La confiture de mangue de mamie ! Tu peux entrer. Au fait, on a promis aux enfants que le tonton de Suisse jouerait à chat. »`,
+    `"O doce de manga da vó! Pode entrar. Ah, e as crianças foram avisadas de que o tio da Suíça brinca de pega-pega."`,
+    `«Omas Mango-Süssspeise! Du darfst rein. Übrigens: Den Kindern wurde versprochen, dass der Onkel aus der Schweiz Fangen spielt.»`],
+  brTagAgain: [
+    `"They want a rematch. They have been training. You have been eating."`,
+    `« Ils veulent une revanche. Ils se sont entraînés. Toi, tu as mangé. »`,
+    `"Eles querem revanche. Eles treinaram. Você comeu."`,
+    `«Sie wollen eine Revanche. Sie haben trainiert. Du hast gegessen.»`],
+  brTagHow: [
+    `You are it. Arrow keys to run. Tag all eight before they get bored.`,
+    `C'est toi le chat. Flèches pour courir. Touche les huit avant qu'ils se lassent.`,
+    `Tá com você. Setas para correr. Pegue os oito antes que eles enjoem.`,
+    `Du bist dran. Pfeiltasten zum Rennen. Fang alle acht, bevor ihnen langweilig wird.`],
+  tagHud: [`Tagged {0}/{1} · {2}s left`, `Touchés {0}/{1} · {2}s restantes`, `Pegos {0}/{1} · {2}s restantes`, `Gefangen {0}/{1} · noch {2}s`],
+  brTagFail: [
+    `Eight small children have outrun a grown engineer. One of them pats your arm. Try again.`,
+    `Huit petits enfants ont semé un ingénieur adulte. L'un d'eux te tapote le bras. Réessaie.`,
+    `Oito crianças pequenas deixaram um engenheiro adulto para trás. Uma delas dá tapinhas no seu braço. Tente de novo.`,
+    `Acht kleine Kinder sind einem erwachsenen Ingenieur davongelaufen. Eines tätschelt dir den Arm. Versuch's nochmal.`],
+  brTagWin: [
+    `All eight caught. You are a legend to people under six, and you cannot feel your legs.`,
+    `Les huit attrapés. Tu es une légende pour les moins de six ans, et tu ne sens plus tes jambes.`,
+    `Os oito pegos. Você é uma lenda para quem tem menos de seis anos, e não sente mais as pernas.`,
+    `Alle acht gefangen. Für Menschen unter sechs bist du eine Legende, und du spürst deine Beine nicht mehr.`],
+  brParabens: [
+    `Everyone sings Parabéns, with the clapping part that speeds up until nobody can keep time. The birthday child cries. It is perfect.`,
+    `Tout le monde chante Parabéns, avec les applaudissements qui accélèrent jusqu'à ce que plus personne ne suive. L'enfant fêté pleure. C'est parfait.`,
+    `Todo mundo canta Parabéns, com as palmas que vão acelerando até ninguém mais acompanhar. O aniversariante chora. Está perfeito.`,
+    `Alle singen Parabéns, mit dem Klatschen, das immer schneller wird, bis keiner mehr mitkommt. Das Geburtstagskind weint. Es ist perfekt.`],
+  brHostDone: [
+    `"Stay for the second cake. There is always a second cake. And take a plate home, your grandmother will ask."`,
+    `« Reste pour le deuxième gâteau. Il y a toujours un deuxième gâteau. Et emporte une assiette, ta grand-mère va demander. »`,
+    `"Fica para o segundo bolo. Sempre tem um segundo bolo. E leva um pratinho, sua avó vai perguntar."`,
+    `«Bleib für die zweite Torte. Es gibt immer eine zweite Torte. Und nimm einen Teller mit, deine Grossmutter wird fragen.»`],
+  brFriend1: [
+    `"We have three kids now. We have not slept since 2019. You look so... rested. Is that what a weekend does?"`,
+    `« On a trois enfants maintenant. On n'a pas dormi depuis 2019. Tu as l'air tellement... reposé. C'est ça, l'effet d'un week-end ? »`,
+    `"A gente tem três filhos agora. Não dormimos desde 2019. Você parece tão... descansado. É isso que um fim de semana faz?"`,
+    `«Wir haben jetzt drei Kinder. Wir haben seit 2019 nicht geschlafen. Du siehst so... ausgeruht aus. Macht das ein Wochenende?»`],
+  brFriend2: [
+    `"The group chat has 4,812 unread messages. Do not read them. It is all stickers, school fees and one funeral."`,
+    `« Le groupe a 4 812 messages non lus. Ne les lis pas. Ce ne sont que des stickers, des frais de scolarité et un enterrement. »`,
+    `"O grupo tem 4.812 mensagens não lidas. Não leia. É tudo figurinha, mensalidade de escola e um velório."`,
+    `«Der Gruppenchat hat 4'812 ungelesene Nachrichten. Lies sie nicht. Es sind nur Sticker, Schulgebühren und eine Beerdigung.»`],
+  brFriend3: [
+    `"We all had kids at the same time, like a software release. You are still on the old version. It is fine. It is stable."`,
+    `« On a tous eu des enfants en même temps, comme une mise à jour logicielle. Toi, tu es resté sur l'ancienne version. C'est bien. C'est stable. »`,
+    `"Todo mundo teve filho ao mesmo tempo, tipo atualização de software. Você continua na versão antiga. Tudo bem. É estável."`,
+    `«Wir haben alle gleichzeitig Kinder bekommen, wie ein Software-Release. Du bist noch auf der alten Version. Ist okay. Die ist stabil.»`],
+  brKid1: [
+    `"Is it true that in Switzerland the cows wear bells? Why? Do they have meetings?"`,
+    `« C'est vrai qu'en Suisse les vaches ont des cloches ? Pourquoi ? Elles ont des réunions ? »`,
+    `"É verdade que na Suíça as vacas usam sino? Por quê? Elas têm reunião?"`,
+    `«Stimmt es, dass die Kühe in der Schweiz Glocken tragen? Warum? Haben die Sitzungen?»`],
+  brKid2: [`"Tio. Tio. Tio. Tio. Tio." You turn around. "Hi."`, `« Tonton. Tonton. Tonton. Tonton. Tonton. » Tu te retournes. « Salut. »`, `"Tio. Tio. Tio. Tio. Tio." Você se vira. "Oi."`, `«Onkel. Onkel. Onkel. Onkel. Onkel.» Du drehst dich um. «Hallo.»`],
+  brTableNo: [
+    `The cake table, heavy with brigadeiros. An aunt you have never met slaps your hand. "Only after the Parabéns."`,
+    `La table du gâteau, couverte de brigadeiros. Une tante que tu n'as jamais vue te tape sur la main. « Pas avant le Parabéns. »`,
+    `A mesa do bolo, cheia de brigadeiro. Uma tia que você nunca viu dá um tapa na sua mão. "Só depois do Parabéns."`,
+    `Der Tortentisch, voller Brigadeiros. Eine Tante, die du noch nie gesehen hast, haut dir auf die Finger. «Erst nach dem Parabéns.»`],
+  brTableYes: [
+    `You eat seven brigadeiros. Nobody is counting. Everybody is counting.`,
+    `Tu manges sept brigadeiros. Personne ne compte. Tout le monde compte.`,
+    `Você come sete brigadeiros. Ninguém está contando. Todo mundo está contando.`,
+    `Du isst sieben Brigadeiros. Niemand zählt mit. Alle zählen mit.`],
+  lblCemetery: [`Jewish Cemetery`, `Cimetière juif`, `Cemitério Israelita`, `Jüdischer Friedhof`],
+  brCemSign: [
+    `The Jewish cemetery. Your father has looked after the community's cemeteries for as long as you can remember. He says the neighbours are quiet and nobody has ever complained.`,
+    `Le cimetière juif. Ton père s'occupe des cimetières de la communauté depuis toujours. Il dit que les voisins sont calmes et que personne ne s'est jamais plaint.`,
+    `O cemitério israelita. Seu pai cuida dos cemitérios da comunidade desde que você se entende por gente. Ele diz que a vizinhança é quieta e que ninguém nunca reclamou.`,
+    `Der jüdische Friedhof. Dein Vater kümmert sich um die Friedhöfe der Gemeinde, seit du denken kannst. Er sagt, die Nachbarn seien ruhig und beschwert habe sich noch nie jemand.`],
+  brTomb: [
+    `An old stone, well kept, with small pebbles left on top by visitors. You add one. Somebody sweeps here every morning. You know who.`,
+    `Une vieille pierre, bien entretenue, avec des petits cailloux posés dessus par les visiteurs. Tu en ajoutes un. Quelqu'un balaie ici chaque matin. Tu sais qui.`,
+    `Uma lápide antiga, bem cuidada, com pedrinhas deixadas em cima pelos visitantes. Você põe mais uma. Alguém varre aqui toda manhã. Você sabe quem.`,
+    `Ein alter Stein, gut gepflegt, mit kleinen Steinchen obendrauf, von Besuchern hingelegt. Du legst einen dazu. Jemand fegt hier jeden Morgen. Du weisst, wer.`],
 } satisfies Record<string, Line>;
+
 
 // Transactions for the bank's sorting game. `bad` means it should be flagged as suspicious.
 export const SORT_ITEMS: { bad: boolean; text: Line }[] = [

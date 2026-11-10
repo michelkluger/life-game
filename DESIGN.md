@@ -59,7 +59,7 @@ Run: `bun run dev` then open http://localhost:3000. Tests: `bun test`. Hosted on
 | Flat | bed (sleep a day), job portal, the box of memories |
 | Zurich (36x18) | interview at Gletscher Labs; neighbour's wardrobe (one-time CHF 120); lake swimming; paragliding school on the mountain (CHF 300 once); river race (CHF 40); station; airport; tourist, banker, Rösti the dog, the always-late climbing friend, alphorn player, recycling neighbour; the Brazilian expat who wants pão de queijo |
 | Marseille (30x13) | birthday cake; ice for the pastis from the fishmonger; pétanque with the old men; the nieces' ball in the harbour (swim for it); boats |
-| Brazil (26x11) | return flight CHF 1,200, chocolate CHF 35 at duty-free; Sunday-lunch duel with the aunt (chocolate is the winning move); mango tree with the father; mother packs pão de queijo after lunch; uncle, cousin, the caramel dog |
+| Brazil (40x16) | return flight CHF 1,200, chocolate CHF 35 at duty-free; Sunday-lunch duel with the aunt (chocolate is the winning move); mother packs pão de queijo after lunch; uncle, cousin, the caramel dog. Quest chain: catch mangoes with the father at the Jewish cemetery where he works -> grandma on the veranda makes the mango sweet -> the friends' birthday party lets you in (big group of friends, lots of kids, balloons, cake table, bouncy castle) -> game of tag -> Parabéns and brigadeiros |
 
 ### Memories in the box
 
@@ -96,6 +96,7 @@ User direction 2026-11-10: they are a big part of the fun, so vary them; each ki
 | Gliding | `c.glide(seconds)` | paragliding |
 | Sprint | `c.mash(metres)` | river race |
 | Catching | `c.gather(n)` | mango tree |
+| Tag | `c.tag(n, seconds)` | kids at the birthday party |
 | Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
 
 All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Duels are data in `logic.ts`: the ordinary moves can never win, the special move (earned elsewhere) can, and a test proves both. Other building blocks: `c.backdrop()`, map `fog`, `spawn`.
@@ -107,7 +108,7 @@ Tests cover: map shape, every character reachable from the spawn point, a tune f
 Known gaps:
 - Art is drawn in code, not CC0 packs.
 - Keyboard only, no touch controls.
-- Assumed two nieces; family unnamed. Brazil's cast (mother, father, aunt, uncle, cousin) is invented.
+- Assumed two nieces; family unnamed. From Michel (2026-11-10): parents and grandma are in Brazil; his father works in the Jewish cemeteries; a big group of friends there, with lots of kids, gathers for birthday parties. The aunt, uncle, cousin and every personality are still invented.
 - FR/PT/DE text is AI-translated and not yet proofread by Michel.
 - Memory order follows the years, not the original chapter numbering.
 - Minigame difficulty is tuned by estimate and simulation, not by play.

@@ -26,6 +26,7 @@ export type Ctx = {
   glide(seconds: number): Promise<boolean>;           // hold Up to climb, avoid peaks and clouds
   mash(metres: number): Promise<number>;              // alternate Left/Right to run; returns your place (1-4)
   gather(n: number): Promise<boolean>;                // catch the ripe ones falling, avoid the green ones
+  tag(n: number, seconds: number): Promise<boolean>;  // you are it: touch n fleeing kids in time
 };
 export type Script = (c: Ctx) => Promise<void>;
 // `on` is the tile drawn under the entity (doors in walls, things in water); `label` is a sign above it.
@@ -306,23 +307,32 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // Home. Parents, the Sunday lunch, the mango tree. Reached only by an expensive flight.
+  // Home. North-west: parents' house, grandma on the veranda, the Sunday lunch.
+  // South-west: the cemetery where your father works, with the mango tree. East: the friends' birthday party.
+  // Chain: father's mangoes -> grandma's sweet -> you may enter the party.
   brazil: {
     name: t.mBrazil, floor: 'grass', spawn: [3, 3], outdoor: true,
     rows: [
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'T.111.........######.....T',
-      'T.1X1.........######..Y..T',
-      'T..,..........##..##.D...T',
-      'T..,,,,,,,,,,,,,,........T',
-      'T.........M...,..........T',
-      'T.....g.......,...U......T',
-      'T..........A..,..........T',
-      'T.....C.......,..........T',
-      'T........................T',
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'T.111.........######.....T.............T',
+      'T.1X1.........######.....T..oo...E.....T',
+      'T..,..........##V.##.....T...h..i......T',
+      'T..,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.....T',
+      'T.........M...,..........T..k....n.....T',
+      'T.....g.......,...U......T....j....w...T',
+      'T..........A..,..........T.k.....ZZ....T',
+      'T.....C.......,..........T......n......T',
+      'T............s,..........T.............T',
+      'T.111111111111,1111111111T.............T',
+      'T.1...+...+...,.+...+..1.T.............T',
+      'T.1...........,....D.Y.1.T.............T',
+      'T.1...+...+...,.+......1.T.............T',
+      'T.1111111111111111111111.T.............T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
     ents: {
+      s: { tex: 'sign', label: t.lblCemetery, act: c => c.say(t.brCemSign) },
+      '+': { tex: 'tomb', act: c => c.say(t.brTomb) },
       X: { tex: 'door', on: 'stone', label: t.lblAirport, act: async c => {
         if (!await yes(c, t.brAirQ)) return;
         await c.say(t.brAir1);
@@ -344,6 +354,13 @@ export const MAPS: Record<string, MapDef> = {
         f.mangoes = true;
         await c.say(t.brDadWin);
       } },
+      V: { tex: 'grandma', act: async c => {
+        const f = c.s.flags;
+        if (f.sweet) return c.say(t.brGranDone);
+        if (!f.mangoes) return c.say(t.brGran1);
+        f.sweet = true;
+        await c.say(t.brGran2, t.brGran3);
+      } },
       // The Sunday lunch interrogation: you get through it either way, but Swiss chocolate wins it.
       A: { tex: 'aunt', act: async c => {
         const f = c.s.flags;
@@ -357,6 +374,26 @@ export const MAPS: Record<string, MapDef> = {
       C: { tex: 'cousin', act: c => c.say(t.brCousin) },
       g: { tex: 'caramelo', act: c => c.say(t.brDog) },
       Y: { tex: 'mangotree' },
+
+      // The party: the host lets you in with grandma's sweet, then the kids expect a game of tag.
+      h: { tex: 'host', act: async c => {
+        const f = c.s.flags;
+        if (f.parabens) return c.say(t.brHostDone);
+        if (!f.sweet) return c.say(t.brPartyEmpty);
+        await c.say(f.partyIn ? t.brTagAgain : t.brPartyIn, t.brTagHow);
+        f.partyIn = true;
+        if (!await c.tag(8, 30)) return c.say(t.brTagFail);
+        f.parabens = true;
+        await c.say(t.brTagWin, t.brParabens);
+      } },
+      i: { tex: 'friend2', act: c => c.say(t.brFriend1) },
+      j: { tex: 'friend3', act: c => c.say(t.brFriend2) },
+      w: { tex: 'friend4', act: c => c.say(t.brFriend3) },
+      k: { tex: 'kid2', small: true, act: c => c.say(t.brKid1) },
+      n: { tex: 'kid3', small: true, act: c => c.say(t.brKid2) },
+      E: { tex: 'caketable', act: c => c.say(c.s.flags.parabens ? t.brTableYes : t.brTableNo) },
+      o: { tex: 'balloon' },
+      Z: { tex: 'castle' },
     },
   },
 

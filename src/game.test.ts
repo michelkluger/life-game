@@ -96,7 +96,7 @@ test('the whole game can be played to the end', async () => {
     go(map, x, y) { expect(free(map, x, y), `go ${map} ${x},${y}`).toBe(true); Object.assign(c.s, { map, x, y }); },
     days: async n => { passDays(c.s, n); },
     refresh() {}, backdrop() {},
-    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok,
+    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok,
     dodge: async () => 0,
     mash: async () => 1,
     // Play the special move if you have earned it, otherwise the first one, until someone gives.
@@ -201,8 +201,12 @@ test('the whole game can be played to the end', async () => {
   expect(f.paoq).toBeUndefined(); // lunch first
   await act('brazil', 'A');
   expect(f.end).toBe(true);
-  await act('brazil', 'M', 'D', 'X');
-  expect(f.paoq && f.mangoes).toBe(true);
+  await act('brazil', 'M', 'h');
+  expect(f.partyIn).toBeUndefined(); // nobody arrives at a birthday empty-handed
+  await act('brazil', 'V');
+  expect(f.sweet).toBeUndefined();   // grandma needs the mangoes first
+  await act('brazil', 'D', 'V', 'E', 'h', 'E', 'X');
+  expect(f.paoq && f.mangoes && f.sweet && f.parabens).toBe(true);
 
   // Back home: deliver the pão de queijo, fly, race, and ride the train at half fare.
   await act('zurich', 'e', 'P', 'R');
