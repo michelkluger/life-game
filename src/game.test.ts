@@ -39,7 +39,7 @@ test('every line exists in all four languages with the same placeholders', () =>
 
 test('the wardrobe pays only once', async () => {
   const s = newState();
-  const c = { s, say: async () => {}, choose: async () => 0, simon: async () => true, days: async () => {} } as unknown as Ctx;
+  const c = { s, say: async () => {}, choose: async () => 0, pairs: async () => true, days: async () => {} } as unknown as Ctx;
   await MAPS.zurich.ents.N.act!(c);
   await MAPS.zurich.ents.N.act!(c);
   expect(s.money).toBe(2400 + 120);
@@ -73,6 +73,8 @@ test('the whole first build can be played to the end', async () => {
     refresh() {},
     simon: async () => true,
     dodge: async () => 0,
+    pairs: async () => true, timing: async () => true, aim: async () => true,
+    whack: async () => true, collect: async () => true, balance: async () => true,
     backdrop() {},
     async interview() {
       const f = newFight();

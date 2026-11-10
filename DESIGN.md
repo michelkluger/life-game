@@ -58,17 +58,31 @@ Memories in the box, opened in chronological order, each called up by something 
 
 | Memory | Opens after | Play | Reward |
 |---|---|---|---|
-| Scout camp, 2007 | failing the interview | find rope, knot puzzle | BE PREPARED (wins the interview) |
-| Svalbard, 2015 | swimming in the lake | polar-night fog, find the bear guard, pilot the robot through ice | swim at full speed |
-| Vienna, 2016 | getting the job | three tries for a coffee, boot-sequence puzzle | slower crowds in sprints |
-| Munich, 2018 | the birthday | satellite puzzle, sprint to the fire truck | puzzle arrows stay longer |
-| Antarctica, 2019 | paying a month's rent | whiteout flag line, cold-battery quiz | ends the box |
+| Scout camp, 2007 | failing the interview | find rope, arrow-memory knots | BE PREPARED (wins the interview) |
+| Svalbard, 2015 | swimming in the lake | polar-night fog, find the bear guard, fly the robot and collect samples | swim at full speed |
+| Vienna, 2016 | getting the job | three tries for a coffee, timing bar | slower crowds in sprints |
+| Munich, 2018 | the birthday | keep the dish on the satellite, then a reaction game putting out a fire | one extra mistake in timing and reaction games |
+| Antarctica, 2019 | paying a month's rent | whiteout flag line, balance the mast in the wind, cold-battery quiz | ends the box |
 
 The build ends once the box is empty, the job is won and the cake delivered.
 
 Also: activity tracker (10 tiles = 1 km) with a totals panel and a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
 
-Building blocks for new stages: `c.simon(n)` puzzle, `c.dodge(seconds, kind)` action, `c.interview()`, `c.backdrop()`, map `fog`.
+Minigames (user direction 2026-11-10: they are a big part of the fun, so vary them; each kind appears once, twice at most with a different theme):
+
+| Kind | Call | Used for |
+|---|---|---|
+| Arrow memory | `c.simon(n)` | scout knots |
+| Card matching | `c.pairs(seconds)` | the neighbour's wardrobe |
+| Lane dodger | `c.dodge(seconds)` | changing trains in Geneva |
+| Reaction | `c.whack(count, tex)` | platform changes in Lyon, kitchen fire in Munich |
+| Timing bar | `c.timing(rounds)` | Vienna flight computer |
+| Tracking | `c.aim(seconds)` | Munich satellite dish |
+| Free-move collecting | `c.collect(n, seconds)` | Svalbard robot |
+| Balance | `c.balance(seconds)` | Antarctic mast |
+| Turn-based | `c.interview()` | job interview |
+
+All run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Other building blocks: `c.backdrop()`, map `fog`.
 
 Known gaps:
 - Art is drawn in code, not CC0 packs.

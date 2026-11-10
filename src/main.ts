@@ -60,8 +60,10 @@ const ART: Record<string, Rect[]> = {
   mast: [['#777', 7, 0, 2, 16], ['#777', 3, 4, 10, 1], ['#e2372c', 3, 2, 2, 2], ['#333', 11, 2, 3, 3]],
   rov: [['#f2c94c', 2, 5, 12, 7], ['#333', 11, 7, 3, 3], ['#7fd0ff', 12, 8, 1, 1], ['#333', 0, 7, 2, 3], ['#888', 4, 12, 8, 1]],
   jelly: [['#e79ad6', 4, 3, 8, 5], ['#e79ad6', 5, 8, 1, 5], ['#e79ad6', 8, 8, 1, 6], ['#e79ad6', 10, 8, 1, 4]],
-  floe: [['#dfeefa', 1, 4, 14, 9], ['#fff', 3, 5, 8, 3], ['#b9d6ee', 2, 12, 12, 1]],
-  scooter: [['#222', 2, 12, 3, 3], ['#222', 11, 12, 3, 3], ['#3fbf7f', 3, 11, 10, 1], ['#3fbf7f', 11, 3, 1, 9], ['#222', 9, 3, 4, 1]],
+  angel: [['#fff', 6, 2, 4, 3], ['#ffd9e8', 5, 5, 6, 7], ['#fff', 2, 5, 3, 3], ['#fff', 11, 5, 3, 3], ['#ff8fab', 7, 7, 2, 3], ['#ffd9e8', 6, 12, 4, 2]],
+  flame: [['#e2372c', 4, 6, 8, 9], ['#e2372c', 6, 2, 3, 5], ['#f28b2c', 5, 8, 6, 7], ['#f2c94c', 6, 10, 4, 5], ['#fff3b0', 7, 12, 2, 3]],
+  sat: [['#3f6fd0', 0, 6, 5, 4], ['#3f6fd0', 11, 6, 5, 4], ['#9fd3f0', 1, 7, 3, 2], ['#9fd3f0', 12, 7, 3, 2], ['#c9ced6', 5, 5, 6, 6], ['#f2c94c', 7, 3, 2, 2], ['#8a8f98', 7, 11, 2, 2]],
+  board: [['#1c1e21', 1, 3, 14, 10], ['#f2c94c', 2, 4, 12, 3], ['#1c1e21', 4, 5, 2, 1], ['#1c1e21', 8, 5, 4, 1], ['#59606b', 2, 8, 12, 1], ['#59606b', 2, 10, 8, 1]],
   prof: person('#4a6fa5', '#bbb'),
   guard: person('#d9822b', '#333'),
   boss: person('#555b6e', '#6b4a2b'),
@@ -104,13 +106,6 @@ function drawTrain(x: Ctx2) {
   x.fillStyle = '#333'; x.fillRect(6, 54, 228, 6);
   x.fillStyle = '#1a1a1a'; for (const cx of [30, 60, 180, 210]) { x.beginPath(); x.arc(cx, 62, 7, 0, 7); x.fill(); }
 }
-
-// Looks for the three-lane dodge minigame.
-const SKINS = {
-  station: { bg: 0x5b6068, line: 0xf2c94c, me: 'me', things: ['case', 'tourist'], hud: TXT.dodgeHud },
-  sea: { bg: 0x16406b, line: 0x2a5f93, me: 'rov', things: ['floe', 'jelly'], hud: TXT.dodgeHudSea },
-  street: { bg: 0x3d4046, line: 0xdddddd, me: 'me', things: ['scooter', 'bavarian', 'tourist'], hud: TXT.dodgeHudStreet },
-};
 
 // Activity tracker: 10 tiles = 1 km; PACE is nominal seconds per tile, so times and speeds look human.
 type Mode = 'walk' | 'bike' | 'swim';
@@ -367,60 +362,234 @@ class World extends Phaser.Scene implements Ctx {
     return result === 'win';
   }
 
-  // Puzzle: n arrows flash one by one, then the player repeats them.
+  // ---- Minigames. Each stage of the story gets its own kind, so no two feel the same. ----
+
+  // Shared stage: clears the dialogue, paints a backdrop, runs tick() every frame until it returns a result.
+  play<R>(bg: number, setup: (add: <G>(o: G, depth?: number) => G, label: Phaser.GameObjects.Text) => (dt: number, t: number) => R | undefined) {
+    return new Promise<R>(done => {
+      const made: any[] = [];
+      const add = <G>(o: G, depth = 61) => { made.push(o); return this.ui(o, depth); };
+      this.redraw = null; this.box.setVisible(false); this.txt.setText(''); this.bigTxt.setText('');
+      add(this.add.rectangle(W / 2, H / 2, W + 80, H + 80, bg), 60); // oversized so camera shake never shows the map
+      const label = add(this.add.text(W / 2, 54, '', { ...FONT, fontSize: '18px' }).setOrigin(0.5));
+      const tick = setup(add, label);
+      let t = 0;
+      const loop = (_: number, dt: number) => {
+        t += dt;
+        const result = tick(dt, t);
+        if (result === undefined) return;
+        this.events.off('update', loop);
+        this.onKey = null;
+        made.forEach(o => o.destroy());
+        done(result);
+      };
+      this.events.on('update', loop);
+    });
+  }
+  get lives() { return this.s.flags.munich ? 4 : 3; } // Munich perk: one more mistake allowed
+  held() { const k = this.keys; return { x: +k.right.isDown - +k.left.isDown, y: +k.down.isDown - +k.up.isDown }; }
+  left(seconds: number, t: number) { return Math.max(0, Math.ceil(seconds - t / 1000)); }
+
+  // Memory puzzle: n arrows flash one by one, then the player repeats them. (Scout knots.)
   async simon(n: number) {
     const KEYS = ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'], GLYPH = '↑→↓←';
     const seq = Array.from({ length: n }, () => Math.floor(Math.random() * 4));
-    for (const a of seq) {
-      this.show(() => this.tr(TXT.watch), GLYPH[a]);
-      await this.wait(this.s.flags.munich ? 1000 : 650); // Munich perk: arrows linger
+    for (const g of seq) {
+      this.show(() => this.tr(TXT.watch), GLYPH[g]);
+      await this.wait(650);
       this.show(() => this.tr(TXT.watch));
       await this.wait(180);
     }
     for (let i = 0; i < n; i++) {
-      this.show(() => this.tr(TXT.repeat), seq.slice(0, i).map(a => GLYPH[a]).join(' '));
+      this.show(() => this.tr(TXT.repeat), seq.slice(0, i).map(g => GLYPH[g]).join(' '));
       if (KEYS.indexOf(await this.key(KEYS)) !== seq[i]) return false;
     }
     return true;
   }
 
-  // Action: three lanes, things come at you, Up/Down to dodge. Always leaves a free lane.
-  dodge(seconds: number, kind: keyof typeof SKINS = 'station') {
-    const skin = SKINS[kind], speed = this.s.flags.vienna ? 0.3 : 0.38; // Vienna perk: everything comes slower
-    return new Promise<number>(done => {
-      const LANE = [150, 240, 330], made: Obj[] = [];
-      const add = <G extends Obj>(o: G, depth = 61) => { made.push(o); return this.ui(o, depth); };
-      this.redraw = null; this.box.setVisible(false); this.txt.setText(''); this.bigTxt.setText('');
-      add(this.add.rectangle(W / 2, H / 2, W + 80, H + 80, skin.bg), 60); // oversized so camera shake never shows the map
-      for (const y of [195, 285]) add(this.add.rectangle(W / 2, y, W, 3, skin.line), 60);
-      const label = add(this.add.text(W / 2, 60, '', { ...FONT, fontSize: '18px' }).setOrigin(0.5));
-      const p = add(this.add.image(120, LANE[1], skin.me).setScale(1.5), 62);
+  // Lane dodger: things come at you, Up/Down to switch lane. Returns collisions. (Changing trains.)
+  dodge(seconds: number) {
+    const speed = this.s.flags.vienna ? 0.3 : 0.38; // Vienna perk: crowds move slower
+    return this.play<number>(0x5b6068, (add, label) => {
+      const LANE = [150, 240, 330];
+      for (const y of [195, 285]) add(this.add.rectangle(W / 2, y, W, 3, 0xf2c94c), 60);
+      const p = add(this.add.image(120, LANE[1], 'me').setScale(1.5), 62);
       const things: { o: Phaser.GameObjects.Image; lane: number; hit: boolean }[] = [];
-      let lane = 1, hits = 0, t = 0, next = 600;
+      let lane = 1, hits = 0, next = 600;
       this.onKey = c => {
         if (c === 'ArrowUp' && lane > 0) lane--;
         if (c === 'ArrowDown' && lane < 2) lane++;
         p.y = LANE[lane];
       };
-      const tick = (_: number, dt: number) => {
-        t += dt;
+      return (dt, t) => {
         if (t > next) {
           next = t + 420 + Math.random() * 380;
           const l = Math.floor(Math.random() * 3);
-          things.push({ o: add(this.add.image(W + 40, LANE[l], skin.things[Math.floor(Math.random() * skin.things.length)]).setScale(1.5)), lane: l, hit: false });
+          things.push({ o: add(this.add.image(W + 40, LANE[l], Math.random() < 0.5 ? 'case' : 'tourist').setScale(1.5)), lane: l, hit: false });
         }
         for (const th of things) {
           th.o.x -= dt * speed;
           if (!th.hit && th.lane === lane && Math.abs(th.o.x - p.x) < 44) { th.hit = true; hits++; this.cameras.main.shake(140, 0.012); }
         }
-        label.setText(this.tr(skin.hud, Math.max(0, Math.ceil(seconds - t / 1000)), Math.min(hits, 3)));
-        if (t < seconds * 1000) return;
-        this.events.off('update', tick);
-        this.onKey = null;
-        made.forEach(o => o.destroy());
-        done(hits);
+        label.setText(this.tr(TXT.dodgeHud, this.left(seconds, t), Math.min(hits, 3)));
+        return t >= seconds * 1000 ? hits : undefined;
       };
-      this.events.on('update', tick);
+    });
+  }
+
+  // Card matching: arrows move, Space turns a card, find all six pairs in time. (The wardrobe's parts.)
+  pairs(seconds: number) {
+    return this.play<boolean>(0x3a3350, (add, label) => {
+      const FACE = ['●', '■', '▲', '◆', '✚', '♥'], TINT = ['#e2574c', '#3f8fd0', '#3fbf7f', '#f2c94c', '#c77dff', '#ff8fab'];
+      const deck = [...FACE.keys(), ...FACE.keys()].sort(() => Math.random() - 0.5);
+      const cards = deck.map((f, i) => {
+        const x = 195 + (i % 4) * 110, y = 135 + Math.floor(i / 4) * 110;
+        return { f, open: false, done: false,
+          back: add(this.add.rectangle(x, y, 92, 92, 0x7a6a9a).setStrokeStyle(3, 0x2a2440)),
+          face: add(this.add.text(x, y, FACE[f], { ...FONT, fontSize: '52px', color: TINT[f] }).setOrigin(0.5), 62).setVisible(false) };
+      });
+      const cursor = add(this.add.rectangle(0, 0, 102, 102).setStrokeStyle(4, 0xffffff), 63);
+      let at = 0, first = -1, lock = 0;
+      const turn = (i: number, open: boolean) => { cards[i].open = open; cards[i].face.setVisible(open); cards[i].back.setFillStyle(open ? 0xf4efe6 : 0x7a6a9a); };
+      this.onKey = c => {
+        const d = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -4, ArrowDown: 4 } as Record<string, number>)[c];
+        if (d && at + d >= 0 && at + d < 12 && (Math.abs(d) === 4 || Math.floor((at + d) / 4) === Math.floor(at / 4))) at += d;
+        if (c !== 'Space' || lock > 0 || cards[at].open) return;
+        turn(at, true);
+        if (first < 0) { first = at; return; }
+        const a = first, b = at; first = -1;
+        if (cards[a].f === cards[b].f) cards[a].done = cards[b].done = true;
+        else { lock = 700; this.time.delayedCall(700, () => { turn(a, false); turn(b, false); }); }
+      };
+      return (dt, t) => {
+        lock -= dt;
+        cursor.setPosition(cards[at].back.x, cards[at].back.y);
+        label.setText(this.tr(TXT.pairsHud, this.left(seconds, t)));
+        if (cards.every(c => c.done)) return true;
+        return t >= seconds * 1000 ? false : undefined;
+      };
+    });
+  }
+
+  // Timing bar: a marker sweeps back and forth, Space while it is in the green. The green shrinks. (Real-time deadline.)
+  timing(rounds: number) {
+    return this.play<boolean>(0x1d2b3a, (add, label) => {
+      const X0 = 110, BAR = 500;
+      add(this.add.rectangle(W / 2, 240, BAR, 34, 0x0d151e).setStrokeStyle(2, 0x6b7a8a));
+      const zone = add(this.add.rectangle(0, 240, 10, 34, 0x3fbf7f));
+      const marker = add(this.add.rectangle(0, 240, 6, 56, 0xffffff), 62);
+      let hits = 0, misses = 0, pos = 0, zx = 0, zw = 0;
+      const place = () => { zw = 120 - hits * 25; zx = 40 + Math.random() * (BAR - zw - 80); zone.setPosition(X0 + zx + zw / 2, 240).setSize(zw, 34).setOrigin(0.5); };
+      place();
+      this.onKey = c => {
+        if (c !== 'Space') return;
+        if (pos >= zx && pos <= zx + zw) { hits++; if (hits < rounds) place(); }
+        else { misses++; this.cameras.main.shake(120, 0.01); }
+      };
+      return (_, t) => {
+        const cycle = 1800 - hits * 200, ph = (t % cycle) / cycle; // faster each round
+        pos = BAR * (ph < 0.5 ? ph * 2 : 2 - ph * 2);
+        marker.x = X0 + pos;
+        label.setText(this.tr(TXT.timingHud, hits, rounds, misses, this.lives));
+        return hits >= rounds ? true : misses >= this.lives ? false : undefined;
+      };
+    });
+  }
+
+  // Tracking: keep the crosshair on a drifting target until the link fills up. (Pointing the dish at the satellite.)
+  aim(seconds: number) {
+    return this.play<boolean>(0x0b1026, (add, label) => {
+      for (let i = 0; i < 40; i++) add(this.add.rectangle(Math.random() * W, 70 + Math.random() * 380, 2, 2, 0xffffff), 60);
+      const sat = add(this.add.image(W / 2, H / 2, 'sat').setScale(1.4));
+      const ring = add(this.add.circle(W / 2, 320, 46).setStrokeStyle(3, 0xf2c94c), 62);
+      let lock = 0;
+      return (dt, t) => {
+        sat.setPosition(W / 2 + 250 * Math.sin(t / 1300), 250 + 130 * Math.sin(t / 800 + 1));
+        const h = this.held();
+        ring.x = Phaser.Math.Clamp(ring.x + h.x * dt * 0.3, 40, W - 40);
+        ring.y = Phaser.Math.Clamp(ring.y + h.y * dt * 0.3, 80, H - 40);
+        const on = Phaser.Math.Distance.Between(ring.x, ring.y, sat.x, sat.y) < 46;
+        if (on) lock += dt;
+        ring.setStrokeStyle(3, on ? 0x3fbf7f : 0xf2c94c);
+        label.setText(this.tr(TXT.trackHud, Math.min(100, Math.floor(lock / 40)), this.left(seconds, t)));
+        return lock >= 4000 ? true : t >= seconds * 1000 ? false : undefined;
+      };
+    });
+  }
+
+  // Reaction: something flares up in one of four spots, press that arrow before it is too late. (Fires, platform changes.)
+  whack(count: number, tex: string) {
+    return this.play<boolean>(tex === 'flame' ? 0x2a1c1c : 0x2b3a55, (add, label) => {
+      const KEYS = ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'], GLYPH = '↑→↓←';
+      const SPOT = [[W / 2, 130], [W / 2 + 190, 260], [W / 2, 390], [W / 2 - 190, 260]];
+      SPOT.forEach(([x, y], i) => {
+        add(this.add.rectangle(x, y, 96, 96, 0x000000, 0.35).setStrokeStyle(2, 0x8a8f98));
+        add(this.add.text(x, y, GLYPH[i], { ...FONT, fontSize: '34px', color: '#59606b' }).setOrigin(0.5));
+      });
+      const thing = add(this.add.image(0, 0, tex).setScale(1.7), 62).setVisible(false);
+      let hits = 0, misses = 0, spot = -1, due = 700, born = 0, now = 0;
+      const miss = () => { misses++; spot = -1; thing.setVisible(false); due = now + 400; this.cameras.main.shake(120, 0.01); };
+      this.onKey = c => {
+        const i = KEYS.indexOf(c);
+        if (i < 0 || spot < 0) return;
+        if (i !== spot) return miss();
+        hits++; spot = -1; thing.setVisible(false); due = now + 250 + Math.random() * 350;
+      };
+      return (_, t) => {
+        now = t;
+        if (spot < 0 && t >= due) { spot = Math.floor(Math.random() * 4); born = t; thing.setPosition(SPOT[spot][0], SPOT[spot][1]).setVisible(true); }
+        if (spot >= 0 && t - born > 1100 - hits * 40) miss(); // they get quicker
+        label.setText(this.tr(tex === 'flame' ? TXT.whackHud : TXT.whackHudTrain, hits, count, misses, this.lives));
+        return hits >= count ? true : misses >= this.lives ? false : undefined;
+      };
+    });
+  }
+
+  // Free swimming: steer with all four arrows, pick up n samples before time runs out, jellyfish stun you. (The robot under the ice.)
+  collect(n: number, seconds: number) {
+    return this.play<boolean>(0x16406b, (add, label) => {
+      const rov = add(this.add.image(120, 260, 'rov').setScale(1.4), 63);
+      const sample = add(this.add.image(0, 0, 'angel').setScale(1.2), 62);
+      const jellies = [0, 1, 2, 3].map(i => add(this.add.image(180 + i * 150, 120 + i * 80, 'jelly').setScale(1.3)));
+      const drop = () => sample.setPosition(80 + Math.random() * (W - 160), 100 + Math.random() * (H - 160));
+      let got = 0, stun = 0;
+      drop();
+      return (dt, t) => {
+        stun -= dt;
+        const h = this.held();
+        if (stun <= 0) {
+          rov.x = Phaser.Math.Clamp(rov.x + h.x * dt * 0.26, 30, W - 30);
+          rov.y = Phaser.Math.Clamp(rov.y + h.y * dt * 0.26, 80, H - 30);
+          if (h.x) rov.setFlipX(h.x < 0);
+        }
+        rov.setAlpha(stun > 0 ? 0.4 : 1);
+        jellies.forEach((j, i) => {
+          j.y = 250 + 150 * Math.sin(t / (700 + i * 160) + i * 2);
+          if (stun <= 0 && Phaser.Math.Distance.Between(j.x, j.y, rov.x, rov.y) < 40) { stun = 900; this.cameras.main.shake(140, 0.012); }
+        });
+        if (Phaser.Math.Distance.Between(sample.x, sample.y, rov.x, rov.y) < 42) { got++; drop(); }
+        label.setText(this.tr(TXT.collectHud, got, n, this.left(seconds, t)));
+        return got >= n ? true : t >= seconds * 1000 ? false : undefined;
+      };
+    });
+  }
+
+  // Balance: gusts push the mast over, Left/Right to hold it upright for the whole time. (Antarctic wind.)
+  balance(seconds: number) {
+    return this.play<boolean>(0xdfe8f0, (add, label) => {
+      label.setColor('#1c1e21');
+      add(this.add.rectangle(W / 2, 420, W + 80, 120, 0xffffff));
+      const mast = add(this.add.image(W / 2, 372, 'mast').setOrigin(0.5, 1).setScale(5), 62);
+      let tilt = 0, spin = 0, gust = 0, change = 0;
+      return (dt, t) => {
+        if (t > change) { change = t + 500 + Math.random() * 600; gust = (Math.random() * 2 - 1) * (0.6 + t / 12000); }
+        spin += (gust + tilt * 0.8 + this.held().x * 3) * dt / 1000; // it also falls faster the further it leans
+        spin *= 0.985 ** (dt / 16); // a little drag; tuned by simulation so idle always loses and an attentive player wins
+        tilt += spin * dt / 1000;
+        mast.rotation = tilt;
+        label.setText(this.tr(TXT.balanceHud, this.left(seconds, t)));
+        return Math.abs(tilt) > 1.1 ? false : t >= seconds * 1000 ? true : undefined;
+      };
     });
   }
 

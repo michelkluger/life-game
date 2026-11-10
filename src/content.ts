@@ -10,8 +10,15 @@ export type Ctx = {
   go(map: string, x: number, y: number): void;
   days(n?: number): Promise<void>;
   interview(): Promise<boolean>;
-  simon(n: number): Promise<boolean>;      // puzzle: memorise and repeat n arrows
-  dodge(seconds: number, kind?: 'station' | 'sea' | 'street'): Promise<number>; // action: three-lane dodger, returns collisions
+  // Minigames: each returns whether you made it (dodge returns the number of collisions).
+  simon(n: number): Promise<boolean>;                 // memorise and repeat n arrows
+  dodge(seconds: number): Promise<number>;            // three-lane dodger
+  pairs(seconds: number): Promise<boolean>;           // match six pairs of cards
+  timing(rounds: number): Promise<boolean>;           // Space while the marker is in the green
+  aim(seconds: number): Promise<boolean>;             // keep the crosshair on a moving target
+  whack(count: number, tex: 'flame' | 'board'): Promise<boolean>; // press the arrow where something pops up
+  collect(n: number, seconds: number): Promise<boolean>; // free movement, gather n things
+  balance(seconds: number): Promise<boolean>;         // keep something upright against gusts
   backdrop(on: boolean): void;             // train-ride scene behind the dialogue
   refresh(): void;
 };
@@ -40,10 +47,10 @@ export const afterScript: Script = async c => {
 };
 
 // Animated ride, then a sprint for the connection. Missing it costs an extra day.
-async function trainRide(c: Ctx, lines: Line[], sprint: Line) {
+async function trainRide(c: Ctx, lines: Line[], how: Line, game: () => Promise<boolean>) {
   c.backdrop(true);
-  await c.say(...lines, sprint);
-  const missed = (await c.dodge(12)) >= 3;
+  await c.say(...lines, how);
+  const missed = !await game();
   await c.say(missed ? t.dodgeMiss : t.dodgeOk);
   c.backdrop(false);
   await c.days(missed ? 2 : 1);
@@ -115,7 +122,7 @@ export const MAPS: Record<string, MapDef> = {
         await c.say(t.nb1, t.nb2);
         if (!await yes(c, t.nbQ)) return;
         await c.say(t.nbHow);
-        if (await c.simon(5)) {
+        if (await c.pairs(60)) {
           f.wardrobe = true; c.s.money += 120;
           await c.say(t.nbWin);
         } else await c.say(t.nbFail);
@@ -138,7 +145,7 @@ export const MAPS: Record<string, MapDef> = {
         if (c.s.money < TICKET) return c.say(t.hbBroke);
         if (!await yes(c, t.hbQ)) return;
         pay(c.s, TICKET);
-        await trainRide(c, [t.hb1, t.hb2], t.dodgeIntro);
+        await trainRide(c, [t.hb1, t.hb2], t.dodgeIntro, async () => await c.dodge(12) < 3);
         c.go('marseille', 4, 3);
       } },
     },
@@ -162,7 +169,7 @@ export const MAPS: Record<string, MapDef> = {
       G: { tex: 'door', on: 'stone', label: same('Gare St-Charles'), act: async c => {
         if (!await yes(c, t.gareQ)) return;
         if (!pay(c.s, TICKET)) await c.say(t.gareBroke);
-        await trainRide(c, [t.gare1], t.dodgeBack);
+        await trainRide(c, [t.gare1], t.dodgeBack, () => c.whack(8, 'board'));
         c.go('zurich', 19, 7);
       } },
       P: { tex: 'door', on: 'cream', label: same('Pâtisserie'), act: async c => {
@@ -216,7 +223,7 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // Polar night: find the bear guard, then pilot the robot up through the ice. Reward: swim at full speed.
+  // Polar night: find the bear guard, then fly the robot around collecting samples. Reward: swim at full speed.
   svalbard: {
     name: t.mSvalbard, floor: 'snow', outdoor: true, fog: 'dark',
     rows: [
@@ -236,7 +243,7 @@ export const MAPS: Record<string, MapDef> = {
       H: { tex: 'hole', act: async c => {
         if (!c.s.flags.guard) return c.say(t.svNoGuard);
         await c.say(t.svHole);
-        if (await c.dodge(12, 'sea') >= 3) return c.say(t.svFail);
+        if (!await c.collect(6, 25)) return c.say(t.svFail);
         c.s.flags.svalbard = true;
         await c.say(t.sv1, t.sv2, t.sv3);
         wakeUp(c);
@@ -244,7 +251,7 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // First job: get a coffee out of a Viennese waiter, then fix the boot sequence. Reward: slower crowds.
+  // First job: get a coffee out of a Viennese waiter, then hit the timing window three times. Reward: slower crowds.
   vienna: {
     name: t.mVienna, floor: 'path', outdoor: true,
     rows: [
@@ -270,7 +277,7 @@ export const MAPS: Record<string, MapDef> = {
       K: { tex: 'door', on: 'glass', label: same('TickTock Tech'), act: async c => {
         if (!c.s.flags.coffee) return c.say(t.viNoCoffee);
         await c.say(t.viTermHow);
-        if (!await c.simon(6)) return c.say(t.viFail);
+        if (!await c.timing(3)) return c.say(t.viFail);
         c.s.flags.vienna = true;
         await c.say(t.vi1, t.vi2, t.vi3);
         wakeUp(c);
@@ -278,7 +285,7 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // Night shift: recover the satellite (puzzle), then the pager goes off (sprint). Reward: longer puzzle hints.
+  // Night shift: point the dish at the satellite, then the pager goes off and you put out a fire. Reward: one extra mistake.
   munich: {
     name: t.mMunich, floor: 'grass', outdoor: true,
     rows: [
@@ -294,9 +301,9 @@ export const MAPS: Record<string, MapDef> = {
       b: { tex: 'bavarian', act: c => c.say(t.muBav) },
       C: { tex: 'door', on: 'stone', label: same('Sat Control'), act: async c => {
         await c.say(t.muOps1, t.muOps2);
-        if (!await c.simon(6)) return c.say(t.muFail);
+        if (!await c.aim(20)) return c.say(t.muFail);
         await c.say(t.mu1, t.mu2);
-        await c.say(await c.dodge(12, 'street') >= 3 ? t.muLate : t.muOnTime);
+        await c.say(await c.whack(10, 'flame') ? t.muOnTime : t.muLate);
         c.s.flags.munich = true;
         await c.say(t.mu3, t.mu4, t.mu5);
         wakeUp(c);
@@ -304,7 +311,7 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // Whiteout: follow the flags to the mast, then know what cold does to batteries. Reward: the end of the box.
+  // Whiteout: follow the flags to the mast, hold it in the wind, then know what cold does to batteries. Reward: the end of the box.
   antarctica: {
     name: t.mAntarctica, floor: 'snow', outdoor: true, fog: 'white',
     rows: [
@@ -324,6 +331,8 @@ export const MAPS: Record<string, MapDef> = {
       p: { tex: 'penguin', act: c => c.say(t.anPenguin) },
       f: { tex: 'flag', act: c => c.say(t.anFlag) },
       M: { tex: 'mast', act: async c => {
+        await c.say(t.anMastHow);
+        if (!await c.balance(12)) return c.say(t.anMastFall);
         const pick = await c.choose(t.anMastQ, [t.anOptA, t.anOptB, t.anOptC]);
         if (pick !== 1) return c.say(pick === 0 ? t.anWrongA : t.anWrongC);
         c.s.flags.antarctica = true;
