@@ -56,7 +56,7 @@ Run: `bun run dev` then open http://localhost:3000. Tests: `bun test`. Hosted on
 
 | Place | People and quests |
 |---|---|
-| Flat | bed (sleep a day), job portal, the box of memories |
+| Flat | bed (sleep a day), laptop (jobs, dating app, the decision), the box of memories, and Ellie the soft toy elephant: pick her up and E makes her follow you everywhere or stay home |
 | Zurich (36x18) | interview at Gletscher Labs; neighbour's wardrobe (one-time CHF 120); lake swimming; paragliding school on the mountain (CHF 300 once); river race (CHF 40); station; airport; tourist, banker, Rösti the dog, the always-late climbing friend, alphorn player, recycling neighbour; the Brazilian expat who wants pão de queijo |
 | Marseille (30x13) | birthday cake; ice for the pastis from the fishmonger; pétanque with the old men; the nieces' ball in the harbour (swim for it); boats |
 | Brazil (40x16) | return flight CHF 1,200, chocolate CHF 35 at duty-free; Sunday-lunch duel with the aunt (chocolate is the winning move); mother packs pão de queijo after lunch; uncle, cousin, the caramel dog. Quest chain: catch mangoes with the father at the Jewish cemetery where he works -> grandma on the veranda makes the mango sweet -> the friends' birthday party lets you in (big group of friends, lots of kids, balloons, cake table, bouncy castle) -> game of tag -> Parabéns and brigadeiros |
@@ -119,6 +119,10 @@ User direction 2026-11-10: they are a big part of the fun, so vary them; each ki
 | Tag | `c.tag(n, seconds)` | kids at the birthday party |
 | Route reading | `c.climb(n)` | bouldering |
 | Red light, green light | `c.sneak(seconds, theme)` | the armrest on the flight out, the sleeping baby on the flight back |
+| Formation | `c.formation(seconds)` | flying with the Badgers |
+| Rhythm | `c.dance(n)` | the Badgers' Halloween party |
+| Oven watch | `c.oven(n)` | the Badgers' Christmas cookies |
+| Paceline | `c.paceline(seconds)` | riding with the Capuns |
 | Conversation choices | plain `c.choose` | the date |
 | Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
 
@@ -131,11 +135,12 @@ Tests cover: map shape, every character reachable from the spawn point, a tune f
 Known gaps:
 - Art is drawn in code, not CC0 packs.
 - Touch controls are checked in an emulated phone only, not on a real device.
-- The date and the Zurich friends are invented composites.
+- The date and the individual Zurich friends are invented composites. From Michel (2026-11-10): his paragliding friends are "the Badgers" (met after the licence; they gather for flying, Christmas cookie baking and Halloween parties) and his cycling friends are "the Capuns". Individual members are unnamed and their lines invented.
 - Assumed two nieces; family unnamed. From Michel (2026-11-10): parents and grandma are in Brazil; his father works in the Jewish cemeteries; a big group of friends there, with lots of kids, gathers for birthday parties. The aunt, uncle, cousin and every personality are still invented.
 - FR/PT/DE text is AI-translated and not yet proofread by Michel.
 - Memory order follows the years, not the original chapter numbering.
 - Minigame difficulty is tuned by estimate and simulation, not by play.
+- Bun gotcha: an elephant emoji in `index.html` made `bun run dev` fail with "Failed to load bundled module" (production build was fine); the touch button for Ellie is a plain "E" for that reason.
 - Phaser gotcha: a scene method named like a Phaser plugin (`load`, `lights`, `time`...) is silently shadowed; `create()` now throws at startup if that happens.
 
 ## Open

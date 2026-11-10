@@ -1676,7 +1676,131 @@ export const TXT = {
     `Le bébé se réveille. Deux cents personnes savent que c'était toi.`,
     `O bebê acorda. Duzentas pessoas sabem que foi você.`,
     `Das Baby wacht auf. Zweihundert Leute wissen, dass du es warst.`],
+  // ---- The Badgers: paragliding friends ----
+  bgNoLicence: [
+    `"We are the Badgers. We fly, we bake, we dress up. Get your licence and we will talk."`,
+    `« Nous, c'est les Badgers. On vole, on fait des biscuits, on se déguise. Passe ton brevet et on en reparle. »`,
+    `"Nós somos os Badgers. A gente voa, faz biscoito e se fantasia. Tira a sua licença e a gente conversa."`,
+    `«Wir sind die Badgers. Wir fliegen, wir backen, wir verkleiden uns. Mach dein Brevet, dann reden wir.»`],
+  bgJoin1: [
+    `"Licence? Good. You fly like a badger: low, stubborn, and happy about it. You are one of us."`,
+    `« Brevet ? Bien. Tu voles comme un blaireau : bas, têtu et content de l'être. Tu es des nôtres. »`,
+    `"Licença? Ótimo. Você voa feito um texugo: baixo, teimoso e feliz com isso. Você é um de nós."`,
+    `«Brevet? Gut. Du fliegst wie ein Dachs: tief, stur und zufrieden damit. Du gehörst zu uns.»`],
+  bgJoin2: [
+    `You are a Badger now. There is a group chat. It has forty members and strict rules about cookie dough.`,
+    `Te voilà Badger. Il y a un groupe de discussion. Quarante membres et des règles strictes sur la pâte à biscuits.`,
+    `Agora você é um Badger. Tem um grupo de mensagens. Quarenta membros e regras rígidas sobre massa de biscoito.`,
+    `Du bist jetzt ein Badger. Es gibt einen Gruppenchat. Vierzig Mitglieder und strenge Regeln zum Guetzliteig.`],
+  bgMenu: [`"What are the Badgers up to?"`, `« Qu'est-ce qu'ils font, les Badgers ? »`, `"O que os Badgers vão fazer?"`, `«Was haben die Badgers vor?»`],
+  bgOptFly: [`Fly together`, `Voler ensemble`, `Voar juntos`, `Zusammen fliegen`],
+  bgOptHal: [`Halloween party`, `Fête d'Halloween`, `Festa de Halloween`, `Halloween-Party`],
+  bgOptXmas: [`Christmas cookie baking`, `Biscuits de Noël`, `Biscoitos de Natal`, `Weihnachtsguetzli backen`],
+  bgMember: [
+    `"Badgers do not fly high. Badgers fly together, and then they eat."`,
+    `« Les Badgers ne volent pas haut. Les Badgers volent ensemble, et ensuite ils mangent. »`,
+    `"Badger não voa alto. Badger voa junto, e depois come."`,
+    `«Badgers fliegen nicht hoch. Badgers fliegen zusammen, und danach wird gegessen.»`],
+  bgFlyHow: [
+    `Six wings in a line off the mountain. Hold Up to climb, let go to sink: stay level with the wing in front of you.`,
+    `Six ailes en file depuis la montagne. Maintiens Haut pour monter, relâche pour descendre : reste à la hauteur de l'aile devant toi.`,
+    `Seis velas em fila saindo da montanha. Segure Cima para subir, solte para descer: fique na altura da vela à sua frente.`,
+    `Sechs Schirme in einer Linie vom Berg. Halte Hoch zum Steigen, lass los zum Sinken: Bleib auf der Höhe des Schirms vor dir.`],
+  formHud: [`In formation {0}% (need 60) · {1}s`, `En formation {0}% (il faut 60) · {1}s`, `Em formação {0}% (precisa 60) · {1}s`, `In Formation {0}% (nötig 60) · {1}s`],
+  bgFlyWin: [
+    `You land together in one field, like a very slow air show. Someone has brought a thermos. Someone always has.`,
+    `Vous atterrissez ensemble dans le même champ, comme un meeting aérien très lent. Quelqu'un a apporté un thermos. Il y a toujours quelqu'un.`,
+    `Vocês pousam juntos no mesmo campo, feito um show aéreo bem devagar. Alguém trouxe uma garrafa térmica. Alguém sempre traz.`,
+    `Ihr landet zusammen auf einer Wiese, wie eine sehr langsame Flugshow. Jemand hat eine Thermoskanne dabei. Irgendjemand immer.`],
+  bgFlyLose: [
+    `You land two valleys away from everyone else. A Badger comes to get you by car. This will be in the group chat for years.`,
+    `Tu atterris à deux vallées des autres. Un Badger vient te chercher en voiture. Ça restera dans le groupe pendant des années.`,
+    `Você pousa a dois vales de distância dos outros. Um Badger vem te buscar de carro. Isso vai ficar no grupo por anos.`,
+    `Du landest zwei Täler von allen anderen entfernt. Ein Badger holt dich mit dem Auto. Das bleibt jahrelang im Gruppenchat.`],
+  bgHalHow: [
+    `The Badgers' Halloween party. You came as a periodic table; nobody has noticed. Press each arrow as it crosses the line.`,
+    `La fête d'Halloween des Badgers. Tu es venu en tableau périodique ; personne n'a remarqué. Appuie sur chaque flèche quand elle passe la ligne.`,
+    `A festa de Halloween dos Badgers. Você veio de tabela periódica; ninguém percebeu. Aperte cada seta quando ela cruzar a linha.`,
+    `Die Halloween-Party der Badgers. Du bist als Periodensystem gekommen; niemand hat es bemerkt. Drück jeden Pfeil, wenn er die Linie kreuzt.`],
+  danceHud: [`Moves {0} (need {1}) · {2} to come`, `Pas réussis {0} (il en faut {1}) · encore {2}`, `Passos {0} (precisa {1}) · faltam {2}`, `Moves {0} (nötig {1}) · noch {2}`],
+  bgHalWin: [
+    `You own the dance floor. A vampire, two witches and an inflatable dinosaur form a circle around you.`,
+    `La piste est à toi. Un vampire, deux sorcières et un dinosaure gonflable forment un cercle autour de toi.`,
+    `A pista é sua. Um vampiro, duas bruxas e um dinossauro inflável fazem uma roda em volta de você.`,
+    `Die Tanzfläche gehört dir. Ein Vampir, zwei Hexen und ein aufblasbarer Dinosaurier bilden einen Kreis um dich.`],
+  bgHalLose: [
+    `You dance like a man doing a pre-flight check. The dinosaur gently leads you to the snack table.`,
+    `Tu danses comme un homme qui fait sa prévol. Le dinosaure te raccompagne gentiment au buffet.`,
+    `Você dança feito alguém fazendo o cheque pré-voo. O dinossauro te leva com carinho até a mesa de petiscos.`,
+    `Du tanzt wie jemand beim Vorflugcheck. Der Dinosaurier führt dich sanft zum Snacktisch.`],
+  bgXmasHow: [
+    `Christmas cookies at the Badgers' hut. Four trays, four arrows. Take each tray out when it is golden: not pale, not black.`,
+    `Biscuits de Noël au chalet des Badgers. Quatre plaques, quatre flèches. Sors chaque plaque quand elle est dorée : ni pâle, ni noire.`,
+    `Biscoitos de Natal na cabana dos Badgers. Quatro assadeiras, quatro setas. Tire cada uma quando estiver dourada: nem pálida, nem preta.`,
+    `Weihnachtsguetzli in der Hütte der Badgers. Vier Bleche, vier Pfeile. Nimm jedes Blech raus, wenn es golden ist: nicht blass, nicht schwarz.`],
+  ovenHud: [`Good trays {0}/{1} · ruined {2}/{3}`, `Plaques réussies {0}/{1} · ratées {2}/{3}`, `Assadeiras boas {0}/{1} · estragadas {2}/{3}`, `Gute Bleche {0}/{1} · verdorben {2}/{3}`],
+  bgXmasWin: [
+    `Eight perfect trays. The hut smells of cinnamon and wet paragliding gear. It is, somehow, the smell of Christmas.`,
+    `Huit plaques parfaites. Le chalet sent la cannelle et le matériel de parapente mouillé. C'est, d'une certaine façon, l'odeur de Noël.`,
+    `Oito assadeiras perfeitas. A cabana cheira a canela e a equipamento de parapente molhado. É, de algum jeito, o cheiro do Natal.`,
+    `Acht perfekte Bleche. Die Hütte riecht nach Zimt und nasser Gleitschirmausrüstung. Irgendwie ist das der Geruch von Weihnachten.`],
+  bgXmasLose: [
+    `The smoke alarm sings along with the carols. The Badgers eat the burnt ones anyway and call them "rustic".`,
+    `Le détecteur de fumée accompagne les chants de Noël. Les Badgers mangent quand même les brûlés et les disent « rustiques ».`,
+    `O alarme de fumaça canta junto com as músicas de Natal. Os Badgers comem os queimados mesmo assim e chamam de "rústicos".`,
+    `Der Rauchmelder singt bei den Weihnachtsliedern mit. Die Badgers essen die verbrannten trotzdem und nennen sie «rustikal».`],
+
+  // ---- The Capuns: cycling friends ----
+  cpNotYet: [
+    `"You have a bike? Ride it a bit first. Two kilometres. Then we talk."`,
+    `« Tu as un vélo ? Roule un peu d'abord. Deux kilomètres. Après, on discute. »`,
+    `"Você tem uma bike? Pedala um pouco primeiro. Dois quilômetros. Depois a gente conversa."`,
+    `«Du hast ein Velo? Fahr erst ein bisschen. Zwei Kilometer. Dann reden wir.»`],
+  cp1: [
+    `"We are the Capuns. Named after the dish. We ride eighty kilometres to justify one plate. Coming?"`,
+    `« Nous, c'est les Capuns. Comme le plat. On roule quatre-vingts kilomètres pour justifier une assiette. Tu viens ? »`,
+    `"Nós somos os Capuns. Igual ao prato. A gente pedala oitenta quilômetros para justificar um prato só. Vem junto?"`,
+    `«Wir sind die Capuns. Wie das Gericht. Wir fahren achtzig Kilometer, um einen Teller zu rechtfertigen. Kommst du mit?»`],
+  cpHow: [
+    `Stay right behind the rider in front with Left and Right: the draft saves your legs. When it is your turn, hold Up and pull at the front.`,
+    `Reste juste derrière le coureur devant toi avec Gauche et Droite : l'aspiration économise tes jambes. Quand c'est ton tour, maintiens Haut et prends le relais.`,
+    `Fique logo atrás do ciclista da frente com Esquerda e Direita: o vácuo poupa as pernas. Quando for a sua vez, segure Cima e puxe o pelotão.`,
+    `Bleib mit Links und Rechts direkt hinter dem Fahrer vor dir: Der Windschatten schont die Beine. Wenn du dran bist, halte Hoch und führ vorne.`],
+  cpTurn: [`YOUR TURN: hold Up`, `À TOI : maintiens Haut`, `SUA VEZ: segure Cima`, `DU BIST DRAN: Hoch halten`],
+  paceHud: [`Legs {0}% · grumbles {1}/{2} · {3}s`, `Jambes {0}% · râleries {1}/{2} · {3}s`, `Pernas {0}% · resmungos {1}/{2} · {3}s`, `Beine {0}% · Gemurre {1}/{2} · {3}s`],
+  cpWin: [
+    `You finish with the group. At the stop, the capuns arrive: chard, dough, bacon, cream. Nobody speaks for six minutes.`,
+    `Tu finis avec le groupe. À l'arrêt, les capuns arrivent : bettes, pâte, lard, crème. Personne ne parle pendant six minutes.`,
+    `Você termina com o grupo. Na parada, chegam os capuns: acelga, massa, bacon, creme. Ninguém fala por seis minutos.`,
+    `Du kommst mit der Gruppe an. Beim Halt kommen die Capuns: Mangold, Teig, Speck, Rahm. Sechs Minuten lang sagt niemand etwas.`],
+  cpLose: [
+    `You get dropped on a hill that the others describe as "flat". They wait at the top, eating your share. Try again.`,
+    `Tu te fais lâcher dans une côte que les autres appellent « du plat ». Ils t'attendent en haut en mangeant ta part. Réessaie.`,
+    `Você fica para trás numa subida que os outros chamam de "plano". Eles esperam lá em cima, comendo a sua parte. Tente de novo.`,
+    `Du wirst an einem Hügel abgehängt, den die anderen «flach» nennen. Sie warten oben und essen deine Portion. Versuch's nochmal.`],
+  cpMember: [
+    `"The maths has never worked. Eighty kilometres burns less than one plate of capuns. We ride anyway."`,
+    `« Le calcul n'a jamais tenu. Quatre-vingts kilomètres brûlent moins qu'une assiette de capuns. On roule quand même. »`,
+    `"A conta nunca fechou. Oitenta quilômetros gastam menos que um prato de capuns. A gente pedala mesmo assim."`,
+    `«Die Rechnung ist noch nie aufgegangen. Achtzig Kilometer verbrennen weniger als ein Teller Capuns. Wir fahren trotzdem.»`],
+  // ---- Ellie ----
+  ellieFind1: [
+    `On the bed: Ellie. A big, soft toy elephant who has moved flats with you more often than your furniture has.`,
+    `Sur le lit : Ellie. Une grande éléphante en peluche qui a déménagé avec toi plus souvent que tes meubles.`,
+    `Em cima da cama: a Ellie. Uma elefanta de pelúcia grande e macia que já se mudou com você mais vezes que os seus móveis.`,
+    `Auf dem Bett: Ellie. Ein grosser, weicher Plüschelefant, der öfter mit dir umgezogen ist als deine Möbel.`],
+  ellieFind2: [
+    `Ellie is coming with you. Press E to have her tag along, and E again to leave her at home.`,
+    `Ellie vient avec toi. Appuie sur E pour qu'elle te suive, et encore sur E pour la laisser à la maison.`,
+    `A Ellie vai com você. Aperte E para ela te acompanhar, e E de novo para deixá-la em casa.`,
+    `Ellie kommt mit. Drück E, damit sie dir folgt, und nochmal E, um sie zu Hause zu lassen.`],
+  maEllie: [
+    `"Is that an ELEPHANT? Can she live here? She can have my bed. I will sleep on the floor."`,
+    `« C'est un ÉLÉPHANT ? Elle peut habiter ici ? Elle peut avoir mon lit. Je dormirai par terre. »`,
+    `"Isso é um ELEFANTE? Ela pode morar aqui? Pode ficar com a minha cama. Eu durmo no chão."`,
+    `«Ist das ein ELEFANT? Darf sie hier wohnen? Sie kann mein Bett haben. Ich schlafe auf dem Boden.»`],
 } satisfies Record<string, Line>;
+
 
 
 

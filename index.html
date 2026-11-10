@@ -49,7 +49,7 @@
   #pad [data-key="ArrowRight"] { grid-area: 2 / 3; }
   #pad [data-key="ArrowDown"] { grid-area: 3 / 2; }
   #pad .acts { right: 14px; display: grid; grid-template-columns: repeat(2, 56px); gap: 8px; }
-  #pad [data-key="Space"] { background: rgba(242, 107, 29, 0.55); font-weight: bold; }
+  #pad [data-key="Space"] { background: rgba(242, 107, 29, 0.55); font-weight: bold; grid-column: 2; }
 </style>
 </head>
 <body>
@@ -68,6 +68,7 @@
   <div class="acts">
     <button data-key="KeyL" aria-label="Change language">L</button>
     <button data-key="KeyM" aria-label="Mute music">♪</button>
+    <button data-key="KeyE" aria-label="Ellie: come along or stay home">E</button>
     <button data-key="Shift" aria-label="Ride the bike (toggle)">🚲</button>
     <button data-key="Space" aria-label="Continue or confirm">A</button>
   </div>

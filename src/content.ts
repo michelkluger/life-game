@@ -29,6 +29,10 @@ export type Ctx = {
   tag(n: number, seconds: number): Promise<boolean>;  // you are it: touch n fleeing kids in time
   climb(n: number): Promise<boolean>;                 // press the arrow on each hold, bottom to top
   sneak(seconds: number, theme: 'armrest' | 'baby'): Promise<boolean>; // hold Space to advance, only while unobserved
+  formation(seconds: number): Promise<boolean>;       // hold Up to stay level with the wing ahead
+  dance(n: number): Promise<boolean>;                 // press each falling arrow as it crosses the line
+  oven(n: number): Promise<boolean>;                  // take each tray out when it is golden
+  paceline(seconds: number): Promise<boolean>;        // stay in the draft, pull when it is your turn
 };
 export type Script = (c: Ctx) => Promise<void>;
 // `on` is the tile drawn under the entity (doors in walls, things in water); `label` is a sign above it.
@@ -92,13 +96,18 @@ export const MAPS: Record<string, MapDef> = {
     name: t.mFlat, floor: 'wood', spawn: [5, 2],
     rows: [
       '##########',
-      '#B......X#',
+      '#BE.....X#',
       '#........#',
       '#...C....#',
       '#........#',
       '####D#####',
     ],
     ents: {
+      // Ellie: once picked up, the E key (handled by the engine) has her follow you or stay home.
+      E: { tex: 'ellie', hide: s => !!s.flags.ellie, act: async c => {
+        c.s.flags.ellie = c.s.flags.ellieOut = true; c.refresh();
+        await c.say(t.ellieFind1, t.ellieFind2);
+      } },
       B: { tex: 'bed', act: async c => {
         if (!await yes(c, t.bedQ)) return;
         await c.say(t.bedSleep);
@@ -151,8 +160,8 @@ export const MAPS: Record<string, MapDef> = {
       'T..,..l..........,......e..........T',
       'T^^,^^^^^........,.................T',
       'T^.,.....^.......,,,,,,,,,,,,,,,,,.T',
-      'T^.P.....^..............33333......T',
-      'T^.......^..............33g33......T',
+      'T^.P..j..^..............33333......T',
+      'T^.....w.^....y.z.......33g33......T',
       'T^^^^^^^^^.........................T',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
@@ -177,6 +186,41 @@ export const MAPS: Record<string, MapDef> = {
         f.climbed = true;
         await c.say(t.gymWin);
       } },
+      // The Badgers: paragliding friends, met on the mountain once you hold a licence. Three gatherings, replayable.
+      j: { tex: 'badger1', act: async c => {
+        const f = c.s.flags;
+        if (!f.pilot) return c.say(t.bgNoLicence);
+        if (!f.badgers) { f.badgers = true; await c.say(t.bgJoin1, t.bgJoin2); }
+        const pick = await c.choose(t.bgMenu, [t.bgOptFly, t.bgOptHal, t.bgOptXmas]);
+        if (pick === 0) {
+          await c.say(t.bgFlyHow);
+          if (!await c.formation(20)) return c.say(t.bgFlyLose);
+          f.bgFly = true; bump(c, 'flights');
+          await c.say(t.bgFlyWin);
+        } else if (pick === 1) {
+          await c.say(t.bgHalHow);
+          if (!await c.dance(24)) return c.say(t.bgHalLose);
+          f.bgHalloween = true;
+          await c.say(t.bgHalWin);
+        } else {
+          await c.say(t.bgXmasHow);
+          if (!await c.oven(8)) return c.say(t.bgXmasLose);
+          f.bgXmas = true;
+          await c.say(t.bgXmasWin);
+        }
+      } },
+      w: { tex: 'badger2', act: c => c.say(t.bgMember) },
+      // The Capuns: cycling friends. They want to see two kilometres on your bike before they let you on a ride.
+      y: { tex: 'capun', act: async c => {
+        const f = c.s.flags;
+        if (c.s.dist.bike < 20) return c.say(t.cpNotYet);
+        if (!f.capunsMet) { f.capunsMet = true; await c.say(t.cp1); }
+        await c.say(t.cpHow);
+        if (!await c.paceline(30)) return c.say(t.cpLose);
+        f.capuns = true;
+        await c.say(t.cpWin);
+      } },
+      z: { tex: 'capun', act: c => c.say(t.cpMember) },
       // Commitment: science. She wants three stories from the box before she will listen.
       u: { tex: 'prof', act: async c => {
         const f = c.s.flags;
@@ -376,7 +420,7 @@ export const MAPS: Record<string, MapDef> = {
         if (f.ball && !f.ballDone) { f.ballDone = true; return c.say(t.maBall2); }
         await c.say(f.birthday ? t.n1b : t.n1a);
       } },
-      b: { tex: 'niece2', small: true, act: c => c.say(c.s.flags.birthday ? t.n2b : t.n2a) },
+      b: { tex: 'niece2', small: true, act: c => c.say(c.s.flags.ellieOut && !c.s.flags.ellieSeen ? (c.s.flags.ellieSeen = true, t.maEllie) : c.s.flags.birthday ? t.n2b : t.n2a) },
       B: { tex: 'ball', on: 'water', hide: s => !!s.flags.ball, act: async c => {
         if (!c.s.flags.ballAsked) return c.say(t.maBallSee);
         c.s.flags.ball = true; c.refresh();

@@ -86,7 +86,7 @@ const AXES: { id: Ending; commit: string; extras: (s: State) => number }[] = [
   { id: 'founder', commit: 'startup', extras: s => count(s, 'wardrobe', 'bank', 'wiener', 'paoqGiven') },
   { id: 'marseille', commit: 'moveMarseille', extras: s => count(s, 'birthday', 'ballDone', 'iceDone', 'petanque') + (s.n.marseille ?? 0) },
   { id: 'brazil', commit: 'moveBrazil', extras: s => count(s, 'lunch', 'mangoes', 'sweet', 'parabens') + (s.n.brazil ?? 0) },
-  { id: 'zurich', commit: 'dating', extras: s => count(s, 'climbed', 'pilot', 'medal', 'swam') },
+  { id: 'zurich', commit: 'dating', extras: s => count(s, 'climbed', 'pilot', 'medal', 'swam', 'badgers', 'capuns') },
 ];
 const count = (s: State, ...flags: string[]) => flags.filter(f => s.flags[f]).length;
 

@@ -119,7 +119,7 @@ test('the whole game can be played to the end', async () => {
     go(map, x, y) { expect(free(map, x, y), `go ${map} ${x},${y}`).toBe(true); Object.assign(c.s, { map, x, y }); },
     days: async n => { passDays(c.s, n); },
     refresh() {}, backdrop() {},
-    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok, sneak: ok,
+    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok, sneak: ok, formation: ok, dance: ok, oven: ok, paceline: ok,
     dodge: async () => 0,
     mash: async () => 1,
     // Play the special move if you have earned it, otherwise the first one, until someone gives.
@@ -139,12 +139,16 @@ test('the whole game can be played to the end', async () => {
     }
   };
 
+  await act('flat', 'E');
+  expect(f.ellie && f.ellieOut).toBe(true); // Ellie comes along from the start
+
   // Present day: fail the interview, remember the scouts, win the job.
   await act('flat', 'X');
   expect(c.s.map).toBe('flat'); // box stays shut until an interview goes wrong
   await act('flat', 'D');
-  await act('zurich', 'O');
+  await act('zurich', 'O', 'j', 'y');
   expect(f.failedInterview).toBe(true);
+  expect(f.badgers || f.capuns).toBeUndefined(); // no licence, no kilometres: no friends yet
   await act('zurich', 'F');
   await act('flat', 'X');
   await act('camp', 'A');
@@ -234,6 +238,10 @@ test('the whole game can be played to the end', async () => {
   // Back home: deliver the pão de queijo, fly, race, and ride the train at half fare.
   await act('zurich', 'e', 'P', 'R');
   expect(f.paoqGiven && f.pilot && f.medal).toBe(true);
+  // Friends: the Badgers need the licence, the Capuns need kilometres.
+  await act('zurich', 'j', 'y', 'w', 'z');
+  expect(f.badgers && f.bgFly && f.capuns).toBe(true);
+
   // Commitments and the rest of life in Zurich.
   await act('zurich', 'e');                       // the expat pitches the company; first answer is yes
   expect(f.startup).toBe(true);

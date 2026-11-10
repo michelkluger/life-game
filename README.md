@@ -13,6 +13,7 @@ A top-down adventure about one real life: Zurich rent, trains to family in Marse
 | Shift (outdoors) | Ride the bike |
 | L | Switch language |
 | M | Mute music |
+| E | Ellie the elephant tags along, or stays home (once you have picked her up) |
 
 On a phone or tablet, on-screen buttons appear: a direction pad, A to confirm, a bike toggle, L and mute.
 

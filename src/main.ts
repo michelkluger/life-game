@@ -87,7 +87,12 @@ const ART: Record<string, Rect[]> = {
   balloon: [['#e2372c', 2, 1, 5, 6], ['#3f8fd0', 9, 3, 5, 6], ['#999', 4, 7, 1, 8], ['#999', 11, 9, 1, 6]],
   caketable: [['#fff', 1, 8, 14, 5], ['#8a5a44', 2, 13, 2, 3], ['#8a5a44', 12, 13, 2, 3], ['#f5b7d0', 5, 4, 6, 4], ['#f2c94c', 7, 2, 1, 2], ['#5a3a1a', 2, 7, 1, 1], ['#5a3a1a', 4, 7, 1, 1], ['#5a3a1a', 12, 7, 1, 1]],
   castle: [['#e2372c', 0, 6, 16, 10], ['#f2c94c', 0, 2, 4, 4], ['#f2c94c', 12, 2, 4, 4], ['#3f8fd0', 4, 9, 8, 7]],
+  ellie: [['#86a0b8', 1, 7, 1, 3], ['#9db4c8', 2, 6, 9, 7], ['#9db4c8', 9, 3, 6, 6], ['#86a0b8', 8, 3, 3, 5], ['#f5b7d0', 9, 4, 1, 3], ['#9db4c8', 14, 7, 2, 6], ['#222', 12, 5, 1, 1], ['#86a0b8', 3, 13, 2, 3], ['#86a0b8', 8, 13, 2, 3]],
   date: person('#16a085', '#7b3f00'),
+  badger1: person('#5d6d7e', '#f4f4f4'),
+  badger2: person('#34495e', '#111'),
+  capun: [['#d9c38a', 4, 0, 6, 2], ['#e8b88a', 4, 2, 6, 4], ['#222', 8, 3, 1, 1], ['#2e7d32', 4, 6, 6, 3], ['#e8b88a', 9, 7, 3, 1]], // rider in the club's green
+  pumpkin: [['#e67e22', 2, 5, 12, 9], ['#d35400', 5, 5, 1, 9], ['#d35400', 10, 5, 1, 9], ['#2e7d32', 7, 2, 2, 3], ['#222', 4, 8, 2, 2], ['#222', 10, 8, 2, 2], ['#222', 5, 11, 6, 1]],
   cryptoman: person('#111418', '#d9c38a'),
   baby: person('#aed6f1', '#e8c9a0', '#f1c9a5'),
   banker: person('#1c2333', '#2b2320'),
@@ -149,6 +154,7 @@ const DETAIL: Record<string, (x: Ctx2) => void> = {
 };
 
 DETAIL.me_walk = DETAIL.me;
+DETAIL.capun = DETAIL.me_bike; // same bike, their jersey
 
 function drawPlane(x: Ctx2) {
   x.fillStyle = '#c9ced6'; x.beginPath(); x.moveTo(150, 44); x.lineTo(92, 78); x.lineTo(72, 78); x.lineTo(104, 44); x.fill(); // wing
@@ -183,6 +189,7 @@ class World extends Phaser.Scene implements Ctx {
   s!: State;
   layer!: Phaser.GameObjects.Container;
   me!: Phaser.GameObjects.Image;
+  ellie!: Phaser.GameObjects.Image; // the soft toy elephant, one step behind you when she is along
   ents = new Map<string, Ent>();
   busy = true; moving = false; needRelease = false;
   onKey: ((code: string) => void) | null = null;
@@ -227,18 +234,20 @@ class World extends Phaser.Scene implements Ctx {
     this.fog = this.ui(this.add.image(W / 2, H / 2, 'fog_dark'), 20).setVisible(false);
 
     // Phaser puts its own plugins on the scene (load, lights, time...), which silently shadow a method of the same name.
-    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'climb', 'sneak', 'build', 'play'])
+    for (const k of ['duel', 'simon', 'dodge', 'pairs', 'timing', 'aim', 'whack', 'collect', 'balance', 'leds', 'sort', 'glide', 'mash', 'gather', 'tag', 'climb', 'sneak', 'formation', 'dance', 'oven', 'paceline', 'build', 'play'])
       if (typeof (this as any)[k] !== 'function') throw new Error(`World.${k} is shadowed by a Phaser plugin: rename it`);
     this.keys = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.on('keydown', (e: KeyboardEvent) => {
       music.unlock();
       if (e.code === 'KeyM') music.toggleMute();
+      if (e.code === 'KeyE') this.toggleEllie();
       if (e.code === 'KeyL') this.setLang((this.s.lang + 1) % LANGS.length);
       this.onKey?.(e.code);
     });
 
     this.layer = this.add.container();
     this.me = this.add.image(0, 0, 'me').setOrigin(0).setDepth(10);
+    this.ellie = this.add.image(0, 0, 'ellie').setOrigin(0).setDepth(9).setVisible(false);
     this.cameras.main.startFollow(this.me, true, 1, 1, -T / 2, -T / 2);
 
     this.fightUi = [
@@ -269,6 +278,15 @@ class World extends Phaser.Scene implements Ctx {
     });
   }
 
+  // E: Ellie tags along, or stays home. Only once you have picked her up.
+  toggleEllie() {
+    const f = this.s.flags;
+    if (!f.ellie) return;
+    f.ellieOut = !f.ellieOut;
+    this.ellie.setVisible(f.ellieOut).setPosition(this.me.x, this.me.y);
+    music.sfx('tick');
+  }
+
   setLang(lang: number) {
     this.s.lang = lang;
     this.build(); // signs and HUD
@@ -292,6 +310,7 @@ class World extends Phaser.Scene implements Ctx {
         { ...FONT, fontSize: '13px', fontStyle: 'bold', backgroundColor: '#101820', padding: { x: 5, y: 2 } }).setOrigin(0.5, 1));
       this.ents.set(`${x},${y}`, ent);
     }));
+    if (!this.moving) this.ellie.setVisible(!!this.s.flags.ellieOut).setPosition(this.s.x * T, this.s.y * T);
     this.fog.setVisible(!!m.fog);
     if (m.fog) this.fog.setTexture('fog_' + m.fog);
     if (!this.moving) this.me.setPosition(this.s.x * T, this.s.y * T).setTexture(m.rows[this.s.y][this.s.x] === '~' ? 'me_swim' : 'me');
@@ -366,6 +385,10 @@ class World extends Phaser.Scene implements Ctx {
     if (ent) { if (ent.act) this.run(ent.act); return; }
     const bike = !water && !!m.outdoor && (k.shift.isDown || pad.shift);
     this.me.setTexture(water ? 'me_swim' : bike ? 'me_bike' : (x + y) % 2 ? 'me_walk' : 'me');
+    if (this.s.flags.ellieOut) {
+      this.ellie.setFlipX(dx < 0);
+      this.tweens.add({ targets: this.ellie, x: this.s.x * T, y: this.s.y * T, duration: water ? 320 : bike ? 80 : 170 });
+    }
     this.s.x = x; this.s.y = y; this.moving = true;
     this.track(water ? 'swim' : bike ? 'bike' : 'walk', x, y, x - dx, y - dy);
     this.tweens.add({
@@ -399,7 +422,7 @@ class World extends Phaser.Scene implements Ctx {
   }
 
   go(map: string, x: number, y: number) {
-    this.tweens.killTweensOf(this.me); this.moving = false; // never leave a half-finished step behind
+    this.tweens.killTweensOf(this.me); this.tweens.killTweensOf(this.ellie); this.moving = false; // never leave a half-finished step behind
     this.seg = { mode: 'walk', pts: [[x, y]] };              // a route never spans two places
     Object.assign(this.s, { map, x, y }); this.build(); music.play(map);
   }
@@ -878,6 +901,130 @@ class World extends Phaser.Scene implements Ctx {
     });
   }
 
+  // Formation: three wings weave up and down ahead of you; hold Up to climb and stay level with the one in front. (Flying with the Badgers.)
+  formation(seconds: number) {
+    return this.play<boolean>(0x9fd3f0, (add, label) => {
+      label.setColor('#1c1e21');
+      const path = (t: number) => 250 + 115 * Math.sin(t / 1400) + 35 * Math.sin(t / 530);
+      const wings = [0, 1, 2].map(i => add(this.add.image(580 - i * 135, 250, 'glider').setScale(1.15), 62));
+      const slot = add(this.add.circle(175, 250, 26).setStrokeStyle(2, 0x1c1e21, 0.35));
+      const me = add(this.add.image(175, 250, 'glider').setScale(1.3), 63);
+      let vy = 0, inside = 0;
+      return (dt, t) => {
+        wings.forEach((w, i) => { w.y = path(t - (i + 1) * 420); });
+        slot.y = path(t - 4 * 420); // your place in the line
+        vy = Phaser.Math.Clamp(vy + (this.held().y < 0 ? -620 : 420) * dt / 1000, -260, 260);
+        me.y = Phaser.Math.Clamp(me.y + vy * dt / 1000, 90, H - 30);
+        const ok = Math.abs(me.y - slot.y) < 42;
+        if (ok) inside += dt;
+        slot.setStrokeStyle(3, ok ? 0x2bb673 : 0x1c1e21, ok ? 1 : 0.35);
+        label.setText(this.tr(TXT.formHud, Math.floor(100 * inside / Math.max(1, t)), this.left(seconds, t)));
+        return t >= seconds * 1000 ? inside / t >= 0.6 : undefined;
+      };
+    });
+  }
+
+  // Dance: arrows fall in four columns; press each one as it crosses the line. (The Badgers' Halloween party.)
+  dance(n: number) {
+    return this.play<boolean>(0x1a1026, (add, label) => {
+      const KEYS = ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'], GLYPH = '←↓↑→', X = [240, 320, 400, 480], LINE = 400;
+      const need = Math.ceil(n * 0.7);
+      add(this.add.rectangle(W / 2, LINE, 330, 46, 0xffffff, 0.08).setStrokeStyle(2, 0xf28b2c));
+      add(this.add.image(110, 300, 'pumpkin').setScale(2.2));
+      const me = add(this.add.image(610, 300, 'me').setScale(2.2));
+      const notes: { o: Phaser.GameObjects.Text; col: number; done: boolean }[] = [];
+      let spawned = 0, hits = 0, next = 700;
+      this.onKey = c => {
+        const col = KEYS.indexOf(c);
+        const note = notes.find(q => !q.done && q.col === col && Math.abs(q.o.y - LINE) < 36);
+        if (!note) return;
+        note.done = true; note.o.setVisible(false); hits++;
+        music.sfx('tick'); me.setFlipX(!me.flipX);
+      };
+      return (dt, t) => {
+        if (spawned < n && t > next) {
+          next = t + 520; // the beat
+          const col = Math.floor(Math.random() * 4); spawned++;
+          notes.push({ o: add(this.add.text(X[col], 80, GLYPH[col], { ...FONT, fontSize: '34px', color: '#f28b2c' }).setOrigin(0.5), 62), col, done: false });
+        }
+        for (const q of notes) {
+          if (q.done) continue;
+          q.o.y += dt * 0.2;
+          if (q.o.y > LINE + 40) { q.done = true; q.o.setVisible(false); }
+        }
+        label.setText(this.tr(TXT.danceHud, hits, need, n - spawned + notes.filter(q => !q.done).length));
+        return spawned === n && notes.every(q => q.done) ? hits >= need : undefined;
+      };
+    });
+  }
+
+  // Oven watch: four trays bake at their own speed; press a tray's arrow when it is golden, not pale and not burnt. (Christmas cookies.)
+  oven(n: number) {
+    return this.play<boolean>(0x3b2420, (add, label) => {
+      const KEYS = ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'], GLYPH = '↑→↓←';
+      const SPOT = [[W / 2, 140], [W / 2 + 190, 265], [W / 2, 390], [W / 2 - 190, 265]];
+      const trays = SPOT.map(([x, y], i) => {
+        add(this.add.rectangle(x, y, 104, 84, 0x1c1210).setStrokeStyle(2, 0x8a8f98));
+        add(this.add.text(x, y + 56, GLYPH[i], { ...FONT, fontSize: '20px', color: '#c9ced6' }).setOrigin(0.5));
+        return { cookie: add(this.add.circle(x, y, 28, 0xf3e2b3), 62), start: i * 500, time: 3200 + Math.random() * 2200 };
+      });
+      let good = 0, ruined = 0, now = 0;
+      const reset = (tr: typeof trays[number]) => { tr.start = now + 500; tr.time = 3000 + Math.random() * 2400; };
+      const phase = (tr: typeof trays[number]) => (now - tr.start) / tr.time;
+      this.onKey = c => {
+        const tr = trays[KEYS.indexOf(c)];
+        if (!tr || phase(tr) < 0.1) return; // empty tray, or only just in
+        const p = phase(tr);
+        if (p >= 0.55 && p < 0.82) { good++; music.sfx('tick'); } else { ruined++; this.ouch(); }
+        reset(tr);
+      };
+      return (_, t) => {
+        now = t;
+        for (const tr of trays) {
+          const p = phase(tr);
+          if (p >= 1) { ruined++; this.ouch(); reset(tr); }
+          tr.cookie.setVisible(p >= 0).setFillStyle(p < 0.3 ? 0xf3e2b3 : p < 0.55 ? 0xe9cd8a : p < 0.82 ? 0xd9a441 : 0x4a3220);
+        }
+        label.setText(this.tr(TXT.ovenHud, good, n, ruined, this.lives + 1));
+        return good >= n ? true : ruined > this.lives ? false : undefined;
+      };
+    });
+  }
+
+  // Paceline: sit in the draft of the rider ahead as the line snakes along the road, and pull at the front when it is your turn.
+  // Out of the draft your energy drains fast; shirking your turn makes the group grumble. (Riding with the Capuns.)
+  paceline(seconds: number) {
+    return this.play<boolean>(0x4f8a45, (add, label) => {
+      add(this.add.rectangle(W / 2, H / 2, 320, H + 80, 0x55585f));
+      const dashes = [0, 1, 2, 3, 4, 5].map(i => add(this.add.rectangle(W / 2, i * 90, 6, 40, 0xffffff, 0.7)));
+      const sway = (t: number) => W / 2 + 95 * Math.sin(t / 1700) + 25 * Math.sin(t / 600);
+      const riders = [0, 1, 2].map(i => add(this.add.image(W / 2, 150 + i * 62, 'capun').setScale(1.1), 62));
+      const me = add(this.add.image(W / 2, 350, 'me_bike').setScale(1.1), 63);
+      const call = add(this.add.text(W / 2, 100, '', { ...FONT, fontSize: '22px', color: '#f2c94c', backgroundColor: '#101820', padding: { x: 8, y: 4 } }).setOrigin(0.5), 64);
+      add(this.add.rectangle(60, 250, 22, 204, 0x0d151e).setStrokeStyle(2, 0x6b7a8a));
+      const bar = add(this.add.rectangle(60, 350, 16, 200, 0x3fbf7f).setOrigin(0.5, 1), 62);
+      let energy = 100, grumbles = 0, shirk = 0, turnAt = 6000;
+      return (dt, t) => {
+        dashes.forEach(d => { d.y = (d.y + dt * 0.35) % (H + 40); });
+        riders.forEach((r, i) => { r.x = sway(t - (2 - i) * 220); }); // the wiggle travels down the line
+        const h = this.held(), myTurn = t > turnAt && t < turnAt + 2500;
+        if (t >= turnAt + 2500) turnAt = t + 5000 + Math.random() * 2000;
+        me.x = Phaser.Math.Clamp(me.x + h.x * dt * 0.22, W / 2 - 140, W / 2 + 140);
+        const pulling = myTurn && h.y < 0;
+        me.y += ((pulling ? 96 : 350) - me.y) * Math.min(1, dt / 180); // surge to the front while you pull
+        const drafting = !myTurn && Math.abs(me.x - riders[2].x) < 46;
+        if (myTurn) { if (pulling) energy -= dt * 0.012; else shirk += dt; }
+        else energy += (drafting ? 0.006 : -0.013) * dt; // tuned by simulation: attentive riders finish, idle ones are dropped
+        if (shirk > 1200) { shirk = 0; grumbles++; this.ouch(); }
+        energy = Phaser.Math.Clamp(energy, 0, 100);
+        bar.setSize(16, 2 * energy).setFillStyle(energy > 35 ? 0x3fbf7f : 0xe2574c);
+        call.setText(myTurn ? this.tr(TXT.cpTurn) : '').setVisible(myTurn);
+        label.setText(this.tr(TXT.paceHud, Math.round(energy), grumbles, this.lives, this.left(seconds, t)));
+        return energy <= 0 || grumbles >= this.lives ? false : t >= seconds * 1000 ? true : undefined;
+      };
+    });
+  }
+
   // Travel scene behind the dialogue box: a train through hills, or a plane above the clouds.
   backdrop(kind: false | 'train' | 'plane') {
     this.scenery.forEach(o => { this.tweens.killTweensOf(o); o.destroy(); });
@@ -920,6 +1067,7 @@ for (const b of document.querySelectorAll<HTMLElement>('#pad [data-key]')) {
     if (code === 'Shift') { pad.shift = !pad.shift; b.classList.toggle('on', pad.shift); }
     else if (code === 'KeyL') world.setLang((world.s.lang + 1) % LANGS.length);
     else if (code === 'KeyM') music.toggleMute();
+    else if (code === 'KeyE') world.toggleEllie();
     else { if (DIR[code]) [pad.x, pad.y] = DIR[code]; if (code === 'Space') pad.a = true; world.onKey?.(code); }
   });
   for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(ev, release);
