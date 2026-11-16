@@ -1,6 +1,6 @@
 // Story content: maps, characters, what happens when you bump into them. Text lives in strings.ts.
 // No engine imports, so a test can play the whole thing through.
-import { type State, type DuelId, pay, ending, ENDINGS } from './logic';
+import { type State, pay, ending, ENDINGS } from './logic';
 import { TXT as t, type Line, same } from './strings';
 
 export type Ctx = {
@@ -9,16 +9,19 @@ export type Ctx = {
   choose(prompt: Line, opts: Line[]): Promise<number>;
   go(map: string, x: number, y: number): void;
   days(n?: number): Promise<void>;
-  duel(kind: DuelId): Promise<boolean>;    // turn-based conversation (interview, family lunch)
   backdrop(kind: false | 'train' | 'plane'): void; // travel scene behind the dialogue
   refresh(): void;
   // Minigames: each returns whether you made it, unless noted.
+  bugs(rows: number): Promise<boolean>;               // shoot a descending swarm before it reaches the line
+  rally(n: number, sweetened: boolean): Promise<boolean>; // bat n questions back across the table
   simon(n: number): Promise<boolean>;                 // memorise and repeat n arrows
   dodge(seconds: number): Promise<number>;            // three-lane dodger; returns collisions
+  board(rounds: number): Promise<boolean>;            // find the right train on a flipping departure board
   pairs(seconds: number): Promise<boolean>;           // match six pairs of cards
   timing(rounds: number): Promise<boolean>;           // Space while the marker is in the green
+  boules(ends: number): Promise<boolean>;             // aim, hold for power, land closer to the jack
   aim(seconds: number): Promise<boolean>;             // keep the crosshair on a moving target
-  whack(count: number, tex: 'flame' | 'board'): Promise<boolean>; // press the arrow where something pops up
+  whack(count: number): Promise<boolean>;             // press the arrow where the fire flares up
   collect(n: number, seconds: number): Promise<boolean>; // free movement, gather n things
   balance(seconds: number): Promise<boolean>;         // keep something upright against gusts
   leds(seconds: number): Promise<boolean>;            // lights-out grid
@@ -28,11 +31,12 @@ export type Ctx = {
   gather(n: number): Promise<boolean>;                // catch the ripe ones falling, avoid the green ones
   tag(n: number, seconds: number): Promise<boolean>;  // you are it: touch n fleeing kids in time
   climb(n: number): Promise<boolean>;                 // press the arrow on each hold, bottom to top
-  sneak(seconds: number, theme: 'armrest' | 'baby'): Promise<boolean>; // hold Space to advance, only while unobserved
+  sneak(seconds: number): Promise<boolean>;           // hold Space to advance, only while unobserved
+  stack(n: number): Promise<boolean>;                 // drop each box neatly onto the pile
   formation(seconds: number): Promise<boolean>;       // hold Up to stay level with the wing ahead
   dance(n: number): Promise<boolean>;                 // press each falling arrow as it crosses the line
   oven(n: number): Promise<boolean>;                  // take each tray out when it is golden
-  paceline(seconds: number): Promise<boolean>;        // stay in the draft, pull when it is your turn
+  paceline(seconds: number): Promise<boolean>;        // stay in the slipstream just behind the peloton
 };
 export type Script = (c: Ctx) => Promise<void>;
 // `on` is the tile drawn under the entity (doors in walls, things in water); `label` is a sign above it.
@@ -157,12 +161,12 @@ export const MAPS: Record<string, MapDef> = {
       'T.#F##.r..,......,,,,,,,,,,,,,,....T',
       'T..,,,,,,,,,,,,,,,.........========T',
       'T..,........d....,.................T',
-      'T..,..l..........,......e..........T',
+      'T..,..l..........,..Mv..e..........T',
       'T^^,^^^^^........,.................T',
       'T^.,.....^.......,,,,,,,,,,,,,,,,,.T',
       'T^.P..j..^..............33333......T',
       'T^.....w.^....y.z.......33g33......T',
-      'T^^^^^^^^^.........................T',
+      'T^^^^^^^^^........................hT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
     ents: {
@@ -250,6 +254,20 @@ export const MAPS: Record<string, MapDef> = {
         commit(c, 'dating'); c.refresh();
         await c.say(t.dateWin1, t.dateWin2);
       } },
+      // Mariana's coelho has run off: it hides in the far corner of the park until she asks, then you carry it back.
+      M: { tex: 'mariana', act: async c => {
+        const f = c.s.flags;
+        if (f.coelhoDone) return c.say(t.zMariDone);
+        if (f.coelho) { f.coelhoDone = true; c.refresh(); return c.say(t.zMariWin); }
+        if (f.coelhoAsked) return c.say(t.zMariWait);
+        f.coelhoAsked = true; c.refresh();
+        await c.say(t.zMari1, t.zMari2);
+      } },
+      h: { tex: 'coelho', small: true, hide: s => !s.flags.coelhoAsked || !!s.flags.coelho, act: async c => {
+        c.s.flags.coelho = true; c.refresh();
+        await c.say(t.zCoelhoFound);
+      } },
+      v: { tex: 'coelho', small: true, hide: s => !s.flags.coelhoDone, act: c => c.say(t.zCoelhoHome) },
       m: { tex: 'musician', act: c => c.say(t.zMusician) },
       r: { tex: 'recycler', act: c => c.say(t.zRecycle) },
       // Side quest across two countries: he wants pão de queijo, your mother supplies it.
@@ -283,12 +301,16 @@ export const MAPS: Record<string, MapDef> = {
         const f = c.s.flags;
         if (f.employed) return c.say(t.offEmployed);
         if (!await yes(c, t.offQ)) return;
-        if (await c.duel('interview')) {
-          f.employed = true; c.s.money += 3000;
-          await c.say(t.offWin1, t.offWin2);
-        } else {
+        // Unprepared, it simply goes wrong (and sends you to the box); prepared, the live-coding round is yours to win.
+        if (!f.prepared) {
           f.failedInterview = true;
-          await c.say(t.offLose1, t.offLose2);
+          await c.say(t.q1, t.offFreeze, t.offLose1, t.offLose2);
+        } else {
+          await c.say(t.offCodeHow);
+          if (await c.bugs(3)) {
+            f.employed = true; c.s.money += 3000;
+            await c.say(t.offWin1, t.offWin2);
+          } else await c.say(t.offCodeLose);
         }
         await c.days(1);
       } },
@@ -308,7 +330,7 @@ export const MAPS: Record<string, MapDef> = {
         if (!f.chocolate && await yes(c, t.apChocQ) && pay(c.s, CHOCOLATE)) f.chocolate = true;
         c.backdrop('plane');
         await c.say(t.apFly1, t.apSneakHow);
-        await c.say(await c.sneak(25, 'armrest') ? t.apSneakWin : t.apSneakLose, t.apFly2);
+        await c.say(await c.sneak(25) ? t.apSneakWin : t.apSneakLose, t.apFly2);
         c.backdrop(false);
         await c.days(2);
         arrive(c, 'brazil');
@@ -368,7 +390,7 @@ export const MAPS: Record<string, MapDef> = {
         const price = ticket(c.s);
         if (!await yes(c, fill(t.gareQ, price))) return;
         if (!pay(c.s, price)) await c.say(t.gareBroke);
-        await trainRide(c, [t.gare1], t.dodgeBack, () => c.whack(8, 'board'));
+        await trainRide(c, [t.gare1], t.dodgeBack, () => c.board(5));
         c.go('zurich', 28, 8);
       } },
       P: { tex: 'door', on: 'cream', label: same('Pâtisserie'), act: async c => {
@@ -408,7 +430,7 @@ export const MAPS: Record<string, MapDef> = {
         const f = c.s.flags;
         if (f.petanque) return c.say(t.peDone);
         await c.say(t.pe1, t.peHow);
-        if (!await c.timing(3)) return c.say(t.peFail);
+        if (!await c.boules(3)) return c.say(t.peFail);
         f.petanque = true;
         await c.say(t.peWin);
       } },
@@ -430,8 +452,8 @@ export const MAPS: Record<string, MapDef> = {
     },
   },
 
-  // Home. North-west: parents' house, grandma on the veranda, the Sunday lunch.
-  // South-west: the cemetery where your father works, with the mango tree. East: the friends' birthday party.
+  // Home. North-west: parents' house, grandma on the veranda, the Sunday lunch. Middle: a bloquinho de carnaval.
+  // South: the cemetery where your father works, with the mango tree. East: the friends' birthday party.
   // Chain: father's mangoes -> grandma's sweet -> you may enter the party.
   brazil: {
     name: t.mBrazil, floor: 'grass', spawn: [3, 3], outdoor: true,
@@ -441,16 +463,16 @@ export const MAPS: Record<string, MapDef> = {
       'T.1X1.........######.....T..oo...E.....T',
       'T..,..........##V.##.....T...h..i......T',
       'T..,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.....T',
-      'T.........M...,..........T..k....n.....T',
-      'T.....g.......,...U......T....j....w...T',
-      'T..........A..,..........T.k.....ZZ....T',
+      'T.........M...,..b.......T..k....n.....T',
+      'T.....g.......,.q..r.p...T....j....w...T',
+      'T..........A..,...l......T.k.....ZZ....T',
       'T.....C.......,..........T......n......T',
-      'T............s,..........T.............T',
-      'T.111111111111,1111111111T.............T',
-      'T.1...+...+...,.+...+..1.T.............T',
-      'T.1...........,....D.Y.1.T.............T',
-      'T.1...+...+...,.+......1.T.............T',
-      'T.1111111111111111111111.T.............T',
+      'T........U...s,..........T.............T',
+      'T........11111,111111....T.............T',
+      'T........1+.+.,.+.+.1....T.............T',
+      'T........1....,...DY1....T.............T',
+      'T........1+.+.,.+...1....T.............T',
+      'T........111111111111....T.............T',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
     ents: {
@@ -460,8 +482,8 @@ export const MAPS: Record<string, MapDef> = {
         if (!await yes(c, t.brAirQ)) return;
         await c.say(t.brAir1);
         c.backdrop('plane');
-        await c.say(t.brFly, t.brSneakHow);
-        await c.say(await c.sneak(25, 'baby') ? t.brSneakWin : t.brSneakLose);
+        await c.say(t.brStackHow);
+        await c.say(await c.stack(7) ? t.brStackWin : t.brStackLose, t.brFly);
         c.backdrop(false);
         await c.days(2);
         c.go('zurich', 31, 4);
@@ -493,12 +515,12 @@ export const MAPS: Record<string, MapDef> = {
         f.sweet = true;
         await c.say(t.brGran2, t.brGran3);
       } },
-      // The Sunday lunch interrogation: you get through it either way, but Swiss chocolate wins it.
+      // The Sunday lunch interrogation: you get through it either way, and Swiss chocolate slows her questions down.
       A: { tex: 'aunt', act: async c => {
         const f = c.s.flags;
         if (f.lunch) return c.say(t.brAuntDone);
-        await c.say(t.brAunt1);
-        const won = await c.duel('lunch');
+        await c.say(t.brAunt1, t.brRallyHow, ...(f.chocolate ? [t.brRallyChoc] : []));
+        const won = await c.rally(8, !!f.chocolate);
         f.lunch = true;
         await c.say(...(won ? [t.brAuntWin1, t.brAuntWin2] : [t.brAuntLose]));
       } },
@@ -506,6 +528,20 @@ export const MAPS: Record<string, MapDef> = {
       C: { tex: 'cousin', act: c => c.say(t.brCousin) },
       g: { tex: 'caramelo', act: c => c.say(t.brDog) },
       Y: { tex: 'mangotree' },
+
+      // The bloquinho: pick a fantasia and follow the bloco round the block.
+      b: { tex: 'banner', label: same('Bloco Saideira Eterna'), act: c => c.say(t.brBlocoSign) },
+      l: { tex: 'passista', act: async c => {
+        const f = c.s.flags;
+        if (f.bloco) return c.say(t.brBlocoDone);
+        await c.say(t.brBloco1);
+        const pick = await c.choose(t.brBlocoQ, [t.brBlocoA1, t.brBlocoA2, t.brBlocoA3]);
+        f.bloco = true;
+        await c.say([t.brBlocoR1, t.brBlocoR2, t.brBlocoR3][pick], t.brBlocoWin);
+      } },
+      r: { tex: 'surdo', act: c => c.say(t.brSurdo) },
+      q: { tex: 'folia1', act: c => c.say(t.brFolia1) },
+      p: { tex: 'folia2', act: c => c.say(t.brFolia2) },
 
       // The party: the host lets you in with grandma's sweet, then the kids expect a game of tag.
       h: { tex: 'host', act: async c => {
@@ -682,7 +718,7 @@ export const MAPS: Record<string, MapDef> = {
         await c.say(t.muOps1, t.muOps2);
         if (!await c.aim(20)) return c.say(t.muFail);
         await c.say(t.mu1, t.mu2);
-        await c.say(await c.whack(10, 'flame') ? t.muOnTime : t.muLate);
+        await c.say(await c.whack(10) ? t.muOnTime : t.muLate);
         c.s.flags.munich = true;
         await c.say(t.mu3, t.mu4, t.mu5);
         wakeUp(c);

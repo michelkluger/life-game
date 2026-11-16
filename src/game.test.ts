@@ -2,7 +2,7 @@ import { test, expect } from 'bun:test';
 import { MAPS, afterScript, onSwim, type Ctx } from './content';
 import { TXT, SORT_ITEMS } from './strings';
 import { freq, trackNames, trackNotes } from './music';
-import { DUELS, ENDINGS, duel, ending, newState, newFight, fightTurn, passDays, pay, RENT, type DuelId, type Fight, type State } from './logic';
+import { ENDINGS, ending, newState, passDays, pay, RENT, type State } from './logic';
 
 const TERRAIN = '#T~,.123=^';
 const free = (map: string, x: number, y: number) => {
@@ -73,20 +73,6 @@ test('rent is charged on its day and overdraft blocks spending', () => {
   expect(pay(s, 1)).toBe(false);
 });
 
-test('no duel can be won with ordinary moves, and each can with its special move', () => {
-  for (const id of Object.keys(DUELS) as DuelId[]) {
-    const d = duel(id);
-    const canWin = (f: Fight, moves: string[]): boolean => moves.some(m => {
-      const g = { ...f }, r = fightTurn(g, d, m);
-      return r.result === 'win' || (r.result === null && canWin(g, moves));
-    });
-    const ordinary = Object.keys(d.moves).filter(m => !d.moves[m].needs), special = Object.keys(d.moves).filter(m => d.moves[m].needs);
-    expect(special.length, id).toBe(1);
-    expect(canWin(newFight(), ordinary), id).toBe(false);
-    expect(canWin(newFight(), special), id).toBe(true);
-  }
-});
-
 test('every future can be reached, and the right one wins', () => {
   const with_ = (flags: string[], more: Partial<State> = {}): State => ({ ...newState(), ...more, flags: Object.fromEntries(flags.map(f => [f, true])) });
   expect(ending(newState())).toBe('zurich'); // nothing done: you stay
@@ -119,16 +105,9 @@ test('the whole game can be played to the end', async () => {
     go(map, x, y) { expect(free(map, x, y), `go ${map} ${x},${y}`).toBe(true); Object.assign(c.s, { map, x, y }); },
     days: async n => { passDays(c.s, n); },
     refresh() {}, backdrop() {},
-    simon: ok, pairs: ok, timing: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok, sneak: ok, formation: ok, dance: ok, oven: ok, paceline: ok,
+    bugs: ok, rally: ok, simon: ok, board: ok, pairs: ok, timing: ok, boules: ok, aim: ok, whack: ok, collect: ok, balance: ok, leds: ok, sort: ok, glide: ok, gather: ok, tag: ok, climb: ok, sneak: ok, stack: ok, formation: ok, dance: ok, oven: ok, paceline: ok,
     dodge: async () => 0,
     mash: async () => 1,
-    // Play the special move if you have earned it, otherwise the first one, until someone gives.
-    async duel(kind) {
-      const d = duel(kind), f = newFight();
-      const ids = Object.keys(d.moves).filter(m => !d.moves[m].needs || c.s.flags[d.moves[m].needs!]);
-      const move = ids.find(m => d.moves[m].needs) ?? ids[0];
-      for (;;) { const r = fightTurn(f, d, move); if (r.result) return r.result === 'win'; }
-    },
   };
   const f = c.s.flags;
   const act = async (map: string, ...chars: string[]) => {
@@ -232,8 +211,8 @@ test('the whole game can be played to the end', async () => {
   expect(f.partyIn).toBeUndefined(); // nobody arrives at a birthday empty-handed
   await act('brazil', 'V');
   expect(f.sweet).toBeUndefined();   // grandma needs the mangoes first
-  await act('brazil', 'D', 'V', 'E', 'h', 'E', 'X');
-  expect(f.paoq && f.mangoes && f.sweet && f.parabens).toBe(true);
+  await act('brazil', 'D', 'V', 'E', 'h', 'E', 'l', 'l', 'X');
+  expect(f.paoq && f.mangoes && f.sweet && f.parabens && f.bloco).toBe(true);
 
   // Back home: deliver the pão de queijo, fly, race, and ride the train at half fare.
   await act('zurich', 'e', 'P', 'R');
@@ -241,6 +220,13 @@ test('the whole game can be played to the end', async () => {
   // Friends: the Badgers need the licence, the Capuns need kilometres.
   await act('zurich', 'j', 'y', 'w', 'z');
   expect(f.badgers && f.bgFly && f.capuns).toBe(true);
+  // Mariana's coelho: it only turns up once she has asked, and goes home once you carry it back.
+  expect(MAPS.zurich.ents.h.hide!(c.s)).toBe(true);
+  await act('zurich', 'M', 'M');
+  expect(f.coelhoAsked && !f.coelho).toBe(true);
+  expect(MAPS.zurich.ents.h.hide!(c.s)).toBe(false);
+  await act('zurich', 'h', 'M');
+  expect(f.coelhoDone && MAPS.zurich.ents.h.hide!(c.s) && !MAPS.zurich.ents.v.hide!(c.s)).toBe(true);
 
   // Commitments and the rest of life in Zurich.
   await act('zurich', 'e');                       // the expat pitches the company; first answer is yes

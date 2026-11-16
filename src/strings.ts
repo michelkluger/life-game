@@ -176,10 +176,10 @@ export const TXT = {
     `Genebra. Sua conexão sai em quatro minutos, do outro lado da estação. Cima e Baixo para desviar. Corra.`,
     `Genf. Dein Anschluss fährt in vier Minuten, am anderen Ende des Bahnhofs. Hoch und Runter zum Ausweichen. Lauf.`],
   dodgeBack: [
-    `Lyon. Your train is on platform C. No, F. No, B. Press the arrow for each platform change the moment it appears.`,
-    `Lyon. Ton train est voie C. Non, F. Non, B. Appuie sur la flèche de chaque changement de voie dès qu'il s'affiche.`,
-    `Lyon. Seu trem está na plataforma C. Não, F. Não, B. Aperte a seta de cada mudança de plataforma assim que aparecer.`,
-    `Lyon. Dein Zug fährt auf Gleis C. Nein, F. Nein, B. Drück für jede Gleisänderung den passenden Pfeil, sobald sie erscheint.`,
+    `Lyon. Your train to Geneva is on platform C. No, F. No, B. The departure board keeps flipping: Up and Down to move along it, Space on the Genève train before it flips again.`,
+    `Lyon. Ton train pour Genève est voie C. Non, F. Non, B. Le tableau des départs n'arrête pas de tourner : Haut et Bas pour le parcourir, Espace sur le train de Genève avant qu'il ne tourne encore.`,
+    `Lyon. Seu trem para Genebra está na plataforma C. Não, F. Não, B. O painel de partidas não para de virar: Cima e Baixo para percorrer, Espaço no trem para Genève antes que ele vire de novo.`,
+    `Lyon. Dein Zug nach Genf fährt auf Gleis C. Nein, F. Nein, B. Die Abfahrtstafel klappt ständig um: Hoch und Runter entlang der Tafel, Leertaste auf dem Zug nach Genève, bevor sie wieder umklappt.`,
   ],
   dodgeHud: [`Connection in {0}s · collisions {1}/3`, `Correspondance dans {0}s · collisions {1}/3`, `Conexão em {0}s · trombadas {1}/3`, `Anschluss in {0}s · Zusammenstösse {1}/3`],
   dodgeOk: [
@@ -320,43 +320,23 @@ export const TXT = {
     `Você está no vermelho. Nada de passagem nem de bolo até sair dessa.`,
     `Du bist im Minus. Keine Billette, keine Torte, bis du es wieder verdient hast.`],
 
-  fightTitle: [`INTERVIEW`, `ENTRETIEN`, `ENTREVISTA`, `VORSTELLUNGSGESPRÄCH`],
-  fightPrompt: [
-    `Your confidence {0}/{1} · Their skepticism {2}/30`,
-    `Ta confiance {0}/{1} · Leur scepticisme {2}/30`,
-    `Sua confiança {0}/{1} · Ceticismo deles {2}/30`,
-    `Dein Selbstvertrauen {0}/{1} · Ihre Skepsis {2}/30`],
-  mvPython: same(`Python`),
-  mvPythonL: [
-    `You whiteboard a clean solution. They nod at the type hints.`,
-    `Tu écris une solution propre au tableau. Ils hochent la tête devant les annotations de type.`,
-    `Você escreve uma solução limpa no quadro. Eles aprovam os type hints com a cabeça.`,
-    `Du schreibst eine saubere Lösung ans Whiteboard. Bei den Type Hints nicken sie.`],
-  mvGerman: [`German`, `Allemand`, `Alemão`, `Deutsch`],
-  mvGermanL: [
-    `You answer auf Deutsch. They reply in Swiss German. You nod as if that were the same language.`,
-    `Tu réponds auf Deutsch. Ils répondent en suisse allemand. Tu hoches la tête comme si c'était la même langue.`,
-    `Você responde auf Deutsch. Eles respondem em suíço-alemão. Você concorda com a cabeça como se fosse a mesma língua.`,
-    `Du antwortest auf Hochdeutsch. Sie antworten auf Schweizerdeutsch. Du nickst, als wäre das dieselbe Sprache.`],
-  mvCharm: [`Charm`, `Charme`, `Charme`, `Charme`],
-  mvCharmL: [
-    `You tell the Antarctica story. It works on everyone except HR.`,
-    `Tu racontes l'histoire de l'Antarctique. Ça marche sur tout le monde sauf les RH.`,
-    `Você conta a história da Antártida. Funciona com todo mundo, menos com o RH.`,
-    `Du erzählst die Antarktis-Geschichte. Sie wirkt bei allen ausser bei HR.`],
-  mvPrepared: [`Be Prepared`, `Toujours prêt`, `Sempre Alerta`, `Allzeit bereit`],
-  mvPreparedL: [
-    `You stop performing and just tie the next knot: clear answer, honest gap, real question back.`,
-    `Tu arrêtes de jouer un rôle et tu fais juste le nœud suivant : réponse claire, trou assumé, vraie question en retour.`,
-    `Você para de representar e só dá o próximo nó: resposta clara, lacuna assumida, uma pergunta de verdade de volta.`,
-    `Du hörst auf zu schauspielern und machst einfach den nächsten Knoten: klare Antwort, ehrliche Lücke, echte Gegenfrage.`],
   q1: [`"Where do you see yourself in five years?"`, `« Où vous voyez-vous dans cinq ans ? »`, `"Onde você se vê daqui a cinco anos?"`, `«Wo sehen Sie sich in fünf Jahren?»`],
-  q2: [`"Walk me through this gap in your CV."`, `« Parlez-moi de ce trou dans votre CV. »`, `"Me explica essa lacuna no seu currículo."`, `«Erklären Sie mir diese Lücke im Lebenslauf.»`],
-  q3: [
-    `"We use a framework you have never heard of. Thoughts?"`,
-    `« On utilise un framework dont vous n'avez jamais entendu parler. Un avis ? »`,
-    `"Usamos um framework do qual você nunca ouviu falar. O que acha?"`,
-    `«Wir nutzen ein Framework, von dem Sie noch nie gehört haben. Gedanken dazu?»`],
+  offFreeze: [
+    `You hear yourself say "Zurich?". Then they open a laptop and ask you to fix some code, live, while they watch. You have not prepared a thing. You freeze. It is very quiet for a long time.`,
+    `Tu t'entends répondre « Zurich ? ». Puis ils ouvrent un ordinateur et te demandent de corriger du code, en direct, sous leurs yeux. Tu n'as rien préparé. Tu te figes. Le silence dure très longtemps.`,
+    `Você se ouve dizer "Zurique?". Depois eles abrem um laptop e pedem que você corrija um código, ao vivo, enquanto olham. Você não preparou nada. Você trava. O silêncio dura muito tempo.`,
+    `Du hörst dich «Zürich?» sagen. Dann klappen sie einen Laptop auf und bitten dich, live Code zu korrigieren, während sie zuschauen. Du hast nichts vorbereitet. Du erstarrst. Es ist sehr lange sehr still.`],
+  offCodeHow: [
+    `This time you came prepared. The live-coding round: bugs crawl out of the code towards the red line. Left and Right to move, Space to fix the bug above you. Fix them all before one gets through.`,
+    `Cette fois, tu es venu préparé. L'épreuve de code en direct : des bugs sortent du code et rampent vers la ligne rouge. Gauche et Droite pour bouger, Espace pour corriger le bug au-dessus de toi. Corrige-les tous avant qu'un seul ne passe.`,
+    `Desta vez você veio preparado. A etapa de código ao vivo: bugs saem do código e descem até a linha vermelha. Esquerda e Direita para mover, Espaço para corrigir o bug acima de você. Corrija todos antes que algum passe.`,
+    `Diesmal bist du vorbereitet. Die Live-Coding-Runde: Bugs kriechen aus dem Code auf die rote Linie zu. Links und Rechts zum Bewegen, Leertaste korrigiert den Bug über dir. Korrigier alle, bevor einer durchkommt.`],
+  offCodeLose: [
+    `A bug reaches the red line. The interviewer winces politely. "Shall we try again another day?" You can come back.`,
+    `Un bug atteint la ligne rouge. Le recruteur grimace poliment. « On réessaie un autre jour ? » Tu peux revenir.`,
+    `Um bug chega à linha vermelha. O entrevistador faz uma careta educada. "Tentamos de novo outro dia?" Você pode voltar.`,
+    `Ein Bug erreicht die rote Linie. Der Interviewer verzieht höflich das Gesicht. «Versuchen wir es an einem anderen Tag nochmal?» Du kannst wiederkommen.`],
+  bugsHud: [`Left/Right to move · Space to fix · bugs left {0}`, `Gauche/Droite pour bouger · Espace pour corriger · bugs restants {0}`, `Esquerda/Direita para mover · Espaço para corrigir · bugs restantes {0}`, `Links/Rechts bewegen · Leertaste korrigiert · noch {0} Bugs`],
 
   // ---- Activity tracker ----
   actWalk: [`Walk`, `Marche`, `Caminhada`, `Gehen`],
@@ -375,7 +355,9 @@ export const TXT = {
   timingHud: [`Space in the green · {0}/{1} · misses {2}/{3}`, `Espace dans le vert · {0}/{1} · ratés {2}/{3}`, `Espaço no verde · {0}/{1} · erros {2}/{3}`, `Leertaste im Grünen · {0}/{1} · Fehler {2}/{3}`],
   trackHud: [`Link {0}% · {1}s left`, `Liaison {0}% · {1}s restantes`, `Link {0}% · {1}s restantes`, `Verbindung {0}% · noch {1}s`],
   whackHud: [`Flames out {0}/{1} · missed {2}/{3}`, `Flammes éteintes {0}/{1} · ratées {2}/{3}`, `Chamas apagadas {0}/{1} · erros {2}/{3}`, `Flammen gelöscht {0}/{1} · verpasst {2}/{3}`],
-  whackHudTrain: [`Platform changes {0}/{1} · missed {2}/{3}`, `Changements de voie {0}/{1} · ratés {2}/{3}`, `Mudanças de plataforma {0}/{1} · erros {2}/{3}`, `Gleisänderungen {0}/{1} · verpasst {2}/{3}`],
+  boardHud: [`Find Genève, Space on it · {0}/{1} · missed {2}/{3} · flips in {4}s`, `Trouve Genève, Espace dessus · {0}/{1} · ratés {2}/{3} · tourne dans {4}s`, `Ache Genève, Espaço nele · {0}/{1} · erros {2}/{3} · vira em {4}s`, `Finde Genève, Leertaste drauf · {0}/{1} · verpasst {2}/{3} · klappt in {4}s`],
+  boulesHud: [`Aim Up/Down · hold Space, let go · ends won {0}/{1} · thrown {2}/{3}`, `Vise Haut/Bas · maintiens Espace, relâche · mènes gagnées {0}/{1} · lancées {2}/{3}`, `Mire Cima/Baixo · segure Espaço, solte · rodadas {0}/{1} · jogadas {2}/{3}`, `Zielen Hoch/Runter · Leertaste halten, loslassen · gewonnen {0}/{1} · geworfen {2}/{3}`],
+  stackHud: [`Space to drop · packed {0}/{1} · squashed {2}/{3}`, `Espace pour lâcher · rangés {0}/{1} · écrasés {2}/{3}`, `Espaço solta · guardados {0}/{1} · amassados {2}/{3}`, `Leertaste lässt fallen · verstaut {0}/{1} · plattgedrückt {2}/{3}`],
   collectHud: [`Samples {0}/{1} · battery {2}s`, `Échantillons {0}/{1} · batterie {2}s`, `Amostras {0}/{1} · bateria {2}s`, `Proben {0}/{1} · Akku {2}s`],
   balanceHud: [`Hold it steady: Left and Right · {0}s`, `Tiens-le droit : Gauche et Droite · {0}s`, `Segure firme: Esquerda e Direita · {0}s`, `Halt ihn gerade: Links und Rechts · {0}s`],
   anMastHow: [
@@ -852,20 +834,20 @@ export const TXT = {
     `Três senhores jogam pétanque. "Hé, le Suisse! Vai jogar?"`,
     `Drei alte Männer spielen Pétanque. «Hé, le Suisse! Wirfst du?»`],
   peHow: [
-    `Press Space while the marker is in the green. Three throws.`,
-    `Appuie sur Espace quand le curseur est dans le vert. Trois lancers.`,
-    `Aperte Espaço quando o marcador estiver no verde. Três arremessos.`,
-    `Drück die Leertaste, wenn der Marker im Grünen ist. Drei Würfe.`],
+    `Get your boule closer to the little jack than theirs. Up and Down to aim, hold Space for power, let go to throw. Win two ends of three.`,
+    `Place ta boule plus près du cochonnet que la leur. Haut et Bas pour viser, maintiens Espace pour la puissance, relâche pour lancer. Gagne deux mènes sur trois.`,
+    `Deixe sua bocha mais perto do bolim que a deles. Cima e Baixo para mirar, segure Espaço para a força, solte para jogar. Ganhe duas rodadas de três.`,
+    `Bring deine Kugel näher ans Schweinchen als ihre. Hoch und Runter zum Zielen, Leertaste halten für Kraft, loslassen zum Werfen. Gewinne zwei von drei Aufnahmen.`],
   peFail: [
     `Your boule lands in a different arrondissement. "It is the wind," they say kindly. There is no wind.`,
     `Ta boule atterrit dans un autre arrondissement. « C'est le vent », disent-ils gentiment. Il n'y a pas de vent.`,
     `Sua bola cai em outro bairro. "É o vento", dizem com gentileza. Não tem vento.`,
     `Deine Kugel landet in einem anderen Arrondissement. «Das ist der Wind», sagen sie freundlich. Es geht kein Wind.`],
   peWin: [
-    `Three perfect throws. "Not bad for a Swiss." "I am Brazilian." "Not bad for a Swiss Brazilian."`,
-    `Trois lancers parfaits. « Pas mal pour un Suisse. » « Je suis brésilien. » « Pas mal pour un Suisse brésilien. »`,
-    `Três arremessos perfeitos. "Nada mal para um suíço." "Sou brasileiro." "Nada mal para um suíço brasileiro."`,
-    `Drei perfekte Würfe. «Nicht schlecht für einen Schweizer.» «Ich bin Brasilianer.» «Nicht schlecht für einen Schweizer Brasilianer.»`],
+    `You take the ends. "Not bad for a Swiss." "I am Brazilian." "Not bad for a Swiss Brazilian."`,
+    `Les mènes sont à toi. « Pas mal pour un Suisse. » « Je suis brésilien. » « Pas mal pour un Suisse brésilien. »`,
+    `As rodadas são suas. "Nada mal para um suíço." "Sou brasileiro." "Nada mal para um suíço brasileiro."`,
+    `Die Aufnahmen gehen an dich. «Nicht schlecht für einen Schweizer.» «Ich bin Brasilianer.» «Nicht schlecht für einen Schweizer Brasilianer.»`],
   peDone: [`"Come back when you feel like losing, petit."`, `« Reviens quand tu auras envie de perdre, petit. »`, `"Volte quando quiser perder, petit."`, `«Komm wieder, wenn du verlieren willst, petit.»`],
   peOther: [`"He cheats. I cheat better."`, `« Il triche. Moi, je triche mieux. »`, `"Ele rouba. Eu roubo melhor."`, `«Er schummelt. Ich schummle besser.»`],
   maBall1: [
@@ -950,36 +932,6 @@ export const TXT = {
     `« Le voilà ! Assieds-toi à côté de moi. J'ai des questions. » L'interrogatoire du déjeuner dominical commence.`,
     `"Olha ele aí! Senta aqui do meu lado. Tenho umas perguntas." Começa o interrogatório do almoço de domingo.`,
     `«Da ist er ja! Setz dich zu mir. Ich habe Fragen.» Das Verhör beim Sonntagsessen beginnt.`],
-  lunchTitle: [`SUNDAY LUNCH`, `DÉJEUNER DU DIMANCHE`, `ALMOÇO DE DOMINGO`, `SONNTAGSESSEN`],
-  lunchPrompt: [
-    `Your composure {0}/{1} · Her curiosity {2}/30`,
-    `Ton sang-froid {0}/{1} · Sa curiosité {2}/30`,
-    `Sua compostura {0}/{1} · Curiosidade dela {2}/30`,
-    `Deine Fassung {0}/{1} · Ihre Neugier {2}/30`],
-  lmPhotos: [`Show photos`, `Montrer des photos`, `Mostrar fotos`, `Fotos zeigen`],
-  lmPhotosL: [
-    `You show mountain photos. "Beautiful. And who took this one of you?"`,
-    `Tu montres des photos de montagne. « Magnifique. Et celle-ci, qui l'a prise ? »`,
-    `Você mostra fotos das montanhas. "Que lindo. E esta aqui, quem tirou?"`,
-    `Du zeigst Bergfotos. «Wunderschön. Und wer hat das hier von dir gemacht?»`],
-  lmFood: [`Praise the food`, `Complimenter le repas`, `Elogiar a comida`, `Das Essen loben`],
-  lmFoodL: [
-    `"Nobody makes beans like this." She softens. Your plate is refilled as a reward.`,
-    `« Personne ne fait les haricots comme ça. » Elle s'adoucit. Ton assiette est remplie en récompense.`,
-    `"Ninguém faz um feijão desses." Ela amolece. Seu prato é reabastecido como prêmio.`,
-    `«Niemand macht Bohnen wie du.» Sie wird weich. Zur Belohnung wird dein Teller nachgefüllt.`],
-  lmFootball: [`Football`, `Football`, `Futebol`, `Fussball`],
-  lmFootballL: [
-    `You bring up the national team. Three uncles start shouting at once. You gain a minute.`,
-    `Tu lances le sujet de la sélection. Trois oncles se mettent à crier en même temps. Tu gagnes une minute.`,
-    `Você puxa o assunto da seleção. Três tios começam a gritar ao mesmo tempo. Você ganha um minuto.`,
-    `Du bringst die Nationalmannschaft ins Spiel. Drei Onkel schreien gleichzeitig los. Du gewinnst eine Minute.`],
-  lmChoc: [`Swiss chocolate`, `Chocolat suisse`, `Chocolate suíço`, `Schweizer Schokolade`],
-  lmChocL: [
-    `You put the Swiss chocolate on the table. Silence. Then negotiations over who gets the big bar.`,
-    `Tu poses le chocolat suisse sur la table. Silence. Puis négociations pour savoir qui aura la grande tablette.`,
-    `Você põe o chocolate suíço na mesa. Silêncio. Depois, negociações sobre quem fica com a barra grande.`,
-    `Du legst die Schweizer Schokolade auf den Tisch. Stille. Dann Verhandlungen, wer die grosse Tafel bekommt.`],
   lq1: [
     `"And the girlfriends? Nobody? In all of Europe?"`,
     `« Et les copines ? Personne ? Dans toute l'Europe ? »`,
@@ -991,11 +943,32 @@ export const TXT = {
     `« Tu manges correctement ? Tu as l'air d'un touriste. »`,
     `"Você está comendo direito? Está com cara de turista."`,
     `«Isst du auch richtig? Du siehst aus wie ein Tourist.»`],
+  lq4: [
+    `"And how much do they pay you there? In reais, so I understand."`,
+    `« Et ils te paient combien, là-bas ? En reais, que je comprenne. »`,
+    `"E quanto te pagam lá? Em reais, para eu entender."`,
+    `«Und wie viel zahlen sie dir dort? In Reais, damit ich es verstehe.»`],
+  lq5: [
+    `"Your cousin bought an apartment. Just saying."`,
+    `« Ton cousin s'est acheté un appartement. Je dis ça, je dis rien. »`,
+    `"Seu primo comprou um apartamento. Só estou falando."`,
+    `«Dein Cousin hat eine Wohnung gekauft. Ich sag ja nur.»`],
+  brRallyHow: [
+    `Her questions come at you across the table, one after another. Up and Down to move your answer and bat each one back. Let one get past and you have to answer it properly. Bat back eight and she is satisfied.`,
+    `Ses questions arrivent de l'autre bout de la table, l'une après l'autre. Haut et Bas pour déplacer ta réponse et renvoyer chacune. Si une passe, tu dois y répondre sérieusement. Renvoies-en huit et elle sera satisfaite.`,
+    `As perguntas dela vêm do outro lado da mesa, uma atrás da outra. Cima e Baixo para mover sua resposta e rebater cada uma. Se uma passar, você tem que responder de verdade. Rebata oito e ela fica satisfeita.`,
+    `Ihre Fragen kommen über den Tisch, eine nach der anderen. Mit Hoch und Runter bewegst du deine Antwort und schlägst jede zurück. Lässt du eine durch, musst du sie ernsthaft beantworten. Schlag acht zurück und sie ist zufrieden.`],
+  brRallyChoc: [
+    `First you hand over the Swiss chocolate. She is busy unwrapping it: her questions come slower.`,
+    `D'abord, tu lui offres le chocolat suisse. Elle est occupée à le déballer : ses questions arrivent plus lentement.`,
+    `Primeiro você entrega o chocolate suíço. Ela fica ocupada abrindo: as perguntas vêm mais devagar.`,
+    `Zuerst überreichst du die Schweizer Schokolade. Sie ist mit Auspacken beschäftigt: Ihre Fragen kommen langsamer.`],
+  rallyHud: [`Up/Down: bat the questions back · {0}/{1} · got past you {2}/{3}`, `Haut/Bas : renvoie les questions · {0}/{1} · passées {2}/{3}`, `Cima/Baixo: rebata as perguntas · {0}/{1} · passaram {2}/{3}`, `Hoch/Runter: Fragen zurückschlagen · {0}/{1} · durchgelassen {2}/{3}`],
   brAuntWin1: [
-    `"He is doing well, this one," she announces to the table. You are approved until Christmas.`,
-    `« Il s'en sort bien, celui-là », annonce-t-elle à la tablée. Tu es validé jusqu'à Noël.`,
-    `"Esse aqui está indo bem", ela anuncia para a mesa. Você está aprovado até o Natal.`,
-    `«Der macht das gut», verkündet sie der ganzen Tafel. Du bist bis Weihnachten genehmigt.`],
+    `"He is doing well, this one," she announces to the table. You are approved until Rosh Hashanah.`,
+    `« Il s'en sort bien, celui-là », annonce-t-elle à la tablée. Tu es validé jusqu'à Roch Hachana.`,
+    `"Esse aqui está indo bem", ela anuncia para a mesa. Você está aprovado até o Rosh Hashaná.`,
+    `«Der macht das gut», verkündet sie der ganzen Tafel. Du bist bis Rosch Haschana genehmigt.`],
   brAuntWin2: [
     `She presses a folded banknote into your hand, like when you were eight. It is still fifty reais.`,
     `Elle glisse un billet plié dans ta main, comme quand tu avais huit ans. C'est toujours cinquante reais.`,
@@ -1068,11 +1041,11 @@ export const TXT = {
     `A bancada de testes está trancada. A chave está com o porteiro. Provavelmente.`,
     `Der Prüfstand ist abgeschlossen. Der Schlüssel ist beim Portier. Wahrscheinlich.`],
   wnHow: [
-    `Each press flips one LED and its neighbours. Arrows move, Space presses. Light all nine.`,
-    `Chaque pression inverse une LED et ses voisines. Flèches pour bouger, Espace pour appuyer. Allume les neuf.`,
-    `Cada toque inverte um LED e os vizinhos. Setas movem, Espaço aperta. Acenda os nove.`,
-    `Jeder Druck schaltet eine LED und ihre Nachbarn um. Pfeile bewegen, Leertaste drückt. Bring alle neun zum Leuchten.`],
-  lightsHud: [`Light all nine · {0}s left`, `Allume les neuf · {0}s restantes`, `Acenda os nove · {0}s restantes`, `Alle neun an · noch {0}s`],
+    `The test headlight: nine LEDs wired in a cross. Space switches the LED under the cursor AND its neighbours above, below, left and right (outlined in orange): on goes off, off goes on. Arrows move. Turn all nine on.`,
+    `Le phare de test : neuf LED câblées en croix. Espace inverse la LED sous le curseur ET ses voisines du haut, du bas, de gauche et de droite (entourées en orange) : allumée devient éteinte, éteinte devient allumée. Flèches pour bouger. Allume les neuf.`,
+    `O farol de teste: nove LEDs ligados em cruz. Espaço inverte o LED sob o cursor E os vizinhos de cima, de baixo, da esquerda e da direita (contornados em laranja): aceso apaga, apagado acende. Setas movem. Acenda os nove.`,
+    `Der Testscheinwerfer: neun LEDs, im Kreuz verdrahtet. Die Leertaste schaltet die LED unter dem Cursor UND ihre Nachbarn oben, unten, links und rechts um (orange umrandet): an wird aus, aus wird an. Pfeile bewegen. Bring alle neun zum Leuchten.`],
+  lightsHud: [`All nine on · lit {0}/9 · orange = what Space switches · {1}s`, `Les neuf allumées · {0}/9 · orange = ce qu'Espace inverse · {1}s`, `Os nove acesos · {0}/9 · laranja = o que o Espaço inverte · {1}s`, `Alle neun an · {0}/9 · orange = was die Leertaste umschaltet · {1}s`],
   wnFail: [
     `The headlight blinks an insult in Morse code. Try again.`,
     `Le phare clignote une insulte en morse. Réessaie.`,
@@ -1660,22 +1633,21 @@ export const TXT = {
     `Il garde les deux accoudoirs et se met à expliquer les stablecoins. Encore neuf heures.`,
     `Ele fica com os dois apoios e começa a explicar stablecoins. Faltam nove horas.`,
     `Er behält beide Armlehnen und fängt an, Stablecoins zu erklären. Noch neun Stunden.`],
-  brSneakHow: [
-    `Seat 47E again. The baby in 47F is finally asleep and you need the toilet. Hold Space to creep past, and freeze whenever it stirs.`,
-    `Encore le siège 47E. Le bébé du 47F dort enfin et tu dois aller aux toilettes. Maintiens Espace pour te faufiler, et fige-toi dès qu'il remue.`,
-    `Poltrona 47E de novo. O bebê da 47F finalmente dormiu e você precisa ir ao banheiro. Segure Espaço para passar de fininho, e congele sempre que ele se mexer.`,
-    `Wieder Sitz 47E. Das Baby auf 47F schläft endlich und du musst aufs WC. Halte die Leertaste, um dich vorbeizuschleichen, und erstarre, sobald es sich regt.`],
-  sneakHudBaby: [`Past the baby {0}% · woken {1}/{2} · {3}s`, `Devant le bébé {0}% · réveillé {1}/{2} · {3}s`, `Passando pelo bebê {0}% · acordou {1}/{2} · {3}s`, `Am Baby vorbei {0}% · geweckt {1}/{2} · {3}s`],
-  brSneakWin: [
-    `You make it there and back. The baby sleeps on. You have rarely been prouder of anything.`,
-    `Tu fais l'aller-retour. Le bébé dort toujours. Tu as rarement été aussi fier de quelque chose.`,
-    `Você vai e volta. O bebê continua dormindo. Poucas vezes você teve tanto orgulho de alguma coisa.`,
-    `Du schaffst es hin und zurück. Das Baby schläft weiter. Selten warst du auf etwas so stolz.`],
-  brSneakLose: [
-    `The baby wakes. Two hundred people know it was you.`,
-    `Le bébé se réveille. Deux cents personnes savent que c'était toi.`,
-    `O bebê acorda. Duzentas pessoas sabem que foi você.`,
-    `Das Baby wacht auf. Zweihundert Leute wissen, dass du es warst.`],
+  brStackHow: [
+    `Boarding. Your mother has packed seven tupperwares "for the flight", and the overhead bin is already half full. Each one slides to and fro above the pile: Space drops it. Only the part that lands on the one below fits; the rest gets squashed.`,
+    `L'embarquement. Ta mère a emballé sept tupperwares « pour le vol », et le coffre à bagages est déjà à moitié plein. Chacun glisse d'un côté à l'autre au-dessus de la pile : Espace pour le lâcher. Seule la partie posée sur le précédent rentre ; le reste est écrasé.`,
+    `Embarque. Sua mãe embalou sete tupperwares "para o voo", e o bagageiro já está pela metade. Cada um desliza de um lado para o outro em cima da pilha: Espaço solta. Só a parte que cai em cima do anterior cabe; o resto é amassado.`,
+    `Boarding. Deine Mutter hat sieben Tupperdosen «für den Flug» eingepackt, und das Gepäckfach ist schon halb voll. Jede gleitet hin und her über dem Stapel: Die Leertaste lässt sie fallen. Nur was auf der Dose darunter landet, passt rein; der Rest wird plattgedrückt.`],
+  brStackWin: [
+    `The bin closes with a click. The flight attendant looks at it, looks at you, and decides not to ask. Eleven hours of pão de queijo smell, shared fairly with row 47.`,
+    `Le coffre se ferme avec un clic. L'hôtesse le regarde, te regarde, et décide de ne rien demander. Onze heures d'odeur de pão de queijo, partagée équitablement avec la rangée 47.`,
+    `O bagageiro fecha com um clique. A comissária olha para ele, olha para você e decide não perguntar. Onze horas de cheiro de pão de queijo, dividido com justiça com a fileira 47.`,
+    `Das Fach schliesst mit einem Klick. Die Flugbegleiterin schaut es an, schaut dich an und beschliesst, nicht zu fragen. Elf Stunden Pão-de-Queijo-Duft, gerecht verteilt auf Reihe 47.`],
+  brStackLose: [
+    `The bin will not close. A goiabada rolls down the aisle into business class and is never seen again. Your mother will ask about it.`,
+    `Le coffre ne ferme pas. Une goiabada roule dans l'allée jusqu'en classe affaires et on ne la revoit jamais. Ta mère te posera la question.`,
+    `O bagageiro não fecha. Uma goiabada rola pelo corredor até a executiva e nunca mais é vista. Sua mãe vai perguntar dela.`,
+    `Das Fach geht nicht zu. Eine Goiabada rollt den Gang hinunter bis in die Business Class und wird nie wieder gesehen. Deine Mutter wird danach fragen.`],
   // ---- The Badgers: paragliding friends ----
   bgNoLicence: [
     `"We are the Badgers. We fly, we bake, we dress up. Get your licence and we will talk."`,
@@ -1762,18 +1734,12 @@ export const TXT = {
     `"Nós somos os Capuns. Igual ao prato. A gente pedala oitenta quilômetros para justificar um prato só. Vem junto?"`,
     `«Wir sind die Capuns. Wie das Gericht. Wir fahren achtzig Kilometer, um einen Teller zu rechtfertigen. Kommst du mit?»`],
   cpHow: [
-    `Use Up and Down to stay level with the rider in front: the draft saves your legs. On your turn, hold Right and pull at the front. Cars overtake: a warning shows their lane. Stay out of it, or they swerve round you, honk, and give you a fright.`,
-    `Avec Haut et Bas, reste à la hauteur du coureur devant toi : l'aspiration économise tes jambes. À ton tour, maintiens Droite et prends le relais. Des voitures doublent : un signal indique leur voie. Écarte-toi, sinon elles t'évitent de justesse, klaxonnent et te font peur.`,
-    `Use Cima e Baixo para ficar na linha do ciclista da frente: o vácuo poupa as pernas. Na sua vez, segure Direita e puxe o pelotão. Carros ultrapassam: um aviso mostra a faixa deles. Saia dela, ou eles desviam de você, buzinam e te dão um susto.`,
-    `Bleib mit Hoch und Runter auf der Linie des Fahrers vor dir: Der Windschatten schont die Beine. Wenn du dran bist, halte Rechts und führ vorne. Autos überholen: Ein Warnzeichen zeigt ihre Spur. Bleib draussen, sonst weichen sie knapp aus, hupen und erschrecken dich.`,
+    `Sit in the green slipstream just behind the peloton, with all four arrows. The peloton surges, eases off and drifts across the road, so stay with it. Outside the green your legs drain; ride into a wheel and you touch. Cars overtake: a warning shows their lane. Stay out of it, or they swerve round you, honk, and give you a fright.`,
+    `Reste dans l'aspiration verte, juste derrière le peloton, avec les quatre flèches. Le peloton accélère, ralentit et dérive sur la route, alors suis-le. Hors du vert, tes jambes se vident ; fonce dans une roue et tu la touches. Des voitures doublent : un signal indique leur voie. Écarte-toi, sinon elles t'évitent de justesse, klaxonnent et te font peur.`,
+    `Fique no vácuo verde, logo atrás do pelotão, com as quatro setas. O pelotão acelera, alivia e se desloca pela estrada, então acompanhe. Fora do verde suas pernas se esgotam; encoste numa roda e você toca. Carros ultrapassam: um aviso mostra a faixa deles. Saia dela, ou eles desviam de você, buzinam e te dão um susto.`,
+    `Bleib im grünen Windschatten direkt hinter dem Peloton, mit allen vier Pfeilen. Das Peloton zieht an, lässt nach und driftet über die Strasse, also bleib dran. Ausserhalb des Grüns werden deine Beine leer; fährst du in ein Hinterrad, berührst du es. Autos überholen: Ein Warnzeichen zeigt ihre Spur. Bleib draussen, sonst weichen sie knapp aus, hupen und erschrecken dich.`,
   ],
-  cpTurn: [
-    `YOUR TURN: hold Right`,
-    `À TOI : maintiens Droite`,
-    `SUA VEZ: segure Direita`,
-    `DU BIST DRAN: Rechts halten`,
-  ],
-  paceHud: [`Legs {0}% · grumbles {1}/{2} · {3}s`, `Jambes {0}% · râleries {1}/{2} · {3}s`, `Pernas {0}% · resmungos {1}/{2} · {3}s`, `Beine {0}% · Gemurre {1}/{2} · {3}s`],
+  paceHud: [`Legs {0}% · wheels touched {1}/{2} · {3}s`, `Jambes {0}% · roues touchées {1}/{2} · {3}s`, `Pernas {0}% · rodas tocadas {1}/{2} · {3}s`, `Beine {0}% · Räder berührt {1}/{2} · {3}s`],
   cpWin: [
     `You finish with the group. At the stop, the capuns arrive: chard, dough, bacon, cream. Nobody speaks for six minutes.`,
     `Tu finis avec le groupe. À l'arrêt, les capuns arrivent : bettes, pâte, lard, crème. Personne ne parle pendant six minutes.`,
@@ -1789,6 +1755,95 @@ export const TXT = {
     `« Le calcul n'a jamais tenu. Quatre-vingts kilomètres brûlent moins qu'une assiette de capuns. On roule quand même. »`,
     `"A conta nunca fechou. Oitenta quilômetros gastam menos que um prato de capuns. A gente pedala mesmo assim."`,
     `«Die Rechnung ist noch nie aufgegangen. Achtzig Kilometer verbrennen weniger als ein Teller Capuns. Wir fahren trotzdem.»`],
+  // ---- Mariana and her coelho (Zurich) ----
+  zMari1: [
+    `Mariana is crouched by a hedge, calling softly. "Have you seen a coelho? White, big ears, no sense of direction at all. It was right here a minute ago."`,
+    `Mariana est accroupie près d'une haie et appelle doucement. « Tu n'as pas vu un coelho ? Blanc, grandes oreilles, aucun sens de l'orientation. Il était là il y a une minute. »`,
+    `A Mariana está agachada perto de uma cerca viva, chamando baixinho. "Você viu um coelho? Branco, orelhas grandes, nenhum senso de direção. Estava aqui agorinha."`,
+    `Mariana kauert an einer Hecke und ruft leise. «Hast du einen Coelho gesehen? Weiss, grosse Ohren, null Orientierungssinn. Er war gerade noch hier.»`],
+  zMari2: [
+    `"A rabbit loose in Zurich. By tonight someone will have filed a complaint about it, in triplicate. Help me find it first?"`,
+    `« Un lapin en liberté à Zurich. D'ici ce soir, quelqu'un aura déposé une plainte, en trois exemplaires. Tu m'aides à le retrouver avant ? »`,
+    `"Um coelho solto em Zurique. Até a noite alguém já vai ter feito uma reclamação, em três vias. Me ajuda a achar ele antes?"`,
+    `«Ein Kaninchen frei in Zürich. Bis heute Abend hat jemand eine Beschwerde eingereicht, in dreifacher Ausführung. Hilfst du mir, es vorher zu finden?»`],
+  zMariWait: [
+    `"Still no coelho? Rabbits like quiet corners. The quieter and further away, the better."`,
+    `« Toujours pas de coelho ? Les lapins aiment les coins tranquilles. Plus c'est calme et loin, mieux c'est. »`,
+    `"Nada do coelho ainda? Coelho gosta de canto quieto. Quanto mais quieto e longe, melhor."`,
+    `«Immer noch kein Coelho? Kaninchen mögen ruhige Ecken. Je ruhiger und weiter weg, desto besser.»`],
+  zCoelhoFound: [
+    `There it is, in the far corner of the park, eating something that was definitely planted on purpose. You scoop it up. It does not object.`,
+    `Le voilà, au fond du parc, en train de manger quelque chose qui a très clairement été planté exprès. Tu le prends dans tes bras. Il ne proteste pas.`,
+    `Lá está ele, no canto mais longe do parque, comendo algo que com certeza foi plantado de propósito. Você pega ele no colo. Ele não reclama.`,
+    `Da ist er, in der hintersten Ecke des Parks, und frisst etwas, das ganz sicher absichtlich gepflanzt wurde. Du hebst ihn hoch. Er hat nichts dagegen.`],
+  zMariWin: [
+    `"Coelho! You absolute disaster." She holds it like a baby. "Thank you. Come over sometime. It will ignore you completely: that is how it says thank you."`,
+    `« Coelho ! Espèce de catastrophe. » Elle le tient comme un bébé. « Merci. Passe un de ces jours. Il t'ignorera complètement : c'est sa façon de dire merci. »`,
+    `"Coelho! Seu desastre." Ela segura ele como um bebê. "Obrigada. Aparece lá em casa um dia. Ele vai te ignorar completamente: é o jeito dele de agradecer."`,
+    `«Coelho! Du absolute Katastrophe.» Sie hält ihn wie ein Baby. «Danke. Komm mal vorbei. Er wird dich komplett ignorieren: So sagt er danke.»`],
+  zMariDone: [
+    `"It is sulking. As far as it is concerned, the adventure was going very well."`,
+    `« Il boude. À ses yeux, l'aventure se passait très bien. »`,
+    `"Ele está emburrado. Na opinião dele, a aventura estava indo muito bem."`,
+    `«Er schmollt. Seiner Meinung nach lief das Abenteuer ausgezeichnet.»`],
+  zCoelhoHome: [
+    `The coelho twitches its nose at you. That is all you are getting.`,
+    `Le coelho remue le nez dans ta direction. C'est tout ce que tu auras.`,
+    `O coelho mexe o nariz para você. É tudo o que você vai ganhar.`,
+    `Der Coelho zuckt mit der Nase in deine Richtung. Mehr gibt es nicht.`],
+
+  // ---- The bloquinho de carnaval (Brazil) ----
+  brBlocoSign: [
+    `A hand-painted banner: BLOCO SAIDEIRA ETERNA ("the eternal last round"). Founded 1998. Has never once ended on time.`,
+    `Une banderole peinte à la main : BLOCO SAIDEIRA ETERNA (« l'éternel dernier verre »). Fondé en 1998. N'a jamais fini à l'heure.`,
+    `Uma faixa pintada à mão: BLOCO SAIDEIRA ETERNA. Fundado em 1998. Nunca terminou na hora.`,
+    `Ein handgemaltes Banner: BLOCO SAIDEIRA ETERNA («die ewige letzte Runde»). Gegründet 1998. Hat noch nie pünktlich aufgehört.`],
+  brBloco1: [
+    `A woman in a sequinned cape blocks your way. "Carnaval, querido! The bloco leaves in five minutes and you are dressed like a Swiss accountant. Pick a fantasia."`,
+    `Une femme en cape à paillettes te barre la route. « Carnaval, querido ! Le bloco part dans cinq minutes et tu es habillé comme un comptable suisse. Choisis une fantasia. »`,
+    `Uma mulher de capa de lantejoulas fecha o seu caminho. "Carnaval, querido! O bloco sai em cinco minutos e você está vestido de contador suíço. Escolhe uma fantasia."`,
+    `Eine Frau im Paillettenumhang stellt sich dir in den Weg. «Carnaval, querido! Der Bloco geht in fünf Minuten los, und du bist angezogen wie ein Schweizer Buchhalter. Such dir eine Fantasia aus.»`],
+  brBlocoQ: [`"Which fantasia?"`, `« Quelle fantasia ? »`, `"Qual fantasia?"`, `«Welche Fantasia?»`],
+  brBlocoA1: [`Glitter and cat ears`, `Paillettes et oreilles de chat`, `Glitter e orelhas de gato`, `Glitzer und Katzenohren`],
+  brBlocoA2: [`Sailor hat and a striped shirt`, `Bonnet de marin et marinière`, `Chapéu de marinheiro e camisa listrada`, `Matrosenmütze und Ringelshirt`],
+  brBlocoA3: [`A cow costume, for Switzerland`, `Un costume de vache, pour la Suisse`, `Uma fantasia de vaca, pela Suíça`, `Ein Kuhkostüm, für die Schweiz`],
+  brBlocoR1: [
+    `On goes the glitter. You will still be finding it in your luggage in Zurich in March.`,
+    `Les paillettes, c'est parti. Tu en retrouveras encore dans ta valise à Zurich en mars.`,
+    `Lá vai o glitter. Você ainda vai achar glitter na mala em Zurique em março.`,
+    `Der Glitzer kommt drauf. Du wirst ihn im März in Zürich noch im Koffer finden.`],
+  brBlocoR2: [
+    `"Classic. Your grandfather wore exactly that in 1975." He definitely did not. You wear it anyway.`,
+    `« Un classique. Ton grand-père portait exactement ça en 1975. » Certainement pas. Tu le portes quand même.`,
+    `"Clássico. Seu avô usava exatamente isso em 1975." Com certeza não usava. Você veste mesmo assim.`,
+    `«Ein Klassiker. Dein Grossvater trug genau das 1975.» Ganz sicher nicht. Du ziehst es trotzdem an.`],
+  brBlocoR3: [
+    `"A COW!" The whole bloco cheers. Nobody asks why. At carnaval, a Swiss cow is a perfectly reasonable thing to be.`,
+    `« UNE VACHE ! » Tout le bloco applaudit. Personne ne demande pourquoi. Au carnaval, être une vache suisse est parfaitement raisonnable.`,
+    `"UMA VACA!" O bloco inteiro comemora. Ninguém pergunta por quê. No carnaval, ser uma vaca suíça é perfeitamente razoável.`,
+    `«EINE KUH!» Der ganze Bloco jubelt. Niemand fragt, warum. An Carnaval ist eine Schweizer Kuh etwas völlig Vernünftiges.`],
+  brBlocoWin: [
+    `The surdo starts, the bloco moves, and you follow it round the block three times, singing old marchinhas whose words you somehow still know. Nobody knows where the bloco is going. Nobody needs to.`,
+    `Le surdo démarre, le bloco s'ébranle, et tu le suis trois fois autour du pâté de maisons en chantant de vieilles marchinhas dont tu connais encore les paroles, allez savoir comment. Personne ne sait où va le bloco. Personne n'a besoin de le savoir.`,
+    `O surdo começa, o bloco anda, e você dá três voltas no quarteirão atrás dele, cantando marchinhas antigas cuja letra, sabe-se lá como, você ainda sabe. Ninguém sabe para onde o bloco vai. Ninguém precisa saber.`,
+    `Die Surdo setzt ein, der Bloco zieht los, und du folgst ihm dreimal um den Block und singst alte Marchinhas, deren Text du irgendwie noch kannst. Niemand weiss, wohin der Bloco geht. Niemand muss es wissen.`],
+  brBlocoDone: [`"Same corner next year, querido. Bring the fantasia."`, `« Même coin l'an prochain, querido. Apporte la fantasia. »`, `"Mesma esquina ano que vem, querido. Traz a fantasia."`, `«Nächstes Jahr, gleiche Ecke, querido. Bring die Fantasia mit.»`],
+  brSurdo: [
+    `The surdo player hits the big drum once and you feel it in your ribs. "Dancing is optional," he shouts. "Moving is not."`,
+    `Le joueur de surdo frappe une fois le gros tambour et tu le sens dans tes côtes. « Danser, c'est facultatif », crie-t-il. « Bouger, non. »`,
+    `O cara do surdo bate uma vez no tambor e você sente nas costelas. "Dançar é opcional", ele grita. "Se mexer, não."`,
+    `Der Surdo-Spieler schlägt einmal auf die grosse Trommel und du spürst es in den Rippen. «Tanzen ist freiwillig», ruft er. «Bewegen nicht.»`],
+  brFolia1: [
+    `A man dressed as a giant pão de queijo is handing out water. "Hydrate, querido! Carnaval is a marathon, not a sprint."`,
+    `Un homme déguisé en pão de queijo géant distribue de l'eau. « Hydrate-toi, querido ! Le carnaval, c'est un marathon, pas un sprint. »`,
+    `Um homem fantasiado de pão de queijo gigante distribui água. "Hidrata, querido! Carnaval é maratona, não é tiro curto."`,
+    `Ein Mann im Kostüm eines riesigen Pão de Queijo verteilt Wasser. «Trink was, querido! Carnaval ist ein Marathon, kein Sprint.»`],
+  brFolia2: [
+    `"You live in SWITZERLAND? Do they even have carnaval?" "In Basel. With piccolos and lanterns, in the cold, starting at four in the morning." She looks at you with deep pity.`,
+    `« Tu vis en SUISSE ? Ils ont un carnaval, au moins ? » « À Bâle. Avec des piccolos et des lanternes, dans le froid, à partir de quatre heures du matin. » Elle te regarde avec une profonde pitié.`,
+    `"Você mora na SUÍÇA? Lá tem carnaval?" "Em Basileia. Com flautins e lanternas, no frio, começando às quatro da manhã." Ela te olha com pena profunda.`,
+    `«Du wohnst in der SCHWEIZ? Gibt's da überhaupt Carnaval?» «In Basel. Mit Piccolos und Laternen, in der Kälte, ab vier Uhr morgens.» Sie schaut dich mit tiefem Mitleid an.`],
+
   // ---- Ellie ----
   ellieFind1: [
     `On the bed: Ellie. A big, soft toy elephant who has moved flats with you more often than your furniture has.`,

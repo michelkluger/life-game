@@ -10,12 +10,13 @@ A top-down adventure about one real life: Zurich rent, trains to family in Marse
 |---|---|
 | Arrow keys | Move; walk into people and things to interact |
 | Space | Continue, confirm |
+| Esc | Leave a conversation as if it never happened; after a minigame, skip the rest of the talking |
 | Shift (outdoors) | Ride the bike |
 | L | Switch language |
 | M | Mute music |
 | E | Ellie the elephant tags along, or stays home (once you have picked her up) |
 
-On a phone or tablet, on-screen buttons appear: a direction pad, A to confirm, a bike toggle, L and mute.
+On a phone or tablet, on-screen buttons appear: a direction pad, A to confirm, ✕ to leave, a bike toggle, L and mute.
 
 ## Run locally
 

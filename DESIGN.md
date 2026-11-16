@@ -57,9 +57,9 @@ Run: `bun run dev` then open http://localhost:3000. Tests: `bun test`. Hosted on
 | Place | People and quests |
 |---|---|
 | Flat | bed (sleep a day), laptop (jobs, dating app, the decision), the box of memories, and Ellie the soft toy elephant: pick her up and E makes her follow you everywhere or stay home |
-| Zurich (36x18) | interview at Gletscher Labs; neighbour's wardrobe (one-time CHF 120); lake swimming; paragliding school on the mountain (CHF 300 once); river race (CHF 40); station; airport; tourist, banker, Rösti the dog, the always-late climbing friend, alphorn player, recycling neighbour; the Brazilian expat who wants pão de queijo |
+| Zurich (36x18) | interview at Gletscher Labs; neighbour's wardrobe (one-time CHF 120); lake swimming; paragliding school on the mountain (CHF 300 once); river race (CHF 40); station; airport; tourist, banker, Rösti the dog, the always-late climbing friend, alphorn player, recycling neighbour; the Brazilian expat who wants pão de queijo; Mariana, whose coelho (rabbit) has run off to the far corner of the park: find it and carry it back |
 | Marseille (30x13) | birthday cake; ice for the pastis from the fishmonger; pétanque with the old men; the nieces' ball in the harbour (swim for it); boats |
-| Brazil (40x16) | return flight CHF 1,200, chocolate CHF 35 at duty-free; Sunday-lunch duel with the aunt (chocolate is the winning move); mother packs pão de queijo after lunch; uncle, cousin, the caramel dog. Quest chain: catch mangoes with the father at the Jewish cemetery where he works -> grandma on the veranda makes the mango sweet -> the friends' birthday party lets you in (big group of friends, lots of kids, balloons, cake table, bouncy castle) -> game of tag -> Parabéns and brigadeiros |
+| Brazil (40x16) | return flight CHF 1,200, chocolate CHF 35 at duty-free; a bloquinho de carnaval (Bloco Saideira Eterna: pick a fantasia and follow the bloco); Sunday-lunch question rally with the aunt (Swiss chocolate slows her down); mother packs pão de queijo after lunch; uncle, cousin, the caramel dog. Quest chain: catch mangoes with the father at the Jewish cemetery where he works -> grandma on the veranda makes the mango sweet -> the friends' birthday party lets you in (big group of friends, lots of kids, balloons, cake table, bouncy castle) -> game of tag -> Parabéns and brigadeiros |
 
 ### Memories in the box
 
@@ -67,7 +67,7 @@ Opened in chronological order, each called up by something in the present:
 
 | Memory | Opens after | Play | Reward |
 |---|---|---|---|
-| Scout camp, 2007 | failing the interview | find rope, arrow-memory knots | BE PREPARED (wins the interview) |
+| Scout camp, 2007 | failing the interview | find rope, arrow-memory knots | BE PREPARED (without it the interview just goes wrong; with it you get the live-coding round) |
 | Svalbard, 2015 | swimming in the lake | polar-night fog, bear guard, fly the robot and collect samples | swim at full speed |
 | Vienna, 2016 | getting the job | three tries for a coffee, timing bar | slower crowds in sprints |
 | Wiener Neustadt, 2017 | riding 3 km | form A38 runaround between porter and HR, lights-out headlight | faster bike |
@@ -86,8 +86,8 @@ Once the box is empty, the job won, the cake delivered and the lunch survived, t
 | The Lab | commit to the doctorate with the professor (needs three memories), plus Svalbard, Antarctica, Munich, Vienna |
 | The Company | put CHF 2,000 into the pão de queijo business (after delivering the pão de queijo), plus wardrobe, bank, Wiener Neustadt |
 | Two Streets Away (Marseille) | say yes to the flat near your sister (after the birthday), plus ball, ice, pétanque, trips |
-| Home (Brazil) | tell your mother you are coming back (after the pão de queijo), plus lunch, mangoes, sweet, party, trips |
-| The City That Grew On You (Zurich) | a second date, plus climbing, pilot licence, medal, swimming. Also the default if you did nothing. |
+| Home (Brazil) | tell your mother you are coming back (after the pão de queijo), plus lunch, mangoes, sweet, party, bloco, trips |
+| The City That Grew On You (Zurich) | a second date, plus climbing, pilot licence, medal, swimming, the Badgers, the Capuns, Mariana's coelho. Also the default if you did nothing. |
 | Secret: The Box | look into the empty box five times |
 | Secret: South | Svalbard and Antarctica done, and 3 km swum |
 | Secret: Never Landed | three paragliding flights |
@@ -99,44 +99,49 @@ Dating: the laptop's dating app produces a match who waits by the lake; three qu
 
 ### Minigames
 
-User direction 2026-11-10: they are a big part of the fun, so vary them; each kind appears once, twice at most with a different theme.
+User direction 2026-11-10: they are a big part of the fun, so vary them. Tightened 2026-11-16: no kind repeats; each appears in one place only (replaying the same place is fine).
 
 | Kind | Call | Used for |
 |---|---|---|
 | Arrow memory | `c.simon(n)` | scout knots |
 | Card matching | `c.pairs(seconds)` | the neighbour's wardrobe |
 | Lane dodger | `c.dodge(seconds)` | changing trains in Geneva |
-| Reaction | `c.whack(count, tex)` | platform changes in Lyon, kitchen fire in Munich |
-| Timing bar | `c.timing(rounds)` | Vienna flight computer, pétanque |
+| Departure board | `c.board(rounds)` | platform changes in Lyon |
+| Reaction | `c.whack(count)` | kitchen fire in Munich |
+| Timing bar | `c.timing(rounds)` | Vienna flight computer |
+| Aim and throw | `c.boules(ends)` | pétanque in Marseille |
 | Tracking | `c.aim(seconds)` | Munich satellite dish |
 | Free-move collecting | `c.collect(n, seconds)` | Svalbard robot |
 | Balance | `c.balance(seconds)` | Antarctic mast |
-| Lights out | `c.leds(seconds)` | Wiener Neustadt headlight |
+| Lights out | `c.leds(seconds)` | Wiener Neustadt headlight (the cells Space will switch are outlined) |
 | Sorting | `c.sort(count)` | bank compliance |
 | Gliding | `c.glide(seconds)` | paragliding |
 | Sprint | `c.mash(metres)` | river race |
 | Catching | `c.gather(n)` | mango tree |
 | Tag | `c.tag(n, seconds)` | kids at the birthday party |
 | Route reading | `c.climb(n)` | bouldering |
-| Red light, green light | `c.sneak(seconds, theme)` | the armrest on the flight out, the sleeping baby on the flight back |
+| Red light, green light | `c.sneak(seconds)` | the armrest on the flight out |
+| Stacking | `c.stack(n)` | mum's tupperwares in the overhead bin on the flight back |
 | Formation | `c.formation(seconds)` | flying with the Badgers |
 | Rhythm | `c.dance(n)` | the Badgers' Halloween party |
 | Oven watch | `c.oven(n)` | the Badgers' Christmas cookies |
-| Paceline | `c.paceline(seconds)` | riding with the Capuns |
+| Slipstream | `c.paceline(seconds)` | riding with the Capuns: stay just behind the peloton as it surges and drifts |
 | Conversation choices | plain `c.choose` | the date |
-| Turn-based duel | `c.duel(kind)` | job interview, Sunday lunch |
+| Shooter | `c.bugs(rows)` | the live-coding round of the interview (squash the bugs before one reaches the red line) |
+| Rally | `c.rally(n, sweetened)` | the aunt's questions at Sunday lunch, batted back across the table |
 
-All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. Duels are data in `logic.ts`: the ordinary moves can never win, the special move (earned elsewhere) can, and a test proves both. Other building blocks: `c.backdrop("train" | "plane")` travel scenes, map `fog`, `spawn`.
+All arcade games run on the shared `play()` stage in `main.ts`; a new kind is about 25 lines. The turn-based word duels were dropped on 2026-11-16 (Michel: "as a player I don't understand those word duels"): the interview became a scripted failure the first time and a shooter once you are prepared, the lunch became a rally. Other building blocks: `c.backdrop("train" | "plane")` travel scenes, map `fog`, `spawn`.
 
-Also: touch controls (on-screen pad on phones and tablets), sound effects for dialogue, success and mistakes, a two-frame walk; activity tracker (10 tiles = 1 km) in a side column with a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
+Also: Esc leaves a conversation and rolls back everything it did (until a minigame in it has been played; after that Esc only skips talk); touch controls (on-screen pad on phones and tablets, ✕ is Esc), sound effects for dialogue, success and mistakes, a two-frame walk; activity tracker (10 tiles = 1 km) in a side column with a fitness-feed style card after each walk, ride or swim; one soft music-box tune per place (M mutes); four languages (picked at start, L switches); autosave.
 
-Tests cover: map shape, every character reachable from the spawn point, a tune for every place, every line in four languages, duel balance, and a scripted playthrough of the whole game.
+Tests cover: map shape, every character reachable from the spawn point, a tune for every place, every line in four languages, and a scripted playthrough of the whole game.
 
 Known gaps:
 - Art is drawn in code, not CC0 packs.
 - Touch controls are checked in an emulated phone only, not on a real device.
 - The date and the individual Zurich friends are invented composites. From Michel (2026-11-10): his paragliding friends are "the Badgers" (met after the licence; they gather for flying, Christmas cookie baking and Halloween parties) and his cycling friends are "the Capuns". Individual members are unnamed and their lines invented.
 - Assumed two nieces; family unnamed. From Michel (2026-11-10): parents and grandma are in Brazil; his father works in the Jewish cemeteries; a big group of friends there, with lots of kids, gathers for birthday parties. The aunt, uncle, cousin and every personality are still invented.
+- From Michel (2026-11-16): the family in Brazil is Jewish, so no Christmas there (the aunt now approves you until Rosh Hashanah); the cemetery is half its old size; Mariana in Zurich owns a coelho. Her lines, the rabbit escaping and the bloco's name and characters are invented.
 - FR/PT/DE text is AI-translated and not yet proofread by Michel.
 - Memory order follows the years, not the original chapter numbering.
 - Minigame difficulty is tuned by estimate and simulation, not by play.
