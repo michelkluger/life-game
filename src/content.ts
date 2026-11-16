@@ -68,15 +68,41 @@ export const onSwim: Script = async c => {
 
 // The box in the flat: memories open in chronological order, each once something in the present calls it up.
 // `done` is the flag the memory sets when finished; until `ready`, the box only gives the hint.
-const MEMORIES: { map: string; done: string; ready: (s: State) => boolean; hint: Line; open: Line[] }[] = [
-  { map: 'camp', done: 'prepared', ready: s => !!s.flags.failedInterview, hint: t.boxClosed, open: [t.boxOpen1, t.boxOpen2] },
-  { map: 'svalbard', done: 'svalbard', ready: s => !!s.flags.swam, hint: t.boxSvalHint, open: [t.boxSvalOpen] },
-  { map: 'vienna', done: 'vienna', ready: s => !!s.flags.employed, hint: t.boxVieHint, open: [t.boxVieOpen] },
-  { map: 'wiener', done: 'wiener', ready: s => s.dist.bike >= 30, hint: t.boxWnHint, open: [t.boxWnOpen] },
-  { map: 'munich', done: 'munich', ready: s => !!s.flags.birthday, hint: t.boxMunHint, open: [t.boxMunOpen] },
-  { map: 'antarctica', done: 'antarctica', ready: s => s.rentDue > 10, hint: t.boxAntHint, open: [t.boxAntOpen] },
-  { map: 'bank', done: 'bank', ready: s => s.money >= 5000, hint: t.boxBkHint, open: [t.boxBkOpen] },
+// `learned` and `tex` are its card on the board (I): what it taught you, and a picture.
+const MEMORIES: { map: string; done: string; ready: (s: State) => boolean; hint: Line; open: Line[]; learned: Line; tex: string }[] = [
+  { map: 'camp', done: 'prepared', ready: s => !!s.flags.failedInterview, hint: t.boxClosed, open: [t.boxOpen1, t.boxOpen2], learned: t.bdPrepared, tex: 'tent' },
+  { map: 'svalbard', done: 'svalbard', ready: s => !!s.flags.swam, hint: t.boxSvalHint, open: [t.boxSvalOpen], learned: t.bdSvalbard, tex: 'rov' },
+  { map: 'vienna', done: 'vienna', ready: s => !!s.flags.employed, hint: t.boxVieHint, open: [t.boxVieOpen], learned: t.bdVienna, tex: 'pc' },
+  { map: 'wiener', done: 'wiener', ready: s => s.dist.bike >= 30, hint: t.boxWnHint, open: [t.boxWnOpen], learned: t.bdWiener, tex: 'me_bike' },
+  { map: 'munich', done: 'munich', ready: s => !!s.flags.birthday, hint: t.boxMunHint, open: [t.boxMunOpen], learned: t.bdMunich, tex: 'sat' },
+  { map: 'antarctica', done: 'antarctica', ready: s => s.rentDue > 10, hint: t.boxAntHint, open: [t.boxAntOpen], learned: t.bdAntarctica, tex: 'penguin' },
+  { map: 'bank', done: 'bank', ready: s => s.money >= 5000, hint: t.boxBkHint, open: [t.boxBkOpen], learned: t.bdBank, tex: 'case' },
 ];
+
+// Things on the board: keepsakes stay, errands disappear once delivered. Each text is "name\nwhat it is for".
+const THINGS: { tex: string; text: Line; has: (f: State['flags']) => boolean }[] = [
+  { tex: 'ellie', text: t.bdEllie, has: f => !!f.ellie },
+  { tex: 'badge', text: t.bdBadge, has: f => !!f.employed },
+  { tex: 'glider', text: t.bdLicence, has: f => !!f.pilot },
+  { tex: 'medal', text: t.bdMedal, has: f => !!f.medal },
+  { tex: 'mask', text: t.bdFantasia, has: f => !!f.bloco },
+  { tex: 'choc', text: t.bdChoc, has: f => !!f.chocolate && !f.lunch },
+  { tex: 'caketable', text: t.bdCake, has: f => !!f.cake && !f.birthday },
+  { tex: 'ice', text: t.bdIce, has: f => !!f.ice && !f.iceDone },
+  { tex: 'ball', text: t.bdBall, has: f => !!f.ball && !f.ballDone },
+  { tex: 'tupper', text: t.bdPaoq, has: f => !!f.paoq && !f.paoqGiven },
+  { tex: 'mango', text: t.bdMangoes, has: f => !!f.mangoes && !f.sweet },
+  { tex: 'jar', text: t.bdSweet, has: f => !!f.sweet && !f.partyIn },
+  { tex: 'coelho', text: t.bdCoelho, has: f => !!f.coelho && !f.coelhoDone },
+];
+
+// What the board shows, derived from the save so nothing is stored twice. Memories still in the box show as locked.
+export const board = (s: State) => ({
+  learned: MEMORIES.map(m => s.flags[m.done]
+    ? { tex: m.tex, title: MAPS[m.map].name, note: m.learned, got: true }
+    : { tex: 'box', title: MAPS[m.map].name, note: t.bdLocked, got: false }),
+  things: THINGS.filter(x => x.has(s.flags)).map(x => ({ tex: x.tex, title: x.text.map(l => l.split('\n')[0]), note: x.text.map(l => l.split('\n')[1]) })),
+});
 
 export const afterScript: Script = async c => {
   const f = c.s.flags;

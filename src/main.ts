@@ -1,7 +1,7 @@
 // Rendering and input. Rules live in logic.ts, story in content.ts, text in strings.ts.
 import * as Phaser from 'phaser';
 import { type State, newState, passDays } from './logic';
-import { MAPS, intro, afterScript, onSwim, type Ctx, type Ent, type Script } from './content';
+import { MAPS, intro, afterScript, onSwim, board, type Ctx, type Ent, type Script } from './content';
 import { TXT, LANGS, SORT_ITEMS, type Line } from './strings';
 import * as music from './music';
 
@@ -120,6 +120,14 @@ const ART: Record<string, Rect[]> = {
   chief: person('#e2572c', '#444'),
   leader: person('#b5a36a', '#222', '#b98a5e'),
   kid: person('#b5a36a', '#3a2a1a', '#c99a6e'),
+  // Board icons for things you carry.
+  badge: [['#555', 7, 0, 2, 4], ['#f4f4f4', 3, 4, 10, 11], ['#3d5a80', 3, 4, 10, 3], ['#e8b88a', 5, 8, 3, 4], ['#59606b', 9, 9, 3, 1], ['#59606b', 9, 11, 3, 1]],
+  medal: [['#3f8fd0', 5, 0, 2, 6], ['#e2372c', 9, 0, 2, 6], ['#f2c94c', 4, 6, 8, 8], ['#c99a2e', 6, 8, 4, 4]],
+  mask: [['#c77dff', 2, 5, 12, 5], ['#222', 4, 6, 3, 2], ['#222', 9, 6, 3, 2], ['#f2c94c', 1, 4, 2, 2], ['#f2c94c', 13, 4, 2, 2], ['#3fbf7f', 6, 1, 1, 4], ['#e2372c', 9, 1, 1, 4]],
+  choc: [['#6b3a1f', 2, 4, 12, 9], ['#8a5230', 3, 5, 3, 3], ['#8a5230', 7, 5, 3, 3], ['#8a5230', 3, 9, 3, 3], ['#8a5230', 7, 9, 3, 3], ['#e2372c', 11, 4, 3, 9], ['#fff', 12, 7, 1, 3]],
+  ice: [['#cfe6ff', 3, 6, 5, 5], ['#e8f4ff', 8, 4, 5, 5], ['#bcd9f5', 6, 9, 5, 5], ['#fff', 4, 7, 1, 1], ['#fff', 9, 5, 1, 1]],
+  tupper: [['#cfe6ff', 2, 6, 12, 8], ['#3f8fd0', 1, 4, 14, 3], ['#e8c060', 4, 9, 3, 3], ['#e8c060', 8, 9, 3, 3], ['#e8c060', 6, 11, 3, 2]],
+  jar: [['#f4efe6', 4, 2, 8, 3], ['#f2a01e', 4, 5, 8, 10], ['#e2572c', 5, 7, 6, 6], ['#fff', 5, 6, 1, 3]],
   bug: [['#2e7d5b', 5, 1, 6, 3], ['#3fbf7f', 3, 4, 10, 10], ['#2e7d5b', 7, 4, 2, 10], ['#e2372c', 5, 2, 1, 1], ['#e2372c', 10, 2, 1, 1], ['#1c3d30', 1, 5, 2, 1], ['#1c3d30', 13, 5, 2, 1], ['#1c3d30', 1, 9, 2, 1], ['#1c3d30', 13, 9, 2, 1], ['#1c3d30', 1, 13, 2, 1], ['#1c3d30', 13, 13, 2, 1], ['#1c3d30', 5, 0, 1, 1], ['#1c3d30', 10, 0, 1, 1]],
   mariana: [...person('#5dade2', '#4a2c17'), ['#4a2c17', 4, 2, 1, 5], ['#4a2c17', 11, 2, 1, 5]],
   coelho: [['#f4f4f4', 4, 8, 9, 6], ['#f4f4f4', 10, 5, 5, 5], ['#f4f4f4', 10, 0, 2, 6], ['#f4f4f4', 13, 1, 2, 5], ['#f5b7d0', 11, 1, 1, 4], ['#222', 13, 7, 1, 1], ['#f5b7d0', 14, 8, 1, 1], ['#fff', 3, 9, 2, 2], ['#ddd', 5, 13, 3, 2], ['#ddd', 10, 13, 3, 2]],
@@ -234,6 +242,7 @@ class World extends Phaser.Scene implements Ctx {
   bigTxt!: Phaser.GameObjects.Text; // large glyphs inside the dialogue box (puzzle arrows)
   scenery: Obj[] = []; hills: Obj[] = [];
   undo: State | null = null; // the state before this conversation; Esc goes back to it until a minigame has been played
+  boardUi: Phaser.GameObjects.GameObject[] = []; // the open board (I), empty while closed
 
   // Pin an object to the screen (not the world) at a given depth.
   ui<G>(o: G, depth: number): G { (o as any).setScrollFactor(0).setDepth(depth); return o; }
@@ -274,6 +283,7 @@ class World extends Phaser.Scene implements Ctx {
       music.unlock();
       if (e.code === 'KeyM') music.toggleMute();
       if (e.code === 'KeyE') this.toggleEllie();
+      if (e.code === 'KeyI' || (e.code === 'Escape' && this.boardUi.length)) this.toggleBoard();
       if (e.code === 'KeyL') this.setLang((this.s.lang + 1) % LANGS.length);
       this.onKey?.(e.code);
     });
@@ -313,10 +323,39 @@ class World extends Phaser.Scene implements Ctx {
     music.sfx('tick');
   }
 
+  // I: the board of what the memories taught you and what you carry. Opens only while you are walking around, and
+  // holds you in place until it is closed with I or Esc.
+  toggleBoard() {
+    if (this.boardUi.length) { this.boardUi.forEach(o => o.destroy()); this.boardUi = []; this.busy = false; this.needRelease = true; return; }
+    if (this.busy) return;
+    this.busy = true;
+    const add = <G>(o: G) => { this.boardUi.push(o as any); return this.ui(o, 120); };
+    const text = (x: number, y: number, s: string, size: number, color: string, bold = false, wrap = 182) =>
+      add(this.add.text(x, y, s, { ...FONT, fontSize: `${size}px`, color, fontStyle: bold ? 'bold' : '', wordWrap: { width: wrap } }));
+    const card = (col: number, row: number, c: { tex: string; title: Line; note: Line }, dim = false) => {
+      const x = 12 + col * 234, y = 62 + row * 58;
+      add(this.add.rectangle(x, y, 228, 54, dim ? 0xd9cdb8 : 0xf4efe6).setOrigin(0));
+      add(this.add.circle(x + 114, y + 3, 4, 0xe2372c)); // the pin
+      add(this.add.image(x + 22, y + 27, c.tex).setScale(0.75)).setAlpha(dim ? 0.5 : 1);
+      text(x + 44, y + 4, this.tr(c.title), 12, '#1c1e21', true);
+      text(x + 44, y + 20, this.tr(c.note), 11, dim ? '#7a7f87' : '#4a4f57');
+    };
+    const b = board(this.s);
+    add(this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.55));
+    add(this.add.rectangle(W / 2, H / 2, W - 8, H - 8, 0x9c7446).setStrokeStyle(6, 0x6e4635)); // cork
+    text(12, 10, this.tr(TXT.bdTitle), 15, '#fff3b0', true, 700);
+    text(12, 40, this.tr(TXT.bdLearnedHdr), 13, '#fff', true, 228);
+    text(246, 40, this.tr(TXT.bdThingsHdr), 13, '#fff', true, 460);
+    b.learned.forEach((c, i) => card(0, i, c, !c.got));
+    b.things.slice(0, 14).forEach((c, i) => card(1 + Math.floor(i / 7), i % 7, c)); // two columns of seven
+    if (!b.things.length) text(246, 66, this.tr(TXT.bdNone), 13, '#fff', false, 460);
+  }
+
   setLang(lang: number) {
     this.s.lang = lang;
     this.build(); // signs and HUD
     this.redraw?.();
+    if (this.boardUi.length) { this.toggleBoard(); this.toggleBoard(); } // redraw an open board in the new language
   }
 
   build() {
@@ -1309,6 +1348,7 @@ for (const b of document.querySelectorAll<HTMLElement>('#pad [data-key]')) {
     else if (code === 'KeyL') world.setLang((world.s.lang + 1) % LANGS.length);
     else if (code === 'KeyM') music.toggleMute();
     else if (code === 'KeyE') world.toggleEllie();
+    else if (code === 'KeyI' || (code === 'Escape' && world.boardUi.length)) world.toggleBoard();
     else { if (DIR[code]) [pad.x, pad.y] = DIR[code]; if (code === 'Space') pad.a = true; world.onKey?.(code); }
   });
   for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(ev, release);

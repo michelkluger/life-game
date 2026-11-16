@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { MAPS, afterScript, onSwim, type Ctx } from './content';
+import { MAPS, afterScript, onSwim, board, type Ctx } from './content';
 import { TXT, SORT_ITEMS } from './strings';
 import { freq, trackNames, trackNotes } from './music';
 import { ENDINGS, ending, newState, passDays, pay, RENT, type State } from './logic';
@@ -118,8 +118,12 @@ test('the whole game can be played to the end', async () => {
     }
   };
 
+  const things = () => board(c.s).things.map(x => x.tex);
+  expect(board(c.s).learned.every(m => !m.got)).toBe(true); // the board starts with seven memories still in the box
+  expect(things()).toEqual([]);
   await act('flat', 'E');
   expect(f.ellie && f.ellieOut).toBe(true); // Ellie comes along from the start
+  expect(things()).toEqual(['ellie']);
 
   // Present day: fail the interview, remember the scouts, win the job.
   await act('flat', 'X');
@@ -140,8 +144,11 @@ test('the whole game can be played to the end', async () => {
 
   // Marseille: cake, ball, ice, pétanque.
   await act('zurich', 'H');
-  await act('marseille', 'S', 'P', 'S');
+  await act('marseille', 'S', 'P');
+  expect(things()).toContain('caketable');     // an errand shows while you carry it...
+  await act('marseille', 'S');
   expect(f.birthday).toBe(true);
+  expect(things()).not.toContain('caketable'); // ...and leaves the board once delivered
   await act('marseille', 'B');
   expect(f.ball).toBeUndefined(); // nobody asked for it yet
   await act('marseille', 'a', 'B', 'a');
@@ -197,6 +204,7 @@ test('the whole game can be played to the end', async () => {
   expect(f.bank && f.halbtax).toBe(true);
   await act('flat', 'X'); // empty box: stays put
   expect(c.s.map).toBe('flat');
+  expect(board(c.s).learned.every(m => m.got)).toBe(true);
   expect(f.end).toBeUndefined(); // still owes the family a visit
 
   // Brazil: chocolate wins the lunch, mother packs the pão de queijo.
@@ -227,6 +235,8 @@ test('the whole game can be played to the end', async () => {
   expect(MAPS.zurich.ents.h.hide!(c.s)).toBe(false);
   await act('zurich', 'h', 'M');
   expect(f.coelhoDone && MAPS.zurich.ents.h.hide!(c.s) && !MAPS.zurich.ents.v.hide!(c.s)).toBe(true);
+  // Every errand delivered: only the keepsakes are left on the board.
+  expect(things()).toEqual(['ellie', 'badge', 'glider', 'medal', 'mask']);
 
   // Commitments and the rest of life in Zurich.
   await act('zurich', 'e');                       // the expat pitches the company; first answer is yes

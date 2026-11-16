@@ -301,7 +301,11 @@ export const TXT = {
     `Ça te revient : personne n'est jamais prêt. On fait juste le nœud suivant.`,
     `Agora você lembra: ninguém nunca está pronto. A gente só dá o próximo nó.`,
     `Jetzt weisst du es wieder: Niemand ist je bereit. Man macht einfach den nächsten Knoten.`],
-  tent3: [`You learned BE PREPARED.`, `Tu as appris TOUJOURS PRÊT.`, `Você aprendeu SEMPRE ALERTA.`, `Du hast ALLZEIT BEREIT gelernt.`],
+  tent3: [
+    `You learned BE PREPARED. (Press I any time to see what you have learned and what you carry.)`,
+    `Tu as appris TOUJOURS PRÊT. (Appuie sur I à tout moment pour voir ce que tu as appris et ce que tu portes.)`,
+    `Você aprendeu SEMPRE ALERTA. (Aperte I a qualquer momento para ver o que aprendeu e o que carrega.)`,
+    `Du hast ALLZEIT BEREIT gelernt. (Drück jederzeit I, um zu sehen, was du gelernt hast und was du dabeihast.)`],
   tent4: [
     `You wake up in Zurich with the scarf in your hand.`,
     `Tu te réveilles à Zurich, le foulard à la main.`,
@@ -1843,6 +1847,33 @@ export const TXT = {
     `« Tu vis en SUISSE ? Ils ont un carnaval, au moins ? » « À Bâle. Avec des piccolos et des lanternes, dans le froid, à partir de quatre heures du matin. » Elle te regarde avec une profonde pitié.`,
     `"Você mora na SUÍÇA? Lá tem carnaval?" "Em Basileia. Com flautins e lanternas, no frio, começando às quatro da manhã." Ela te olha com pena profunda.`,
     `«Du wohnst in der SCHWEIZ? Gibt's da überhaupt Carnaval?» «In Basel. Mit Piccolos und Laternen, in der Kälte, ab vier Uhr morgens.» Sie schaut dich mit tiefem Mitleid an.`],
+
+  // ---- The board (I): what the memories taught you, what you carry and keep ----
+  bdTitle: [`Your board · I or Esc to close`, `Ton tableau · I ou Échap pour fermer`, `Seu mural · I ou Esc para fechar`, `Deine Pinnwand · I oder Esc zum Schliessen`],
+  bdLearnedHdr: [`What the box taught you`, `Ce que le carton t'a appris`, `O que a caixa te ensinou`, `Was die Kiste dich lehrte`],
+  bdThingsHdr: [`What you carry and keep`, `Ce que tu portes et gardes`, `O que você carrega e guarda`, `Was du trägst und behältst`],
+  bdNone: [`Nothing yet.`, `Rien pour l'instant.`, `Nada ainda.`, `Noch nichts.`],
+  bdLocked: [`Still in the box`, `Encore dans le carton`, `Ainda na caixa`, `Noch in der Kiste`],
+  bdPrepared: [`BE PREPARED: ready for the interview`, `TOUJOURS PRÊT : prêt pour l'entretien`, `SEMPRE ALERTA: pronto para a entrevista`, `ALLZEIT BEREIT: bereit fürs Gespräch`],
+  bdSvalbard: [`COLD BLOOD: cold water won't slow you`, `SANG-FROID : l'eau froide ne te freine plus`, `SANGUE FRIO: água gelada não te atrasa`, `KALTES BLUT: kaltes Wasser bremst nicht`],
+  bdVienna: [`REAL-TIME NERVES: slower station crowds`, `NERFS TEMPS RÉEL : foules lentes en gare`, `NERVOS DE TEMPO REAL: multidões lentas`, `ECHTZEIT-NERVEN: langsamere Menschenmengen`],
+  bdWiener: [`FULL BEAM: a faster bike`, `PLEINS PHARES : un vélo plus rapide`, `FAROL ALTO: bicicleta mais rápida`, `FERNLICHT: ein schnelleres Velo`],
+  bdMunich: [`STAY CALM UNDER ALARM: one more mistake allowed`, `CALME SOUS ALARME : une erreur de plus permise`, `CALMA SOB ALARME: um erro a mais permitido`, `RUHE BEI ALARM: ein Fehler mehr erlaubt`],
+  bdAntarctica: [`PATIENCE, and the parka`, `PATIENCE, et la parka`, `PACIÊNCIA, e a parca`, `GEDULD, und der Parka`],
+  bdBank: [`HALF-FARE: trains cost half`, `DEMI-TARIF : le train à moitié prix`, `MEIA TARIFA: trem pela metade`, `HALBTAX: Zug zum halben Preis`],
+  bdEllie: [`Ellie\nE: she comes along or stays home`, `Ellie\nE : elle vient ou reste à la maison`, `Ellie\nE: ela vem junto ou fica em casa`, `Ellie\nE: Sie kommt mit oder bleibt daheim`],
+  bdBadge: [`Gletscher Labs badge\nSalary arrives with the rent`, `Badge Gletscher Labs\nLe salaire arrive avec le loyer`, `Crachá da Gletscher Labs\nO salário cai com o aluguel`, `Badge von Gletscher Labs\nDer Lohn kommt mit der Miete`],
+  bdLicence: [`Pilot licence\nThe mountain is yours, and the Badgers`, `Licence de pilote\nLa montagne est à toi, et les Badgers`, `Licença de piloto\nA montanha é sua, e os Badgers`, `Pilotenlizenz\nDer Berg gehört dir, und die Badgers`],
+  bdMedal: [`River race medal\nFirst place. Mention it often.`, `Médaille de la course\nPremière place. À mentionner souvent.`, `Medalha da corrida\nPrimeiro lugar. Mencione sempre.`, `Medaille vom Flusslauf\nErster Platz. Oft erwähnen.`],
+  bdFantasia: [`Carnaval fantasia\nStill shedding glitter`, `Fantasia de carnaval\nPerd encore des paillettes`, `Fantasia de carnaval\nAinda soltando glitter`, `Carnaval-Fantasia\nVerliert immer noch Glitzer`],
+  bdChoc: [`Swiss chocolate\nFor the family lunch in Brazil`, `Chocolat suisse\nPour le déjeuner de famille au Brésil`, `Chocolate suíço\nPara o almoço de família no Brasil`, `Schweizer Schokolade\nFürs Familienessen in Brasilien`],
+  bdCake: [`Cake\nFor your sister in Marseille`, `Gâteau\nPour ta sœur à Marseille`, `Bolo\nPara sua irmã em Marselha`, `Torte\nFür deine Schwester in Marseille`],
+  bdIce: [`Ice\nFor the pastis, back at the terrace`, `Glace\nPour le pastis, retour à la terrasse`, `Gelo\nPara o pastis, de volta ao terraço`, `Eis\nFür den Pastis, zurück zur Terrasse`],
+  bdBall: [`The nieces' ball\nRescued from the harbour: give it back`, `Le ballon des nièces\nRepêché dans le port : rends-le`, `A bola das sobrinhas\nResgatada do porto: devolva`, `Der Ball der Nichten\nAus dem Hafen geholt: zurückgeben`],
+  bdPaoq: [`Pão de queijo\nFrom your mother, for the expat in Zurich`, `Pão de queijo\nDe ta mère, pour l'expat de Zurich`, `Pão de queijo\nDa sua mãe, para o brasileiro em Zurique`, `Pão de Queijo\nVon deiner Mutter, für den Expat in Zürich`],
+  bdMangoes: [`Mangoes\nFrom the cemetery tree, for grandma`, `Mangues\nDu manguier du cimetière, pour grand-mère`, `Mangas\nDa mangueira do cemitério, para a vó`, `Mangos\nVom Friedhofsbaum, für Grossmutter`],
+  bdSweet: [`Mango sweet\nGrandma's, your way into the party`, `Douceur à la mangue\nDe grand-mère, ton entrée à la fête`, `Doce de manga\nDa vó, seu passe para a festa`, `Mango-Süssspeise\nVon Grossmutter, dein Weg auf die Party`],
+  bdCoelho: [`Mariana's coelho\nUnder your arm: take it home to her`, `Le coelho de Mariana\nSous ton bras : ramène-le-lui`, `O coelho da Mariana\nDebaixo do braço: leve para ela`, `Marianas Coelho\nUnter dem Arm: bring ihn ihr zurück`],
 
   // ---- Ellie ----
   ellieFind1: [

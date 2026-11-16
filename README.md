@@ -15,8 +15,9 @@ A top-down adventure about one real life: Zurich rent, trains to family in Marse
 | L | Switch language |
 | M | Mute music |
 | E | Ellie the elephant tags along, or stays home (once you have picked her up) |
+| I | Your board: what each memory taught you, and what you carry and keep (I or Esc closes it) |
 
-On a phone or tablet, on-screen buttons appear: a direction pad, A to confirm, ✕ to leave, a bike toggle, L and mute.
+On a phone or tablet, on-screen buttons appear: a direction pad, A to confirm, ✕ to leave, I for the board, a bike toggle, L and mute.
 
 ## Run locally
 
